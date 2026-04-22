@@ -31,3 +31,43 @@ Event.find_or_create_by!(name: "RubyConf 2026") do |event|
 end
 
 puts "✓ Seeded #{Event.count} event(s)"
+
+puts "Seeding hobbies..."
+
+HOBBIES = [
+  "hiking",
+  "cycling",
+  "rock climbing",
+  "running",
+  "skiing",
+  "surfing",
+  "knitting",
+  "pottery",
+  "woodworking",
+  "sewing",
+  "fiber arts",
+  "cooking",
+  "baking",
+  "fermentation",
+  "coffee",
+  "playing guitar",
+  "piano",
+  "singing",
+  "board games",
+  "video games",
+  "chess",
+  "tabletop RPGs",
+  "photography",
+  "painting",
+  "drawing",
+  "creative writing",
+  "gardening",
+  "birdwatching",
+  "yoga",
+  "reading",
+  "travel",
+].freeze
+
+HOBBIES.each { |name| Hobby.find_or_create_by!(name: name) }
+
+puts "✓ Seeded #{Hobby.count} hobby/hobbies"
