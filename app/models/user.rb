@@ -30,6 +30,9 @@
 #  index_users_on_username          (username) UNIQUE
 #
 class User < ApplicationRecord
+  has_many :event_attendances, dependent: :destroy
+  has_many :events, through: :event_attendances
+
   validates :provider, :uid, :username, :name, presence: true
   validates :username, uniqueness: true
   validates :uid, uniqueness: { scope: :provider }

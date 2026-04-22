@@ -19,10 +19,12 @@
 #  index_events_on_starts_at  (starts_at)
 #
 class Event < ApplicationRecord
+  has_many :event_attendances, dependent: :destroy
+  has_many :users, through: :event_attendances
+
   validates :name, :website, :location, :time_zone, :starts_at, :ends_at, presence: true
   validates :time_zone,
-    inclusion: { in: ActiveSupport::TimeZone.all.map { |tz| tz.tzinfo.name } },
-    allow_blank: true
+    inclusion: { in: ActiveSupport::TimeZone.all.map { |tz| tz.tzinfo.name } }
   validate :ends_after_starts
 
   class << self
