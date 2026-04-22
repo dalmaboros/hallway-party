@@ -1,0 +1,36 @@
+---
+glob: "**/*.{html,text,js}{+*,}.erb"
+
+EnableDefaultLinters: true
+
+linters:
+  # Opt-in linters we want on
+  ErbSafety:
+    enabled: true
+  AllowedScriptType:
+    enabled: true
+  NoRedundantOutputSafety:
+    enabled: true
+  PartialInstanceVariable:
+    enabled: true
+
+  # Ruby style inside ERB — scoped to skip file-level cops
+  Rubocop:
+    enabled: true
+    rubocop_config:
+      inherit_from:
+        - .rubocop.yml
+      AllCops:
+        TargetRubyVersion: 4.0
+      Style/FrozenStringLiteralComment:
+        Enabled: false
+      Layout/InitialIndentation:
+        Enabled: false
+      Layout/TrailingEmptyLines:
+        Enabled: false
+      Layout/LineLength:
+        Enabled: false
+      Lint/UselessAssignment:
+        Enabled: false
+      Naming/FileName:
+        Enabled: false
