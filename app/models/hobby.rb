@@ -22,4 +22,13 @@ class Hobby < ApplicationRecord
   has_many :users, through: :user_hobbies
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }
+  validate :not_programming_related
+
+  private
+
+  def not_programming_related
+    return unless ProgrammingHobbyFilter.programming?(name)
+
+    errors.add(:base, :programming_hobby, name: name)
+  end
 end
