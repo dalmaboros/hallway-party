@@ -43,6 +43,7 @@ gem "thruster", require: false
 gem "image_processing", "~> 1.2"
 
 gem "neighbor", "~> 1.0"
+gem "ruby-openai", "~> 8.3"
 gem "omniauth", "~> 2.1"
 gem "omniauth-github", "~> 2.0"
 gem "omniauth-rails_csrf_protection", "~> 2.0"
