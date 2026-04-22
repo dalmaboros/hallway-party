@@ -33,27 +33,31 @@ RSpec.describe Event do
     it { is_expected.to validate_presence_of(:starts_at) }
     it { is_expected.to validate_presence_of(:ends_at) }
 
-    it "rejects ends_at before starts_at" do
-      event.starts_at = Time.current
-      event.ends_at = 1.hour.ago
-      expect(event).not_to be_valid
+    it { is_expected.to allow_value("America/New_York").for(:time_zone) }
+    it { is_expected.not_to allow_value("Not/A/Zone").for(:time_zone) }
+
+    context "when ends_at is before starts_at" do
+      before do
+        event.starts_at = Time.current
+        event.ends_at = 1.hour.ago
+      end
+
+      it "is invalid" do
+        expect(event).not_to be_valid
+      end
     end
 
-    it "rejects ends_at equal to starts_at" do
-      now = Time.current
-      event.starts_at = now
-      event.ends_at = now
-      expect(event).not_to be_valid
-    end
+    context "when ends_at equals starts_at" do
+      let(:now) { Time.current }
 
-    it "rejects an invalid IANA time zone" do
-      event = build(:event, time_zone: "Not/A/Zone")
-      expect(event).not_to be_valid
-    end
+      before do
+        event.starts_at = now
+        event.ends_at = now
+      end
 
-    it "accepts a valid IANA time zone" do
-      event = build(:event, time_zone: "America/New_York")
-      expect(event).to be_valid
+      it "is invalid" do
+        expect(event).not_to be_valid
+      end
     end
   end
 
@@ -64,30 +68,43 @@ RSpec.describe Event do
       end
     end
 
-    context "when multiple events exist" do
-      let(:soon) { 1.week.from_now }
-      let(:later) { soon + 3.weeks }
+    context "when only past events exist" do
+      before { create(:event, :past) }
+
+      it "returns nil" do
+        expect(described_class.featured).to be_nil
+      end
+    end
+
+    context "when an in-progress event exists" do
+      let!(:current) { create(:event, :in_progress) }
+
+      it "returns the in-progress event" do
+        expect(described_class.featured).to eq(current)
+      end
+    end
+
+    context "when multiple upcoming events exist" do
+      let!(:soon) do
+        create(
+          :event,
+          starts_at: 1.week.from_now,
+          ends_at: 1.week.from_now + 2.days,
+        )
+      end
 
       before do
         create(:event, :past)
-        create(:event, starts_at: later, ends_at: later + 2.days)
+        create(
+          :event,
+          starts_at: 3.months.from_now,
+          ends_at: 3.months.from_now + 2.days,
+        )
       end
 
       it "returns the soonest upcoming event" do
-        soon_event = create(:event, starts_at: soon, ends_at: soon + 2.days)
-
-        expect(described_class.featured).to eq(soon_event)
+        expect(described_class.featured).to eq(soon)
       end
-    end
-
-    it "returns an in-progress event (not yet ended)" do
-      current = create(:event, :in_progress)
-      expect(described_class.featured).to eq(current)
-    end
-
-    it "returns nil when only past events exist" do
-      create(:event, :past)
-      expect(described_class.featured).to be_nil
     end
   end
 end

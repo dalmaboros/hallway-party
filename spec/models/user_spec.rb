@@ -42,32 +42,16 @@ RSpec.describe User do
     it { is_expected.to validate_presence_of(:username) }
     it { is_expected.to validate_presence_of(:name) }
 
-    it "enforces uniqueness of username (case-sensitive)" do
-      create(:user, username: "octocat")
-      dup = build(:user, username: "octocat")
-      expect(dup).not_to be_valid
-    end
+    it { is_expected.to allow_value("valid@example.com").for(:email) }
+    it { is_expected.to allow_value(nil).for(:email) }
+    it { is_expected.not_to allow_value("not-an-email").for(:email) }
 
-    it "enforces uniqueness of (provider, uid)" do
-      create(:user, provider: "github", uid: "42")
-      dup = build(:user, provider: "github", uid: "42")
-      expect(dup).not_to be_valid
-    end
+    describe "uniqueness" do
+      subject { create(:user) }
 
-    it "enforces uniqueness of email (case-insensitive)" do
-      create(:user, email: "octocat@example.com")
-      dup = build(:user, email: "OCTOCAT@example.com")
-      expect(dup).not_to be_valid
-    end
-
-    it "allows a nil email" do
-      user_two = build(:user, email: nil)
-      expect(user_two).to be_valid
-    end
-
-    it "rejects invalid email format" do
-      user = build(:user, email: "not-an-email")
-      expect(user).not_to be_valid
+      it { is_expected.to validate_uniqueness_of(:username) }
+      it { is_expected.to validate_uniqueness_of(:uid).scoped_to(:provider) }
+      it { is_expected.to validate_uniqueness_of(:email).case_insensitive.allow_nil }
     end
   end
 

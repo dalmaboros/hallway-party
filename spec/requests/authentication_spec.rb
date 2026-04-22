@@ -3,27 +3,8 @@
 require "rails_helper"
 
 RSpec.describe "Authentication" do
-  before do
-    OmniAuth.config.test_mode = true
-    OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(
-      provider: "github",
-      uid: "12345",
-      info: {
-        nickname: "octocat",
-        name: "Mona Octocat",
-        email: "mona@github.com",
-        image: "https://example.com/avatar.png",
-      },
-      extra: { raw_info: {} },
-    )
-    Rails.application.env_config["omniauth.auth"] = OmniAuth.config.mock_auth[:github]
-  end
-
-  after do
-    OmniAuth.config.test_mode = false
-    OmniAuth.config.mock_auth[:github] = nil
-    Rails.application.env_config["omniauth.auth"] = nil
-  end
+  before { stub_github_auth }
+  after  { clear_github_auth }
 
   describe "signing in via GitHub" do
     it "redirects to the dashboard" do

@@ -3,27 +3,23 @@
 require "rails_helper"
 
 RSpec.describe GithubUserSyncService do
-  let(:auth_hash) do
-    OmniAuth::AuthHash.new(
-      provider: "github",
-      uid: "12345",
-      info: {
-        nickname: "octocat",
-        name: "Mona Octocat",
-        email: "mona@github.com",
-        image: "https://example.com/avatar.png",
-      },
-      extra: {
-        raw_info: {
-          location: "San Francisco",
-          pronouns: "she/her",
-        },
-      },
-    )
-  end
+  let(:auth_hash) { github_auth_hash }
 
   describe ".call" do
     context "when the user does not exist" do
+      let(:expected_attributes) do
+        {
+          provider: "github",
+          uid: "12345",
+          username: "octocat",
+          name: "Mona Octocat",
+          email: "mona@github.com",
+          avatar_url: "https://example.com/avatar.png",
+          location: "San Francisco",
+          pronouns: "she/her",
+        }
+      end
+
       it "creates a new user" do
         expect { described_class.call(auth_hash) }.to change(User, :count).by(1)
       end
@@ -31,7 +27,7 @@ RSpec.describe GithubUserSyncService do
       it "populates attributes from the auth hash" do
         user = described_class.call(auth_hash)
 
-        expect(user).to have_attributes(auth_hash)
+        expect(user).to have_attributes(expected_attributes)
       end
 
       it "falls back to username when GitHub name is blank" do
