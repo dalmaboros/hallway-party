@@ -28,6 +28,11 @@ Rails.application.routes.draw do
   # Hobbies
   resources :user_hobbies, only: [:create, :destroy]
 
+  # Events + attendees
+  resources :events, only: [] do
+    resources :attendees, only: [:index]
+  end
+
   # Authenticated
   get "/dashboard", to: "dashboard#index", as: :dashboard
 end

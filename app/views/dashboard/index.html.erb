@@ -19,6 +19,15 @@
     </ul>
   </section>
 
+  <% current_event = current_user.events.active.first %>
+  <% if current_event %>
+    <section class="mb-6">
+      <%= link_to "See who else is at #{current_event.name}",
+            event_attendees_path(current_event),
+            class: "inline-block bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700" %>
+    </section>
+  <% end %>
+
   <%= button_to "Sign out",
         sign_out_path,
         method: :delete,
