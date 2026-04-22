@@ -14,14 +14,16 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "home#index"
 
-  # OmniAuth callback + failure routes
+  # OmniAuth
   # (The POST /auth/:provider request is handled by the OmniAuth middleware itself — no route needed)
   get "/auth/:provider/callback", to: "sessions#create"
   get "/auth/failure", to: "sessions#failure"
-
-  # Sign out
   delete "/sign_out", to: "sessions#destroy", as: :sign_out
 
-  # Placeholder authenticated route — replace with real dashboard later
+  # Onboarding
+  get "/onboarding", to: "onboarding#show", as: :onboarding
+  post "/onboarding", to: "onboarding#create"
+
+  # Authenticated
   get "/dashboard", to: "dashboard#index"
 end

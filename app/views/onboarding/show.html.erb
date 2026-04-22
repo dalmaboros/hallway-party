@@ -1,0 +1,24 @@
+<div class="max-w-lg mx-auto text-center">
+  <h1 class="text-4xl font-bold mb-6">
+    Are you attending <%= @featured_event.name %>?
+  </h1>
+  <p class="text-gray-600 mb-2">
+    <%= @featured_event.starts_at.in_time_zone(@featured_event.time_zone).to_date.strftime("%B %-d") %>
+    &ndash;
+    <%= @featured_event.ends_at.in_time_zone(@featured_event.time_zone).to_date.strftime("%B %-d, %Y") %>
+  </p>
+  <p class="text-gray-600 mb-8"><%= @featured_event.location %></p>
+
+  <div class="flex gap-4 justify-center">
+    <%= button_to "Yes, I'm attending",
+          onboarding_path,
+          method: :post,
+          params: { answer: "yes" },
+          class: "bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700" %>
+    <%= button_to "No, not this time",
+          onboarding_path,
+          method: :post,
+          params: { answer: "no" },
+          class: "bg-gray-200 text-gray-800 px-6 py-3 rounded hover:bg-gray-300" %>
+  </div>
+</div>

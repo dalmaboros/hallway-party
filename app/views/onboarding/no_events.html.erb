@@ -1,0 +1,11 @@
+<div class="max-w-lg mx-auto text-center">
+  <h1 class="text-3xl font-bold mb-4">No upcoming events</h1>
+  <p class="text-lg text-gray-600 mb-8">
+    Hallway Party is currently between events. Check back when a new conference is announced.
+  </p>
+
+  <%= button_to "Sign out",
+        sign_out_path,
+        method: :delete,
+        class: "bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300" %>
+</div>

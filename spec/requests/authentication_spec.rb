@@ -44,13 +44,13 @@ RSpec.describe "Authentication" do
 
   describe "protected routes" do
     it "redirects to root when not signed in" do
-      get "/dashboard"
+      get "/onboarding"
       expect(response).to redirect_to(root_path)
     end
 
     it "allows access when signed in" do
       get "/auth/github/callback"
-      get "/dashboard"
+      get "/onboarding"
       expect(response).to have_http_status(:ok)
     end
   end

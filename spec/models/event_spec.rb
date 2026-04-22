@@ -61,6 +61,32 @@ RSpec.describe Event do
     end
   end
 
+  describe ".active" do
+    context "when the event is upcoming" do
+      let!(:event) { create(:event, :upcoming) }
+
+      it "is included" do
+        expect(described_class.active).to include(event)
+      end
+    end
+
+    context "when the event is in progress" do
+      let!(:event) { create(:event, :in_progress) }
+
+      it "is included" do
+        expect(described_class.active).to include(event)
+      end
+    end
+
+    context "when the event has ended" do
+      let!(:event) { create(:event, :past) }
+
+      it "is excluded" do
+        expect(described_class.active).not_to include(event)
+      end
+    end
+  end
+
   describe ".featured" do
     context "when no events exist" do
       it "returns nil" do

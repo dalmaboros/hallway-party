@@ -27,9 +27,11 @@ class Event < ApplicationRecord
     inclusion: { in: ActiveSupport::TimeZone.all.map { |tz| tz.tzinfo.name } }
   validate :ends_after_starts
 
+  scope :active, -> { where("ends_at > ?", Time.current) }
+
   class << self
     def featured
-      where("ends_at > ?", Time.current).order(:starts_at).first
+      active.order(:starts_at).first
     end
   end
 
