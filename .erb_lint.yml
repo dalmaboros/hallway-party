@@ -1,7 +1,13 @@
 ---
+EnableDefaultLinters: true
+
 glob: "**/*.{html,text,js}{+*,}.erb"
 
-EnableDefaultLinters: true
+exclude:
+  - vendor/bundle/**/*
+  - node_modules/**/*
+  - tmp/**/*
+  - log/**/*
 
 linters:
   # Opt-in linters we want on

@@ -49,7 +49,7 @@ jobs:
       - name: Lint Ruby code for consistent style
         run: bin/rubocop -f github
       - name: Lint ERB templates
-        run: bin/erblint --lint-all
+        run: bin/erb_lint --lint-all
 
   test:
     runs-on: ubuntu-latest
