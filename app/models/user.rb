@@ -32,6 +32,8 @@
 class User < ApplicationRecord
   has_many :event_attendances, dependent: :destroy
   has_many :events, through: :event_attendances
+  has_many :user_hobbies, dependent: :destroy
+  has_many :hobbies, through: :user_hobbies
 
   validates :provider, :uid, :username, :name, presence: true
   validates :username, uniqueness: true

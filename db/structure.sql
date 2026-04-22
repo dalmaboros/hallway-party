@@ -124,12 +124,76 @@ ALTER SEQUENCE public.events_id_seq OWNED BY public.events.id;
 
 
 --
+-- Name: hobbies; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.hobbies (
+    id bigint NOT NULL,
+    name public.citext NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    embedding public.vector(1536)
+);
+
+
+--
+-- Name: hobbies_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.hobbies_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: hobbies_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.hobbies_id_seq OWNED BY public.hobbies.id;
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.schema_migrations (
     version character varying NOT NULL
 );
+
+
+--
+-- Name: user_hobbies; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.user_hobbies (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    hobby_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: user_hobbies_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.user_hobbies_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: user_hobbies_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.user_hobbies_id_seq OWNED BY public.user_hobbies.id;
 
 
 --
@@ -192,6 +256,20 @@ ALTER TABLE ONLY public.events ALTER COLUMN id SET DEFAULT nextval('public.event
 
 
 --
+-- Name: hobbies id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.hobbies ALTER COLUMN id SET DEFAULT nextval('public.hobbies_id_seq'::regclass);
+
+
+--
+-- Name: user_hobbies id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_hobbies ALTER COLUMN id SET DEFAULT nextval('public.user_hobbies_id_seq'::regclass);
+
+
+--
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -223,11 +301,27 @@ ALTER TABLE ONLY public.events
 
 
 --
+-- Name: hobbies hobbies_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.hobbies
+    ADD CONSTRAINT hobbies_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
+-- Name: user_hobbies user_hobbies_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_hobbies
+    ADD CONSTRAINT user_hobbies_pkey PRIMARY KEY (id);
 
 
 --
@@ -267,6 +361,41 @@ CREATE INDEX index_events_on_starts_at ON public.events USING btree (starts_at);
 
 
 --
+-- Name: index_hobbies_on_embedding; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_hobbies_on_embedding ON public.hobbies USING hnsw (embedding public.vector_cosine_ops);
+
+
+--
+-- Name: index_hobbies_on_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_hobbies_on_name ON public.hobbies USING btree (name);
+
+
+--
+-- Name: index_user_hobbies_on_hobby_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_user_hobbies_on_hobby_id ON public.user_hobbies USING btree (hobby_id);
+
+
+--
+-- Name: index_user_hobbies_on_hobby_id_and_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_user_hobbies_on_hobby_id_and_user_id ON public.user_hobbies USING btree (hobby_id, user_id);
+
+
+--
+-- Name: index_user_hobbies_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_user_hobbies_on_user_id ON public.user_hobbies USING btree (user_id);
+
+
+--
 -- Name: index_users_on_email; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -288,6 +417,14 @@ CREATE UNIQUE INDEX index_users_on_username ON public.users USING btree (usernam
 
 
 --
+-- Name: user_hobbies fk_rails_1d77f24f2e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_hobbies
+    ADD CONSTRAINT fk_rails_1d77f24f2e FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- Name: event_attendances fk_rails_64ad6920ae; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -304,12 +441,22 @@ ALTER TABLE ONLY public.event_attendances
 
 
 --
+-- Name: user_hobbies fk_rails_fad3a0f3a2; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_hobbies
+    ADD CONSTRAINT fk_rails_fad3a0f3a2 FOREIGN KEY (hobby_id) REFERENCES public.hobbies(id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260422202012'),
+('20260422201715'),
 ('20260422181737'),
 ('20260422172803'),
 ('20260422135752'),

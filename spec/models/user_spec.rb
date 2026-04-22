@@ -32,6 +32,13 @@
 require "rails_helper"
 
 RSpec.describe User do
+  describe "associations" do
+    it { is_expected.to have_many(:event_attendances).dependent(:destroy) }
+    it { is_expected.to have_many(:events).through(:event_attendances) }
+    it { is_expected.to have_many(:user_hobbies).dependent(:destroy) }
+    it { is_expected.to have_many(:hobbies).through(:user_hobbies) }
+  end
+
   describe "validations" do
     subject(:user) { build(:user) }
 
