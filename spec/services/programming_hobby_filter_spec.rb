@@ -59,6 +59,21 @@ RSpec.describe ProgrammingHobbyFilter do
       end
     end
 
+    context "with words that embed a denylist term as a substring" do
+      # Regression: an earlier implementation used `include?` and wrongly
+      # flagged these because "ai", "go", "rust", "git" appeared inside.
+      [
+        "painting", # embeds "ai"
+        "tango",    # embeds "go"
+        "trust",    # embeds "rust"
+        "digit",    # embeds "git"
+      ].each do |name|
+        it "does not flag #{name.inspect}" do
+          expect(described_class.programming?(name)).to be false
+        end
+      end
+    end
+
     context "with edge inputs" do
       it "returns false for nil" do
         expect(described_class.programming?(nil)).to be false

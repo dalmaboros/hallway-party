@@ -64,7 +64,7 @@ class ProgrammingHobbyFilter
       normalized = hobby_name.to_s.downcase.strip
       return false if normalized.empty?
 
-      DENYLIST.any? { |term| normalized.include?(term) }
+      DENYLIST.any? { |term| /\b#{Regexp.escape(term)}\b/.match?(normalized) }
     end
   end
 end
