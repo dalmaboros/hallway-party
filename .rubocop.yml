@@ -32,3 +32,9 @@ Style/MethodCallWithArgsParentheses:
 
 Rails/I18nLocaleTexts:
   Enabled: false
+
+Rails/Output:
+  Exclude:
+    - 'db/seeds.rb'
+    - 'db/seeds/**/*.rb'
+    - 'lib/tasks/**/*.rake'
