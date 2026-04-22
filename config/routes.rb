@@ -12,5 +12,16 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   # Defines the root path route ("/")
-  # root "posts#index"
+  root "home#index"
+
+  # OmniAuth callback + failure routes
+  # (The POST /auth/:provider request is handled by the OmniAuth middleware itself — no route needed)
+  get "/auth/:provider/callback", to: "sessions#create"
+  get "/auth/failure", to: "sessions#failure"
+
+  # Sign out
+  delete "/sign_out", to: "sessions#destroy", as: :sign_out
+
+  # Placeholder authenticated route — replace with real dashboard later
+  get "/dashboard", to: "dashboard#index"
 end

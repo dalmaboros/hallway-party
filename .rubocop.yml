@@ -29,3 +29,6 @@ AllCops:
 # Let parens be a per-call judgment call, not a style rule
 Style/MethodCallWithArgsParentheses:
   Enabled: false
+
+Rails/I18nLocaleTexts:
+  Enabled: false
