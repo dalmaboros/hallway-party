@@ -21,6 +21,11 @@
 require "rails_helper"
 
 RSpec.describe Event do
+  describe "associations" do
+    it { is_expected.to have_many(:event_attendances).dependent(:destroy) }
+    it { is_expected.to have_many(:users).through(:event_attendances) }
+  end
+
   describe "validations" do
     subject(:event) { build(:event) }
 
