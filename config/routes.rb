@@ -23,7 +23,11 @@ Rails.application.routes.draw do
   # Onboarding
   get "/onboarding", to: "onboarding#show", as: :onboarding
   post "/onboarding", to: "onboarding#create"
+  get "/onboarding/hobbies", to: "onboarding#hobbies", as: :onboarding_hobbies
+
+  # Hobbies
+  resources :user_hobbies, only: [:create, :destroy]
 
   # Authenticated
-  get "/dashboard", to: "dashboard#index"
+  get "/dashboard", to: "dashboard#index", as: :dashboard
 end

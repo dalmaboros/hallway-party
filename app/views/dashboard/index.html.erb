@@ -5,6 +5,20 @@
     (<%= current_user.username %>).
   </p>
 
+  <section class="mb-6">
+    <div class="flex items-baseline justify-between mb-2">
+      <h2 class="text-xl font-semibold">Your hobbies</h2>
+      <%= link_to "Edit", onboarding_hobbies_path, class: "text-sm text-blue-600 hover:text-blue-800" %>
+    </div>
+    <ul class="flex flex-wrap gap-2">
+      <% @hobbies.each do |hobby| %>
+        <li class="bg-gray-100 border border-gray-200 rounded-full px-3 py-1 text-sm">
+          <%= hobby.name %>
+        </li>
+      <% end %>
+    </ul>
+  </section>
+
   <%= button_to "Sign out",
         sign_out_path,
         method: :delete,

@@ -40,6 +40,19 @@ RSpec.describe "Authentication" do
       delete sign_out_path
       expect(session[:user_id]).to be_nil
     end
+
+    it "is allowed mid-onboarding (attendance but no hobbies)" do
+      # Confirms SessionsController skips both require_event_attendance!
+      # and require_hobbies! — without the skips the user would be bounced
+      # into onboarding before sign-out could run.
+      user = User.find(session[:user_id])
+      event = create(:event, :upcoming)
+      create(:event_attendance, user: user, event: event)
+
+      delete sign_out_path
+
+      expect(response).to redirect_to(root_path)
+    end
   end
 
   describe "protected routes" do

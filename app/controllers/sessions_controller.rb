@@ -3,6 +3,7 @@
 class SessionsController < ApplicationController
   skip_before_action :require_sign_in!, only: [:create, :failure]
   skip_before_action :require_event_attendance!
+  skip_before_action :require_hobbies!
 
   def create
     auth_hash = request.env["omniauth.auth"]

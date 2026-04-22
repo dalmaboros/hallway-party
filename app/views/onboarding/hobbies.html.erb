@@ -1,0 +1,38 @@
+<div class="max-w-lg mx-auto">
+  <h1 class="text-4xl font-bold mb-4">What are you into (outside of code)?</h1>
+  <p class="text-gray-600 mb-6">
+    Add at least one hobby so you can meet people who share them.
+  </p>
+
+  <%= form_with url: user_hobbies_path, method: :post, class: "flex gap-2 mb-8" do %>
+    <%= text_field_tag :name,
+          nil,
+          autofocus: true,
+          autocomplete: "off",
+          placeholder: "e.g. knitting, hiking, board games",
+          class: "border rounded px-3 py-2 flex-1" %>
+    <%= submit_tag "Add",
+          class: "bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700" %>
+  <% end %>
+
+  <% user_hobbies = current_user.user_hobbies.includes(:hobby).order("hobbies.name") %>
+
+  <% if user_hobbies.any? %>
+    <h2 class="text-xl font-semibold mb-3">Your hobbies</h2>
+    <ul class="mb-8">
+      <% user_hobbies.each do |user_hobby| %>
+        <li class="flex items-center justify-between py-2 border-b">
+          <span><%= user_hobby.hobby.name %></span>
+          <%= button_to "Remove",
+                user_hobby_path(user_hobby),
+                method: :delete,
+                class: "text-sm text-red-600 hover:text-red-800" %>
+        </li>
+      <% end %>
+    </ul>
+
+    <%= link_to "Done — take me to the dashboard",
+          dashboard_path,
+          class: "bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700 inline-block" %>
+  <% end %>
+</div>

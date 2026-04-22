@@ -41,6 +41,25 @@ RSpec.describe "Onboarding" do
     end
   end
 
+  describe "GET /onboarding/hobbies" do
+    let!(:featured) { create(:event, :upcoming) }
+
+    before { create(:event_attendance, user: user, event: featured) }
+
+    it "renders the hobby setup page" do
+      get onboarding_hobbies_path
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "shows the user's current hobbies" do
+      hobby = create(:hobby, name: "knitting")
+      create(:user_hobby, user: user, hobby: hobby)
+
+      get onboarding_hobbies_path
+      expect(response.body).to include("knitting")
+    end
+  end
+
   describe "POST /onboarding with answer: 'yes'" do
     let!(:featured) { create(:event, :upcoming) }
 
@@ -50,9 +69,9 @@ RSpec.describe "Onboarding" do
       end.to change(EventAttendance, :count).by(1)
     end
 
-    it "redirects to the dashboard" do
+    it "redirects to the hobbies onboarding step" do
       post onboarding_path, params: { answer: "yes" }
-      expect(response).to redirect_to("/dashboard")
+      expect(response).to redirect_to(onboarding_hobbies_path)
     end
 
     it "sets a welcome flash" do
@@ -91,10 +110,24 @@ RSpec.describe "Onboarding" do
       end
     end
 
-    context "when the user has an active attendance" do
+    context "when the user has an attendance but no hobbies" do
       let!(:featured) { create(:event, :upcoming) }
 
       before { create(:event_attendance, user: user, event: featured) }
+
+      it "redirects /dashboard to /onboarding/hobbies" do
+        get "/dashboard"
+        expect(response).to redirect_to(onboarding_hobbies_path)
+      end
+    end
+
+    context "when the user has an attendance and at least one hobby" do
+      let!(:featured) { create(:event, :upcoming) }
+
+      before do
+        create(:event_attendance, user: user, event: featured)
+        create(:user_hobby, user: user)
+      end
 
       it "allows /dashboard" do
         get "/dashboard"

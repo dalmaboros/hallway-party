@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
   helper_method :current_user, :user_signed_in?
   before_action :require_sign_in!
   before_action :require_event_attendance!
+  before_action :require_hobbies!
 
   private
 
@@ -31,5 +32,12 @@ class ApplicationController < ActionController::Base
     return if current_user.events.active.exists?
 
     redirect_to onboarding_path
+  end
+
+  def require_hobbies!
+    return unless user_signed_in?
+    return if current_user.user_hobbies.exists?
+
+    redirect_to onboarding_hobbies_path
   end
 end
