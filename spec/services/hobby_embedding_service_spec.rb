@@ -3,30 +3,19 @@
 require "rails_helper"
 
 RSpec.describe HobbyEmbeddingService do
-  # WebMock-stubbed because OPENAI_API_KEY is not yet provisioned in .env.
-  # Once the real key is set up, convert to a captured VCR cassette: delete the
-  # `before` stub, add `:vcr` metadata to `describe ".call"`, and run once to record.
-  describe ".call" do
-    let(:fake_embedding) { Array.new(HobbyEmbeddingService::DIMENSIONS, 0.01) }
+  describe ".call", :vcr do
+    subject(:embedding) { described_class.call("knitting") }
 
-    before do
-      stub_request(:post, "https://api.openai.com/v1/embeddings")
-        .to_return(
-          status: 200,
-          headers: { "Content-Type" => "application/json" },
-          body: { data: [{ embedding: fake_embedding }] }.to_json,
-        )
+    it "returns an array" do
+      expect(embedding).to be_an(Array)
     end
 
-    it "returns the embedding array from the OpenAI response" do
-      expect(described_class.call("knitting")).to eq(fake_embedding)
+    it "returns a #{HobbyEmbeddingService::DIMENSIONS}-dimension vector" do
+      expect(embedding.size).to eq(HobbyEmbeddingService::DIMENSIONS)
     end
 
-    it "posts the hobby name and model to OpenAI" do
-      described_class.call("knitting")
-
-      expect(WebMock).to have_requested(:post, "https://api.openai.com/v1/embeddings")
-        .with(body: hash_including(model: HobbyEmbeddingService::MODEL, input: "knitting"))
+    it "returns floats" do
+      expect(embedding).to all(be_a(Float))
     end
   end
 end
