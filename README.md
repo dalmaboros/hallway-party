@@ -12,7 +12,7 @@ A Rails app that helps Ruby conference attendees meet each other based on their 
 
 ## Stack
 
-- Ruby 4.0.2, Rails 8.1
+- Ruby 4.0.3, Rails 8.1
 - PostgreSQL 18 with the `pgvector` extension (via the `neighbor` gem)
 - Hotwire (Turbo + Stimulus), Tailwind CSS, Propshaft, importmaps
 - Solid Queue / Solid Cache / Solid Cable
@@ -25,7 +25,7 @@ A Rails app that helps Ruby conference attendees meet each other based on their 
 
 ### Prerequisites
 
-- Ruby 4.0.2 (see [`.ruby-version`](.ruby-version))
+- Ruby 4.0.3 (see [`.ruby-version`](.ruby-version))
 - Docker (for the Postgres + pgvector container) — or a local Postgres 18 with the `pgvector` extension installed
 - A GitHub OAuth app ([github.com/settings/developers](https://github.com/settings/developers))
 - An OpenAI API key ([platform.openai.com/api-keys](https://platform.openai.com/api-keys))
