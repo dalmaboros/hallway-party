@@ -23,8 +23,10 @@ end
 
 ActiveSupport.on_load(:active_record) do
   ActiveRecord::LogSubscriber.prepend(TruncateVectorSqlLogs)
-end
 
-# Hide this file from verbose_query_logs so the "↳ called from" annotation
-# still points at real app code, not our prepended sql wrapper.
-Rails.backtrace_cleaner.add_silencer { |line| line.include?("truncate_vector_sql_logs.rb") }
+  # Hide this file from verbose_query_logs so the "↳ called from" annotation
+  # still points at real app code, not our prepended sql wrapper.
+  ActiveRecord::LogSubscriber.backtrace_cleaner.add_silencer do |line|
+    line.include?("truncate_vector_sql_logs.rb")
+  end
+end
