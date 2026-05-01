@@ -37,3 +37,7 @@
 /app/assets/builds/*
 !/app/assets/builds/.keep
 /coverage
+
+# macOS
+.DS_Store
+**/.DS_Store
