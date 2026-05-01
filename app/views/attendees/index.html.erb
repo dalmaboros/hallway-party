@@ -4,26 +4,10 @@
 
   <% if @attendees.any? %>
     <ul class="divide-y divide-gray-200">
-      <% @attendees.each do |attendee| %>
-        <li class="py-4 flex gap-4">
-          <% if attendee.avatar_url.present? %>
-            <img src="<%= attendee.avatar_url %>" alt="" class="w-12 h-12 rounded-full flex-shrink-0">
-          <% end %>
-          <div class="flex-1">
-            <div class="font-semibold"><%= attendee.name %></div>
-            <div class="text-sm text-gray-500 mb-2">@<%= attendee.username %></div>
-            <ul class="flex flex-wrap gap-2">
-              <% attendee.hobbies.sort_by(&:name).each do |hobby| %>
-                <% shared = @current_user_hobby_ids.include?(hobby.id) %>
-                <% theme = hobby_pill_theme(hobby) %>
-                <li class="<%= shared ? theme[:soft] : "bg-gray-100" %> rounded-full px-3 py-1 text-xs transition hover:text-white hover:border-transparent <%= theme[:hover] %> <%= shared ? "border-2 #{theme[:border]}" : "border border-gray-200" %>">
-                  <%= hobby.name %>
-                </li>
-              <% end %>
-            </ul>
-          </div>
-        </li>
-      <% end %>
+      <%= render partial: "attendees/attendee",
+            collection: @attendees,
+            as: :attendee,
+            locals: { current_user_hobby_ids: @current_user_hobby_ids } %>
     </ul>
   <% else %>
     <div class="text-center py-16 text-gray-600">

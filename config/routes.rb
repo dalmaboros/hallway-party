@@ -27,6 +27,7 @@ Rails.application.routes.draw do
 
   # Hobbies
   resources :user_hobbies, only: [:create, :destroy]
+  resources :hobbies, only: [:show]
 
   # Events + attendees
   resources :events, only: [] do
