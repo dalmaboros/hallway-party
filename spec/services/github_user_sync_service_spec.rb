@@ -17,6 +17,9 @@ RSpec.describe GithubUserSyncService do
           avatar_url: "https://example.com/avatar.png",
           location: "San Francisco",
           pronouns: "she/her",
+          bio: "Cat-themed mascot.",
+          website: "https://octocat.example",
+          twitter_url: "https://twitter.com/octocat",
         }
       end
 
@@ -46,6 +49,12 @@ RSpec.describe GithubUserSyncService do
         auth_hash.info.email = nil
         user = described_class.call(auth_hash)
         expect(user.email).to be_nil
+      end
+
+      it "leaves twitter_url blank when GitHub has no twitter_username" do
+        auth_hash.extra.raw_info.twitter_username = nil
+        user = described_class.call(auth_hash)
+        expect(user.twitter_url).to be_nil
       end
     end
 

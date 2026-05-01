@@ -31,6 +31,15 @@ class GithubUserSyncService
       avatar_url: info.image,
       location: raw_info&.location,
       pronouns: raw_info&.pronouns,
+      bio: raw_info&.bio,
+      website: raw_info&.blog,
+      twitter_url: twitter_url_from(raw_info&.twitter_username),
     }
+  end
+
+  def twitter_url_from(handle)
+    return if handle.blank?
+
+    "https://twitter.com/#{handle}"
   end
 end

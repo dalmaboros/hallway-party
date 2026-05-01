@@ -1,0 +1,92 @@
+<% socials = profile_social_links(@user) %>
+
+<div class="max-w-2xl mx-auto">
+  <header class="flex gap-4 mb-6">
+    <%= render "users/avatar", user: @user, size: :lg %>
+    <div class="flex-1">
+      <h1 class="text-3xl font-bold">
+        <%= @user.name %>
+        <% if @user.pronouns.present? %>
+          <span class="text-base font-normal text-gray-500">(<%= @user.pronouns %>)</span>
+        <% end %>
+      </h1>
+      <% if @user.location.present? %>
+        <div class="text-sm text-gray-500 mt-1"><%= @user.location %></div>
+      <% end %>
+      <div class="flex gap-3 mt-2 text-gray-500">
+        <%= link_to "https://github.com/#{@user.username}",
+              target: "_blank",
+              rel: "noopener noreferrer",
+              class: "hover:text-party-cyan",
+              aria: { label: "GitHub" } do %>
+          <%= render "icons/github" %>
+        <% end %>
+        <% if @user.twitter_url.present? %>
+          <%= link_to @user.twitter_url,
+                target: "_blank",
+                rel: "noopener noreferrer",
+                class: "hover:text-party-cyan",
+                aria: { label: "Twitter" } do %>
+            <%= render "icons/twitter" %>
+          <% end %>
+        <% end %>
+        <% if @user.website.present? %>
+          <%= link_to @user.website,
+                target: "_blank",
+                rel: "noopener noreferrer",
+                class: "hover:text-party-cyan",
+                aria: { label: "Website" } do %>
+            <%= render "icons/globe" %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </header>
+
+  <% if @user.bio.present? %>
+    <section class="mb-6">
+      <p class="whitespace-pre-line"><%= @user.bio %></p>
+    </section>
+  <% end %>
+
+  <% if socials.any? %>
+    <section class="mb-6">
+      <h2 class="text-sm uppercase tracking-wide text-gray-500 mb-2">Find them</h2>
+      <ul class="flex flex-wrap gap-3 text-sm">
+        <% socials.each do |label, url| %>
+          <li>
+            <%= link_to label, url, class: "text-party-cyan hover:opacity-80", rel: "noopener", target: "_blank" %>
+          </li>
+        <% end %>
+      </ul>
+    </section>
+  <% end %>
+
+  <section class="mb-6">
+    <h2 class="text-sm uppercase tracking-wide text-gray-500 mb-2">Hobbies</h2>
+    <% if @user.hobbies.any? %>
+      <ul class="flex flex-wrap gap-2">
+        <% @user.hobbies.sort_by(&:name).each do |hobby| %>
+          <%= render "hobbies/hobby_pill",
+                hobby: hobby,
+                shared: @current_user_hobby_ids.include?(hobby.id) %>
+        <% end %>
+      </ul>
+    <% else %>
+      <p class="text-gray-500 text-sm">No hobbies listed yet.</p>
+    <% end %>
+  </section>
+
+  <% if @user.events.any? %>
+    <section class="mb-6">
+      <h2 class="text-sm uppercase tracking-wide text-gray-500 mb-2">Attending</h2>
+      <ul class="flex flex-wrap gap-2 text-sm">
+        <% @user.events.sort_by(&:starts_at).each do |event| %>
+          <li class="bg-gray-100 border border-gray-200 rounded-full px-3 py-1">
+            <%= event.name %>
+          </li>
+        <% end %>
+      </ul>
+    </section>
+  <% end %>
+</div>

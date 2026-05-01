@@ -29,6 +29,9 @@ Rails.application.routes.draw do
   resources :user_hobbies, only: [:create, :destroy]
   resources :hobbies, only: [:show]
 
+  # Profiles
+  resources :profiles, only: [:show], param: :username
+
   # Events + attendees
   resources :events, only: [] do
     resources :attendees, only: [:index]
