@@ -13,11 +13,26 @@ def seed_user(name:)
   username = slugify(name)
 
   # Seed users use `provider: "seed"` so they never collide with real GitHub sign-ins
-  User.find_or_create_by!(provider: "seed", uid: username) do |u|
+  user = User.find_or_create_by!(provider: "seed", uid: username) do |u|
     u.name = name
     u.username = username
     u.email = "#{username}@example.invalid"
   end
+
+  # Backfill profile fields when missing (covers both new and previously-seeded users)
+  if user.bio.blank?
+    user.update!(
+      bio: Faker::Lorem.paragraph(sentence_count: 2),
+      website: "https://#{username}.example",
+      twitter_url: "https://twitter.com/#{username}",
+    )
+  end
+
+  if user.location.blank?
+    user.update!(location: "#{Faker::Address.city}, #{Faker::Address.state_abbr}")
+  end
+
+  user
 end
 
 def attend_event(user, event)

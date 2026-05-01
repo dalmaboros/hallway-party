@@ -17,6 +17,9 @@ module OmniAuthHelpers
         raw_info: {
           location: "San Francisco",
           pronouns: "she/her",
+          bio: "Cat-themed mascot.",
+          blog: "https://octocat.example",
+          twitter_username: "octocat",
         },
       },
     }
