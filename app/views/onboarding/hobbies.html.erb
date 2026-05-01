@@ -12,7 +12,7 @@
           placeholder: "e.g. knitting, hiking, board games",
           class: "border rounded px-3 py-2 flex-1" %>
     <%= submit_tag "Add",
-          class: "bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700" %>
+          class: "bg-party-lavender text-gray-900 px-6 py-2 rounded hover:brightness-95" %>
   <% end %>
 
   <% user_hobbies = current_user.user_hobbies.includes(:hobby).order("hobbies.name") %>
@@ -26,13 +26,13 @@
           <%= button_to "Remove",
                 user_hobby_path(user_hobby),
                 method: :delete,
-                class: "text-sm text-red-600 hover:text-red-800" %>
+                class: "text-sm text-party-red hover:opacity-80" %>
         </li>
       <% end %>
     </ul>
 
     <%= link_to "Done — take me to the dashboard",
           dashboard_path,
-          class: "bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700 inline-block" %>
+          class: "bg-party-lavender text-gray-900 px-6 py-3 rounded hover:brightness-95 inline-block" %>
   <% end %>
 </div>

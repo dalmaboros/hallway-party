@@ -18,7 +18,7 @@ RSpec.describe AttendeeMatcher do
   before { create(:event_attendance, user: viewer, event: event) }
 
   def match(seed_hobbies: viewer.hobbies.to_a)
-    described_class.call(seed_hobbies: seed_hobbies, event: event, exclude_user: viewer)
+    described_class.new(seed_hobbies: seed_hobbies, event: event, exclude_user: viewer).call
   end
 
   describe ".call" do
@@ -37,8 +37,8 @@ RSpec.describe AttendeeMatcher do
         create(:user_hobby, user: hiker, hobby: hiking)
       end
 
-      it "ranks the crafter above the hiker for a knitter" do
-        expect(match.map(&:id)).to eq([crafter.id, hiker.id])
+      it "ranks the crafter for a knitter and drops the hiker as noise" do
+        expect(match.map(&:id)).to eq([crafter.id])
       end
 
       it "excludes the viewer" do
