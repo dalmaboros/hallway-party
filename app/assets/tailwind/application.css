@@ -1,1 +1,8 @@
 @import "tailwindcss";
+
+@theme {
+  --color-party-lavender: #ddbdea;
+  --color-party-green: #3b8f76;
+  --color-party-red: #d9472a;
+  --color-party-cyan: #67bed9;
+}

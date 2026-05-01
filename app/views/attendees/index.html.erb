@@ -14,7 +14,7 @@
             <div class="text-sm text-gray-500 mb-2">@<%= attendee.username %></div>
             <ul class="flex flex-wrap gap-2">
               <% attendee.hobbies.sort_by(&:name).each do |hobby| %>
-                <li class="bg-gray-100 border border-gray-200 rounded-full px-3 py-1 text-xs">
+                <li class="bg-gray-100 border border-gray-200 rounded-full px-3 py-1 text-xs transition hover:text-white hover:border-transparent <%= hobby_pill_hover_class(hobby) %>">
                   <%= hobby.name %>
                 </li>
               <% end %>
