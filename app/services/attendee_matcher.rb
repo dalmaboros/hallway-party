@@ -3,12 +3,10 @@
 class AttendeeMatcher
   TOP_N_NEIGHBORS = 10
   RESULT_LIMIT = 50
-
-  class << self
-    def call(seed_hobbies:, event:, exclude_user:)
-      new(seed_hobbies: seed_hobbies, event: event, exclude_user: exclude_user).call
-    end
-  end
+  # Cosine similarity below this is treated as noise and not credited.
+  # OpenAI text embeddings rarely drop unrelated hobbies below ~0.3, so a 0.5
+  # floor still admits genuinely related concepts (e.g. knitting↔fiber arts).
+  SIMILARITY_THRESHOLD = 0.5
 
   def initialize(seed_hobbies:, event:, exclude_user:)
     @seed_hobbies = seed_hobbies
@@ -52,13 +50,28 @@ class AttendeeMatcher
         .limit(TOP_N_NEIGHBORS)
         .each do |neighbor|
           similarity = 1.0 - neighbor.neighbor_distance
+          next if similarity < SIMILARITY_THRESHOLD
+
           neighbor.user_hobbies.where(user_id: candidate_user_ids).pluck(:user_id).each do |user_id|
             scores[user_id] += similarity
           end
         end
     end
 
-    scores.sort_by { |_, score| -score }.first(RESULT_LIMIT).map(&:first)
+    # Normalize by sqrt(candidate's hobby count) so users with many hobbies
+    # don't out-rank users with fewer, stronger overlaps just by accumulation.
+    scores
+      .map { |user_id, sum| [user_id, sum / Math.sqrt(candidate_hobby_counts.fetch(user_id, 1))] }
+      .sort_by { |_, score| -score }
+      .first(RESULT_LIMIT)
+      .map(&:first)
+  end
+
+  def candidate_hobby_counts
+    @candidate_hobby_counts ||= UserHobby
+      .where(user_id: candidate_user_ids)
+      .group(:user_id)
+      .count
   end
 
   def fallback_attendees

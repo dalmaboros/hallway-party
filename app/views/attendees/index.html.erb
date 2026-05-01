@@ -14,7 +14,9 @@
             <div class="text-sm text-gray-500 mb-2">@<%= attendee.username %></div>
             <ul class="flex flex-wrap gap-2">
               <% attendee.hobbies.sort_by(&:name).each do |hobby| %>
-                <li class="bg-gray-100 border border-gray-200 rounded-full px-3 py-1 text-xs transition hover:text-white hover:border-transparent <%= hobby_pill_hover_class(hobby) %>">
+                <% shared = @current_user_hobby_ids.include?(hobby.id) %>
+                <% theme = hobby_pill_theme(hobby) %>
+                <li class="<%= shared ? theme[:soft] : 'bg-gray-100' %> rounded-full px-3 py-1 text-xs transition hover:text-white hover:border-transparent <%= theme[:hover] %> <%= shared ? "border-2 #{theme[:border]}" : 'border border-gray-200' %>">
                   <%= hobby.name %>
                 </li>
               <% end %>

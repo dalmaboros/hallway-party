@@ -12,7 +12,7 @@
     </div>
     <ul class="flex flex-wrap gap-2">
       <% @hobbies.each do |hobby| %>
-        <li class="bg-gray-100 border border-gray-200 rounded-full px-3 py-1 text-sm transition hover:text-white hover:border-transparent <%= hobby_pill_hover_class(hobby) %>">
+        <li class="bg-gray-100 border border-gray-200 rounded-full px-3 py-1 text-sm transition hover:text-white hover:border-transparent <%= hobby_pill_theme(hobby)[:hover] %>">
           <%= hobby.name %>
         </li>
       <% end %>
