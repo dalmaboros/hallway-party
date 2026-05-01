@@ -1,4 +1,4 @@
-# Hallway Party — Claude Code guide
+# hallway-party — Claude Code guide
 
 ## Shared dev server (read this before starting Rails)
 
