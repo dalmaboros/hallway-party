@@ -1,0 +1,79 @@
+name: Deploy
+
+# Triggers when the CI workflow completes successfully on main, OR manually
+# from the Actions tab. Only runs on main (filtered via the if: condition).
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    # Only deploy when CI passes on main, or when manually dispatched.
+    if: >-
+      (github.event_name == 'workflow_dispatch') ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'main')
+    runs-on: ubuntu-24.04-arm  # native arm64, no QEMU emulation needed
+    timeout-minutes: 20
+
+    # Scope this job to the `production` environment so its secrets and
+    # variables are only accessible here, and respect any branch protections
+    # set on the environment in repo settings.
+    environment: production
+
+    # Prevent concurrent deploys from clobbering each other
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # Kamal builds the image from a fresh git clone of HEAD,
+          # so it needs full git history.
+          fetch-depth: 0
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Set up SSH key for VPS access
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.KAMAL_SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H 128.140.110.125 >> ~/.ssh/known_hosts
+
+      - name: Restore Rails master key
+        # .kamal/secrets reads RAILS_MASTER_KEY via `cat config/master.key`,
+        # so we materialize the file from the GitHub secret.
+        run: echo "${{ secrets.RAILS_MASTER_KEY }}" > config/master.key
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to ghcr.io
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: dalmaboros
+          password: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+
+      - name: Deploy with Kamal
+        # .kamal/secrets reads these vars from the shell environment, which
+        # is exactly how local dev sources .kamal/.env. Here we inject them
+        # directly via the production environment's secrets/variables.
+        env:
+          KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ vars.DB_PORT }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          GITHUB_CLIENT_ID: ${{ vars.OAUTH_GITHUB_CLIENT_ID }}
+          GITHUB_CLIENT_SECRET: ${{ secrets.OAUTH_GITHUB_CLIENT_SECRET }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: bin/kamal deploy
