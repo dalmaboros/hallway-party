@@ -36,8 +36,10 @@ env:
     # Run the Solid Queue Supervisor inside the web server's Puma process to do jobs.
     SOLID_QUEUE_IN_PUMA: true
     # Sized for ~50 concurrent users at conf-MVP scale (see confapp-planning/09_conf_prep.md).
+    # RAILS_MAX_THREADS=5 because Solid Queue needs ≥5 threads from the pool
+    # (3 workers + 1 dispatcher + 1 supervisor). Pool size = thread count.
     WEB_CONCURRENCY: 3
-    RAILS_MAX_THREADS: 3
+    RAILS_MAX_THREADS: 5
 
 # Aliases are triggered with "bin/kamal <alias>". You can overwrite arguments on invocation:
 # "bin/kamal logs -r job" will tail logs from the first server in the job section.
