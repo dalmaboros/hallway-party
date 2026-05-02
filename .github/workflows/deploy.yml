@@ -42,16 +42,31 @@ jobs:
           bundler-cache: true
 
       - name: Set up SSH key for VPS access
+        # Host keys are pinned (not fetched via ssh-keyscan) so a transient
+        # network blip during keyscan can't break deploys, and to close the
+        # TOFU window. If the VPS is ever rebuilt, update these three lines.
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.KAMAL_SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H 128.140.110.125 >> ~/.ssh/known_hosts
+          cat >> ~/.ssh/known_hosts <<'EOF'
+          128.140.110.125 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIANrlMfpilYeTIdwUIvke8lOTbFaPRiADWxs1XcisJR9
+          128.140.110.125 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCl9jTYzIfZ7bpIkY41h9PnTnBE2r1Y6SOLre7xjU4hQHJtRYadj15cX5XFkv9dr2xYtUJyn4/WY5FQkzA86PzVeLvpc6YMSTbzW/WxFMSAhA6IN5t+Wqe/xpWhCyIwNj1c19EjOu8DXHmeaUIzRrjmqZyzXBt0wU7FYkTCIVwoYgK7MmeovUCaLYITIiZ4cUidfb8YJnEZqh85r/ZUsh9Nm0QDxaz843L1P80XaA8mzHeVaL0j2QBl2b25BnfP5bYUDDInWC15BViFET54O8zIcrhdagxEm4L+5zcVWm8F4B5Pp7QjojsZ6Oe9LtsNm376r1qyh6DvBQj/l4pS3VqiH8ZVDbFR/Vl7NYHLWtBzn+OJY+ukr/63kHse/gzLA+eCsYhcfh3dnejgzX/aFi6VQkQbv1Vc349SmIPtiBqi4AQCBXYkuDIWgD+kp0yRHAxqDCUSTT+kw5vy0Zd5NNjjMXpKyO5taVFlufUNzrHRMckudn9B/bDNPEhlCNqrJj8=
+          128.140.110.125 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBLYhUiYxLMIU3jW2vwcewseGBOL2ReiXB8+YOGIPC4wTdihisiN6M2orhRyqZJuyxPWeeElgwEdxR0BYiPpNTFA=
+          EOF
 
       - name: Restore Rails master key
         # .kamal/secrets reads RAILS_MASTER_KEY via `cat config/master.key`,
         # so we materialize the file from the GitHub secret.
         run: echo "${{ secrets.RAILS_MASTER_KEY }}" > config/master.key
+
+      - name: Write deploy metadata
+        # These files are read by VersionController and rendered at /version.
+        # COPY . . in the Dockerfile carries them into the image; .gitignore
+        # keeps them out of git.
+        run: |
+          echo "${{ github.sha }}" > REVISION
+          date -u +"%Y-%m-%dT%H:%M:%SZ" > BUILD_TIME
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3

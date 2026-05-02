@@ -31,6 +31,10 @@
 
 /public/assets
 
+# Build metadata written by CI right before kamal deploy and read by /version.
+/REVISION
+/BUILD_TIME
+
 # Ignore key files for decrypting credentials and more.
 /config/*.key
 
