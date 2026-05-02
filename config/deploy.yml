@@ -32,6 +32,9 @@ env:
     - GITHUB_CLIENT_ID
     - GITHUB_CLIENT_SECRET
     - OPENAI_API_KEY
+    # Deploy metadata for /version (not actually secret — see .kamal/secrets).
+    - GIT_SHA
+    - BUILD_TIME
   clear:
     # Run the Solid Queue Supervisor inside the web server's Puma process to do jobs.
     SOLID_QUEUE_IN_PUMA: true

@@ -3,16 +3,19 @@
 require "rails_helper"
 
 RSpec.describe "Version" do
-  let(:revision_path) { Rails.root.join("REVISION") }
-  let(:build_time_path) { Rails.root.join("BUILD_TIME") }
-
-  after do
-    File.delete(revision_path) if File.exist?(revision_path)
-    File.delete(build_time_path) if File.exist?(build_time_path)
+  around do |example|
+    original = ENV.to_h.slice("GIT_SHA", "BUILD_TIME")
+    ENV.delete("GIT_SHA")
+    ENV.delete("BUILD_TIME")
+    example.run
+  ensure
+    ENV.delete("GIT_SHA")
+    ENV.delete("BUILD_TIME")
+    original.each { |k, v| ENV[k] = v }
   end
 
   describe "GET /version" do
-    context "without deploy metadata files (local dev)" do
+    context "without deploy metadata env vars (local dev)" do
       it "returns 200" do
         get "/version"
         expect(response).to have_http_status(:ok)
@@ -24,13 +27,13 @@ RSpec.describe "Version" do
       end
     end
 
-    context "with deploy metadata files present (deployed)" do
+    context "with deploy metadata env vars set (deployed)" do
       let(:sha) { "abc1234567890abcdef1234567890abcdef12345" }
       let(:build_time) { "2026-05-02T18:30:00Z" }
 
       before do
-        File.write(revision_path, "#{sha}\n")
-        File.write(build_time_path, "#{build_time}\n")
+        ENV["GIT_SHA"] = sha
+        ENV["BUILD_TIME"] = build_time
       end
 
       it "returns 200" do
