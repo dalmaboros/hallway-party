@@ -1,0 +1,32 @@
+<div class="max-w-3xl mx-auto">
+  <h1 class="text-3xl font-bold mb-6">Events</h1>
+
+  <% if @events.any? %>
+    <ul class="divide-y divide-gray-200">
+      <% @events.each do |event| %>
+        <% attending = @attended_event_ids.include?(event.id) %>
+        <li class="py-4">
+          <%= link_to event_path(event), class: "block group" do %>
+            <div class="flex items-baseline justify-between gap-4">
+              <h2 class="text-lg font-semibold group-hover:text-party-cyan">
+                <%= event.name %>
+              </h2>
+              <% if attending %>
+                <span class="text-xs uppercase tracking-wide text-party-green">
+                  Attending
+                </span>
+              <% end %>
+            </div>
+            <p class="text-sm text-gray-600">
+              <%= event_date_range(event) %> · <%= event.location %>
+            </p>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <div class="text-center py-16 text-gray-600">
+      No upcoming events yet.
+    </div>
+  <% end %>
+</div>
