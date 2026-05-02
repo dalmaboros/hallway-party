@@ -63,10 +63,10 @@ RSpec.describe "Version" do
 
     it "is reachable without signing in" do
       # /version skips authentication so anyone (e.g. uptime checks, the
-      # maintainer on a fresh browser) can verify what's deployed.
+      # maintainer on a fresh browser) can verify what's deployed. A 200 here
+      # is the proof — the unauthenticated default would redirect to root.
       get "/version"
       expect(response).to have_http_status(:ok)
-      expect(response).not_to redirect_to(root_path)
     end
   end
 end

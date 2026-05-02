@@ -18,7 +18,7 @@ class VersionController < ApplicationController
 
   def read_meta(filename)
     path = Rails.root.join(filename)
-    return nil unless File.exist?(path)
+    return unless File.exist?(path)
 
     File.read(path).strip.presence
   end
