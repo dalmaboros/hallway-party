@@ -12,11 +12,13 @@
 # Configure Using Gemfile
 # gem "pg"
 #
-default: &default
+# Primary app data lives in PostgreSQL (with pgvector via the neighbor gem).
+# The Solid stack (cache/queue/cable) lives in SQLite files on disk —
+# Rails 8's recommended pattern for small-to-medium apps. SQLite files persist
+# across deploys via the Docker volume mounted at /rails/storage.
+postgres_default: &postgres_default
   adapter: postgresql
   encoding: unicode
-  # For details on connection pooling, see Rails configuration guide
-  # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   host: <%= ENV.fetch("DB_HOST", "localhost") %>
   port: <%= ENV.fetch("DB_PORT", 5432) %>
@@ -26,92 +28,60 @@ default: &default
   username: <%= ENV.fetch("DB_USERNAME", "build") %>
   password: <%= ENV.fetch("DB_PASSWORD", "build") %>
 
+sqlite_default: &sqlite_default
+  adapter: sqlite3
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
 
 development:
-  <<: *default
-  database: hallway_party_development
+  primary:
+    <<: *postgres_default
+    database: hallway_party_development
+  cache:
+    <<: *sqlite_default
+    database: storage/development_cache.sqlite3
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *sqlite_default
+    database: storage/development_queue.sqlite3
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *sqlite_default
+    database: storage/development_cable.sqlite3
+    migrations_paths: db/cable_migrate
 
-  # The specified database role being used to connect to PostgreSQL.
-  # To create additional roles in PostgreSQL see `$ createuser --help`.
-  # When left blank, PostgreSQL will use the default role. This is
-  # the same name as the operating system user running Rails.
-  #username: hallway_party
-
-  # The password associated with the PostgreSQL role (username).
-  #password:
-
-  # Connect on a TCP socket. Omitted by default since the client uses a
-  # domain socket that doesn't need configuration. Windows does not have
-  # domain sockets, so uncomment these lines.
-  #host: localhost
-
-  # The TCP port the server listens on. Defaults to 5432.
-  # If your server runs on a different port number, change accordingly.
-  #port: 5432
-
-  # Schema search path. The server defaults to $user,public
-  #schema_search_path: myapp,sharedapp,public
-
-  # Minimum log levels, in increasing order:
-  #   debug5, debug4, debug3, debug2, debug1,
-  #   log, notice, warning, error, fatal, and panic
-  # Defaults to warning.
-  #min_messages: notice
-
-# Warning: The database defined as "test" will be erased and
-# re-generated from your development database when you run "rake".
-# Do not set this db to the same as development or production.
+# Warning: the test database will be erased when you run `rake`.
 test:
-  <<: *default
-  database: hallway_party_test
+  primary:
+    <<: *postgres_default
+    database: hallway_party_test
+  cache:
+    <<: *sqlite_default
+    database: storage/test_cache.sqlite3
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *sqlite_default
+    database: storage/test_queue.sqlite3
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *sqlite_default
+    database: storage/test_cable.sqlite3
+    migrations_paths: db/cable_migrate
 
-# As with config/credentials.yml, you never want to store sensitive information,
-# like your database password, in your source code. If your source code is
-# ever seen by anyone, they now have access to your database.
-#
-# Instead, provide the password or a full connection URL as an environment
-# variable when you boot the app. For example:
-#
-#   DATABASE_URL="postgres://myuser:mypass@localhost/somedatabase"
-#
-# If the connection URL is provided in the special DATABASE_URL environment
-# variable, Rails will automatically merge its configuration values on top of
-# the values provided in this file. Alternatively, you can specify a connection
-# URL environment variable explicitly:
-#
-#   production:
-#     url: <%= ENV["MY_APP_DATABASE_URL"] %>
-#
-# Connection URLs for non-primary databases can also be configured using
-# environment variables. The variable name is formed by concatenating the
-# connection name with `_DATABASE_URL`. For example:
-#
-#   CACHE_DATABASE_URL="postgres://cacheuser:cachepass@localhost/cachedatabase"
-#
-# Read https://guides.rubyonrails.org/configuring.html#configuring-a-database
-# for a full overview on how database connection configuration can be specified.
-#
-# Production: a single Supabase Postgres database, with Solid components
-# isolated into their own Postgres schemas. Each schema has its own
-# schema_migrations table (one per schema_search_path), which keeps Rails 8's
-# multi-database setup happy without needing 4 separate databases.
 production:
-  primary: &primary_production
-    <<: *default
+  primary:
+    <<: *postgres_default
     database: postgres
     sslmode: require
   cache:
-    <<: *primary_production
-    schema_search_path: solid_cache
+    <<: *sqlite_default
+    database: /rails/storage/production_cache.sqlite3
     migrations_paths: db/cache_migrate
-    schema_dump: cache_schema.rb
   queue:
-    <<: *primary_production
-    schema_search_path: solid_queue
+    <<: *sqlite_default
+    database: /rails/storage/production_queue.sqlite3
     migrations_paths: db/queue_migrate
-    schema_dump: queue_schema.rb
   cable:
-    <<: *primary_production
-    schema_search_path: solid_cable
+    <<: *sqlite_default
+    database: /rails/storage/production_cable.sqlite3
     migrations_paths: db/cable_migrate
-    schema_dump: cable_schema.rb
