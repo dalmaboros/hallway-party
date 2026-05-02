@@ -33,6 +33,18 @@ sqlite_default: &sqlite_default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
 
+# Schema-load note: the Solid stack secondaries below are populated by
+# `bin/load-solid-schemas` (called from bin/docker-entrypoint), not by Rails'
+# native db:prepare. The reason: our global schema_format is :sql (so primary
+# uses structure.sql), but the Solid* gems only ship .rb schemas. Rails 8
+# uses the GLOBAL format to decide how to LOAD schema files, so it tries to
+# parse cache_schema.rb as SQL and fails. The bin/load-solid-schemas script
+# loads the .rb files directly via Ruby `load`, bypassing the format check.
+# This is idempotent — only fires when the key table doesn't exist yet.
+#
+# We use database_tasks: false on the secondaries so db:prepare ignores them
+# entirely and doesn't try to schema:load them in the wrong format.
+
 development:
   primary:
     <<: *postgres_default
@@ -40,15 +52,15 @@ development:
   cache:
     <<: *sqlite_default
     database: storage/development_cache.sqlite3
-    migrations_paths: db/cache_migrate
+    database_tasks: false
   queue:
     <<: *sqlite_default
     database: storage/development_queue.sqlite3
-    migrations_paths: db/queue_migrate
+    database_tasks: false
   cable:
     <<: *sqlite_default
     database: storage/development_cable.sqlite3
-    migrations_paths: db/cable_migrate
+    database_tasks: false
 
 # Warning: the test database will be erased when you run `rake`.
 test:
@@ -58,15 +70,15 @@ test:
   cache:
     <<: *sqlite_default
     database: storage/test_cache.sqlite3
-    migrations_paths: db/cache_migrate
+    database_tasks: false
   queue:
     <<: *sqlite_default
     database: storage/test_queue.sqlite3
-    migrations_paths: db/queue_migrate
+    database_tasks: false
   cable:
     <<: *sqlite_default
     database: storage/test_cable.sqlite3
-    migrations_paths: db/cable_migrate
+    database_tasks: false
 
 production:
   primary:
@@ -76,12 +88,12 @@ production:
   cache:
     <<: *sqlite_default
     database: /rails/storage/production_cache.sqlite3
-    migrations_paths: db/cache_migrate
+    database_tasks: false
   queue:
     <<: *sqlite_default
     database: /rails/storage/production_queue.sqlite3
-    migrations_paths: db/queue_migrate
+    database_tasks: false
   cable:
     <<: *sqlite_default
     database: /rails/storage/production_cable.sqlite3
-    migrations_paths: db/cable_migrate
+    database_tasks: false
