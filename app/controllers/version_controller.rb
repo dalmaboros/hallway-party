@@ -8,18 +8,9 @@ class VersionController < ApplicationController
   REPO_URL = "https://github.com/dalmaboros/hallway-party"
 
   def show
-    @sha = read_meta("REVISION")
+    @sha = ENV["GIT_SHA"].presence
     @short_sha = @sha&.first(7)
     @commit_url = @sha && "#{REPO_URL}/commit/#{@sha}"
-    @build_time = read_meta("BUILD_TIME")
-  end
-
-  private
-
-  def read_meta(filename)
-    path = Rails.root.join(filename)
-    return unless File.exist?(path)
-
-    File.read(path).strip.presence
+    @build_time = ENV["BUILD_TIME"].presence
   end
 end

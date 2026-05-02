@@ -60,13 +60,10 @@ jobs:
         # so we materialize the file from the GitHub secret.
         run: echo "${{ secrets.RAILS_MASTER_KEY }}" > config/master.key
 
-      - name: Write deploy metadata
-        # These files are read by VersionController and rendered at /version.
-        # COPY . . in the Dockerfile carries them into the image; .gitignore
-        # keeps them out of git.
-        run: |
-          echo "${{ github.sha }}" > REVISION
-          date -u +"%Y-%m-%dT%H:%M:%SZ" > BUILD_TIME
+      - name: Compute deploy metadata
+        # Exposed to the kamal step (and on through to /version) via the env
+        # block below. Computed here because env: blocks don't run a shell.
+        run: echo "BUILD_TIME=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_ENV"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -91,4 +88,8 @@ jobs:
           GITHUB_CLIENT_ID: ${{ vars.OAUTH_GITHUB_CLIENT_ID }}
           GITHUB_CLIENT_SECRET: ${{ secrets.OAUTH_GITHUB_CLIENT_SECRET }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          # Deploy metadata exposed at /version. Kamal injects these into the
+          # running container as runtime ENV (no Docker rebuild needed).
+          # BUILD_TIME comes from the "Compute deploy metadata" step above.
+          GIT_SHA: ${{ github.sha }}
         run: bin/kamal deploy
