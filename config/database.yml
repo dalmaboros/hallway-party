@@ -20,8 +20,11 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   host: <%= ENV.fetch("DB_HOST", "localhost") %>
   port: <%= ENV.fetch("DB_PORT", 5432) %>
-  username: <%= ENV.fetch("DB_USERNAME") %>
-  password: <%= ENV.fetch("DB_PASSWORD") %>
+  # The "build" defaults exist so `assets:precompile` during Docker build
+  # can load this file without runtime env vars set. Kamal injects real
+  # values at runtime; these defaults are never used in production.
+  username: <%= ENV.fetch("DB_USERNAME", "build") %>
+  password: <%= ENV.fetch("DB_PASSWORD", "build") %>
 
 
 development:
