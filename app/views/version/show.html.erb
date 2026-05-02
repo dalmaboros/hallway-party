@@ -1,0 +1,15 @@
+<div class="flex items-center justify-center min-h-[70vh]">
+  <div class="text-center max-w-lg space-y-3">
+    <h1 class="text-3xl font-bold">hallway-party</h1>
+
+    <% if @sha %>
+      <p>
+        Deployed from
+        <%= link_to @short_sha, @commit_url, class: "font-mono underline", target: "_blank", rel: "noopener" %>
+      </p>
+      <p class="text-sm text-gray-600">Built <%= @build_time %></p>
+    <% else %>
+      <p class="text-gray-600">No deploy metadata — running outside of a CI deploy.</p>
+    <% end %>
+  </div>
+</div>
