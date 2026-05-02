@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Loads the Solid stack (cache/queue/cable) schemas from their gem-shipped
+# .rb schema files into the SQLite databases configured for those connections.
+# Idempotent: only fires when the key table doesn't exist yet.
+#
+# Why this script exists:
+#   We use schema_format = :sql globally so the primary database dumps to
+#   db/structure.sql (preserving Postgres-specific features for the future).
+#   But the Solid* gems only ship .rb schema files, and Rails 8's schema
+#   loader uses the global format to decide how to PARSE schema files —
+#   so it tries to read cache_schema.rb as SQL and fails. This script
+#   bypasses Rails' loader and uses Ruby's `load` directly.
+#
+# Called from bin/docker-entrypoint after db:prepare on container boot.
+# Safe to run any time — it's a no-op when tables already exist.
+
+require_relative "../config/environment"
+
+SOLID_DATABASES = {
+  cache: "solid_cache_entries",
+  queue: "solid_queue_jobs",
+  cable: "solid_cable_messages",
+}.freeze
+
+SOLID_DATABASES.each do |database, key_table|
+  ActiveRecord::Base.establish_connection(database)
+
+  if ActiveRecord::Base.connection.table_exists?(key_table)
+    puts "✓ #{database}: #{key_table} already exists, skipping"
+    next
+  end
+
+  puts "→ #{database}: loading db/#{database}_schema.rb..."
+  load Rails.root.join("db", "#{database}_schema.rb")
+  puts "✓ #{database}: loaded"
+end

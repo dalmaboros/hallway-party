@@ -41,7 +41,10 @@ module HallwayParty
     # Don't generate system test files.
     config.generators.system_tests = nil
 
-    # Use db/structure.sql
+    # Use db/structure.sql for primary (captures Postgres-specific features
+    # that schema.rb can't represent — triggers, views, custom types, etc.).
+    # Solid* secondaries override this via per-DB `schema_dump` in database.yml
+    # to use their gem-shipped .rb schema files.
     config.active_record.schema_format = :sql
   end
 end
