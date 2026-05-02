@@ -33,7 +33,7 @@ Rails.application.routes.draw do
   resources :profiles, only: [:show], param: :username
 
   # Events + attendees
-  resources :events, only: [] do
+  resources :events, only: [:index, :show] do
     resources :attendees, only: [:index]
   end
 

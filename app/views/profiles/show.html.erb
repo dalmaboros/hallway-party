@@ -82,8 +82,10 @@
       <h2 class="text-sm uppercase tracking-wide text-gray-500 mb-2">Attending</h2>
       <ul class="flex flex-wrap gap-2 text-sm">
         <% @user.events.sort_by(&:starts_at).each do |event| %>
-          <li class="bg-gray-100 border border-gray-200 rounded-full px-3 py-1">
-            <%= event.name %>
+          <li>
+            <%= link_to event.name,
+                  event_path(event),
+                  class: "inline-block bg-gray-100 border border-gray-200 rounded-full px-3 py-1 transition hover:bg-gray-200" %>
           </li>
         <% end %>
       </ul>

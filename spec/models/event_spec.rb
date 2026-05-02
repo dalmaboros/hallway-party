@@ -41,6 +41,11 @@ RSpec.describe Event do
     it { is_expected.to allow_value("America/New_York").for(:time_zone) }
     it { is_expected.not_to allow_value("Not/A/Zone").for(:time_zone) }
 
+    it { is_expected.to allow_value("https://example.com").for(:website) }
+    it { is_expected.to allow_value("http://example.com").for(:website) }
+    it { is_expected.not_to allow_value("javascript:alert(1)").for(:website) }
+    it { is_expected.not_to allow_value("ftp://example.com").for(:website) }
+
     context "when ends_at is before starts_at" do
       before do
         event.starts_at = Time.current

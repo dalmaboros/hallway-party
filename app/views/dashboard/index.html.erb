@@ -26,6 +26,10 @@
     </section>
   <% end %>
 
+  <section class="mb-6">
+    <%= link_to "Browse all events →", events_path, class: "text-party-cyan hover:opacity-80" %>
+  </section>
+
   <%= button_to "Sign out",
         sign_out_path,
         method: :delete,
