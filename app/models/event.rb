@@ -23,6 +23,7 @@ class Event < ApplicationRecord
   has_many :users, through: :event_attendances
 
   validates :name, :website, :location, :time_zone, :starts_at, :ends_at, presence: true
+  validates :website, format: { with: %r{\Ahttps?://\S+\z}i, message: "must start with http:// or https://" }, allow_blank: true
   validates :time_zone,
     inclusion: { in: ActiveSupport::TimeZone.all.map { |tz| tz.tzinfo.name } }
   validate :ends_after_starts
