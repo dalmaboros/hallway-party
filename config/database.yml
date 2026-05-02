@@ -88,21 +88,24 @@ test:
 # Read https://guides.rubyonrails.org/configuring.html#configuring-a-database
 # for a full overview on how database connection configuration can be specified.
 #
+# Production: a single Supabase Postgres database, with Solid components
+# isolated into their own Postgres schemas. Each schema has its own
+# schema_migrations table (one per schema_search_path), which keeps Rails 8's
+# multi-database setup happy without needing 4 separate databases.
 production:
   primary: &primary_production
     <<: *default
-    database: hallway_party_production
-    username: hallway_party
-    password: <%= ENV["HALLWAY_PARTY_DATABASE_PASSWORD"] %>
+    database: postgres
+    sslmode: require
   cache:
     <<: *primary_production
-    database: hallway_party_production_cache
+    schema_search_path: solid_cache,public
     migrations_paths: db/cache_migrate
   queue:
     <<: *primary_production
-    database: hallway_party_production_queue
+    schema_search_path: solid_queue,public
     migrations_paths: db/queue_migrate
   cable:
     <<: *primary_production
-    database: hallway_party_production_cable
+    schema_search_path: solid_cable,public
     migrations_paths: db/cable_migrate
