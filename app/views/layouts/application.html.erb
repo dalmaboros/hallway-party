@@ -22,7 +22,11 @@
   </head>
 
   <body>
-    <main class="container mx-auto mt-28 px-5 flex flex-col">
+    <% if user_signed_in? %>
+      <%= render "layouts/navbar" %>
+    <% end %>
+
+    <main class="container mx-auto mt-12 px-5 flex flex-col">
       <!-- TODO: Make into a component? -->
       <% if flash[:notice] %>
         <div class="bg-party-green/10 border border-party-green/30 text-party-green px-4 py-3 rounded mb-4">
