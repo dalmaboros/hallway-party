@@ -9,9 +9,6 @@ services:
     volumes:
       - ..:/workspaces/hallway-party:cached
 
-    # Sleep so VS Code can attach and the user runs `bin/dev` (or specs) from
-    # the integrated terminal. For non-VS-Code users, see ../compose.yaml at
-    # the project root, which boots the app directly.
     command: sleep infinity
 
     environment:
@@ -24,15 +21,11 @@ services:
         condition: service_healthy
 
   postgres:
-    # pgvector-bundled Postgres so the `neighbor` gem can load the extension
-    # without a manual install step. `pg18` matches the version in production.
     image: pgvector/pgvector:pg18
     restart: unless-stopped
     networks:
       - default
     volumes:
-      # pg18 stores data at /var/lib/postgresql/<major>/docker, not the old
-      # /var/lib/postgresql/data path. See docker-library/postgres#1259.
       - postgres-data:/var/lib/postgresql/18/docker
     environment:
       POSTGRES_USER: hallway_party
