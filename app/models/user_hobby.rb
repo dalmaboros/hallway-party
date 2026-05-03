@@ -26,16 +26,4 @@ class UserHobby < ApplicationRecord
   belongs_to :hobby
 
   validates :user_id, uniqueness: { scope: :hobby_id }
-
-  before_destroy :ensure_user_retains_at_least_one_hobby
-
-  private
-
-  def ensure_user_retains_at_least_one_hobby
-    return if destroyed_by_association
-    return if user.user_hobbies.many?
-
-    errors.add(:base, "You must have at least one hobby")
-    throw(:abort)
-  end
 end

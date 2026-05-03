@@ -7,7 +7,7 @@ class SessionsController < ApplicationController
 
   def create
     auth_hash = request.env["omniauth.auth"]
-    user = GithubUserSyncService.call(auth_hash)
+    user = GithubUserResolver.new(auth_hash).resolve
     session[:user_id] = user.id
     redirect_to "/dashboard", notice: "Welcome, #{user.name}!"
   end

@@ -34,30 +34,4 @@ RSpec.describe UserHobby do
 
     it { is_expected.to validate_uniqueness_of(:user_id).scoped_to(:hobby_id) }
   end
-
-  describe "before_destroy: ensure_user_retains_at_least_one_hobby" do
-    let(:user) { create(:user) }
-
-    context "when the user has multiple hobbies" do
-      before { create_list(:user_hobby, 2, user: user) }
-
-      it "allows destroying one" do
-        user_hobby = user.user_hobbies.first
-        expect { user_hobby.destroy }.to change(described_class, :count).by(-1)
-      end
-    end
-
-    context "when the user has only one hobby" do
-      let!(:only_hobby) { create(:user_hobby, user: user) }
-
-      it "prevents destruction" do
-        expect { only_hobby.destroy }.not_to change(described_class, :count)
-      end
-
-      it "adds an error" do
-        only_hobby.destroy
-        expect(only_hobby.errors[:base]).to include("You must have at least one hobby")
-      end
-    end
-  end
 end

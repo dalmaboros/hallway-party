@@ -25,10 +25,11 @@ class UserHobbiesController < ApplicationController
   def destroy
     user_hobby = current_user.user_hobbies.find(params[:id])
 
-    if user_hobby.destroy
-      redirect_to onboarding_hobbies_path, notice: "Removed \"#{user_hobby.hobby.name}\"."
-    else
-      redirect_to onboarding_hobbies_path, alert: user_hobby.errors.full_messages.to_sentence
+    if current_user.user_hobbies.one?
+      redirect_to onboarding_hobbies_path, alert: "You must have at least one hobby" and return
     end
+
+    user_hobby.destroy!
+    redirect_to onboarding_hobbies_path, notice: "Removed \"#{user_hobby.hobby.name}\"."
   end
 end

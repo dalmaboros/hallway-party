@@ -6,7 +6,7 @@ RSpec.describe AttendeeMatcher do
   # Hand-crafted 1536-d vectors so similarity is predictable without a real
   # OpenAI call. Axis 0 = "craft-like", axis 1 = "outdoor-like".
   def vector(craft: 0.0, outdoor: 0.0)
-    values = Array.new(HobbyEmbeddingService::DIMENSIONS, 0.0)
+    values = Array.new(Embedder::DIMENSIONS, 0.0)
     values[0] = craft
     values[1] = outdoor
     values
