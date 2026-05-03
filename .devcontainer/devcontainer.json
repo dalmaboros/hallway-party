@@ -1,0 +1,31 @@
+// For format details, see https://containers.dev/implementors/json_reference/.
+{
+  "name": "hallway-party",
+  "dockerComposeFile": "compose.yaml",
+  "service": "rails-app",
+  "workspaceFolder": "/workspaces/hallway-party",
+
+  // Features layer Ruby ecosystem niceties on top of the base image.
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/rails/devcontainer/features/activestorage": {},
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": { "moby": false },
+    "ghcr.io/rails/devcontainer/features/postgres-client": {}
+  },
+
+  // Pass through the registry token only for maintainers running `kamal`.
+  // Contributors can leave it unset.
+  "containerEnv": {
+    "KAMAL_REGISTRY_PASSWORD": "$KAMAL_REGISTRY_PASSWORD"
+  },
+
+  // Forward the Rails server port to the host. Postgres is reachable inside
+  // the compose network as `postgres:5432` — no host forward needed.
+  "forwardPorts": [3000],
+
+  // Run after the container is created and the workspace is mounted.
+  // `bin/setup` bundle-installs gems and runs `db:prepare`. `--skip-server`
+  // prevents it from auto-launching `bin/dev` — the user starts that from
+  // the integrated terminal.
+  "postCreateCommand": "bin/setup --skip-server"
+}

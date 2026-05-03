@@ -13,4 +13,11 @@ export PORT="${PORT:-3000}"
 export RUBY_DEBUG_OPEN="true"
 export RUBY_DEBUG_LAZY="true"
 
-exec foreman start -f Procfile.dev "$@"
+# Foreman auto-loads `.env` and forwards it to every child process. Inside
+# Docker that clobbers the compose-supplied DB_* values with the host's native-
+# dev `.env`. Set FOREMAN_ENV_FILE=/dev/null in compose to opt out.
+if [ -n "$FOREMAN_ENV_FILE" ]; then
+  exec foreman start -e "$FOREMAN_ENV_FILE" -f Procfile.dev "$@"
+else
+  exec foreman start -f Procfile.dev "$@"
+fi

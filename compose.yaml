@@ -1,0 +1,68 @@
+# Root compose file for `docker compose up` — boots the full dev stack and
+# launches `bin/dev` (Rails server + Tailwind watcher) at localhost:3000.
+#
+# VS Code / JetBrains users: open in the dev container instead. That uses
+# `.devcontainer/compose.yaml`, which shares the same volumes (project name
+# `hallway-party`) so gems and Postgres data are reused between workflows.
+name: hallway-party
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      # Bind-mount the source so edits on the host hot-reload inside the
+      # container. `:cached` is a macOS optimization, no-op on Linux.
+      - .:/workspaces/hallway-party:cached
+    working_dir: /workspaces/hallway-party
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: postgres
+      DB_USERNAME: hallway_party
+      DB_PASSWORD: hallway_party
+      # Bind to all interfaces so the host port forward reaches Puma.
+      BINDING: 0.0.0.0
+      # Stop foreman from loading the host's bind-mounted `.env`. That file
+      # holds native-dev values (DB_HOST=localhost, the user's local Postgres
+      # creds) which would otherwise clobber the DB_* vars set above.
+      FOREMAN_ENV_FILE: /dev/null
+    # Pull GitHub OAuth + OpenAI keys from .env if present. Without it the
+    # app boots and `/up` works, but sign-in and embeddings won't.
+    env_file:
+      - path: .env
+        required: false
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # `bin/setup` does `bundle install` (cached after first run), `db:prepare`,
+    # and then execs `bin/dev` (web + tailwind watcher).
+    command: bin/setup
+    # Allocate a TTY so the tailwindcss watcher (run by Foreman) doesn't see
+    # stdin close and immediately exit. Without these the watcher dies on
+    # boot and Foreman tears the whole process group down.
+    stdin_open: true
+    tty: true
+
+  postgres:
+    # pgvector-bundled Postgres so the `neighbor` gem can load the extension
+    # without a manual install step. `pg18` matches the version in production.
+    image: pgvector/pgvector:pg18
+    restart: unless-stopped
+    volumes:
+      # pg18 stores data at /var/lib/postgresql/<major>/docker, not the old
+      # /var/lib/postgresql/data path. See docker-library/postgres#1259.
+      - postgres-data:/var/lib/postgresql/18/docker
+    environment:
+      POSTGRES_USER: hallway_party
+      POSTGRES_PASSWORD: hallway_party
+      POSTGRES_DB: hallway_party_development
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hallway_party -d hallway_party_development"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres-data:

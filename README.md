@@ -23,14 +23,15 @@ A Rails app that helps Ruby conference attendees meet each other based on their 
 
 ## Getting started
 
+The project is fully containerized — Docker is the only host requirement. Pick whichever workflow you prefer:
+
 ### Prerequisites
 
-- Ruby 4.0.3 (see [`.ruby-version`](.ruby-version))
-- Docker (for the Postgres + pgvector container) — or a local Postgres 18 with the `pgvector` extension installed
+- [Docker](https://docs.docker.com/get-docker/) (Compose v2)
 - A GitHub OAuth app ([github.com/settings/developers](https://github.com/settings/developers))
 - An OpenAI API key ([platform.openai.com/api-keys](https://platform.openai.com/api-keys))
 
-### Setup
+### Option 1 — `docker compose up` (any editor)
 
 ```sh
 git clone https://github.com/dalmaboros/hallway-party.git
@@ -39,17 +40,25 @@ cd hallway-party
 cp .env.example .env
 # fill in GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, OPENAI_API_KEY
 
-docker compose up -d            # starts Postgres + pgvector on :5432
-bin/setup                       # bundle install, db:prepare, etc.
+docker compose up
 ```
 
-### Run the app
+The first boot installs gems and prepares the database (~1–2 minutes). Subsequent boots are fast.
 
-```sh
-bin/dev
-```
+App: [http://localhost:3000](http://localhost:3000) · Health check: [/up](http://localhost:3000/up) · Build info: [/version](http://localhost:3000/version).
 
-Then open [http://localhost:3000](http://localhost:3000).
+### Option 2 — VS Code Dev Container
+
+1. Install the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
+2. Clone the repo and open it in VS Code.
+3. When prompted, pick "Reopen in Container" (or run "Dev Containers: Reopen in Container" from the command palette).
+4. After the container builds, run `bin/dev` from the integrated terminal.
+
+The dev container shares volumes with `docker compose up`, so gems and the database carry over between the two flows.
+
+### Native (non-Docker) development
+
+If you'd rather run Rails on your host: install Ruby 4.0.3, install Postgres 18 with the `pgvector` extension, then run `bin/setup` followed by `bin/dev`. The container flows above are recommended for new contributors.
 
 ## Tests
 
