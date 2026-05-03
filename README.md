@@ -62,15 +62,23 @@ If you'd rather run Rails on your host: install Ruby 4.0.3, install Postgres 18 
 
 ## Tests
 
+Inside the dev container or in a native terminal:
+
 ```sh
 bundle exec rspec
+```
+
+From the host with `docker compose up` running, prefix with `docker compose exec app`:
+
+```sh
+docker compose exec app bundle exec rspec
 ```
 
 Coverage reports are written to `coverage/` (SimpleCov). External calls to OpenAI are mocked with VCR cassettes under `spec/fixtures/vcr_cassettes/`.
 
 ## Linting and CI
 
-The same checks GitHub Actions runs in [`.github/workflows/ci.yml`](.github/workflows/ci.yml):
+The same checks GitHub Actions runs in [`.github/workflows/ci.yml`](.github/workflows/ci.yml). Inside the dev container or natively:
 
 ```sh
 bin/rubocop          # Ruby style (Shopify config)
@@ -80,7 +88,7 @@ bin/bundler-audit    # known CVEs in gems
 bin/importmap audit  # known CVEs in JS deps
 ```
 
-`bin/ci` runs the full bundle locally.
+From the host with `docker compose up` running, prefix each with `docker compose exec app`. `bin/ci` runs the full bundle locally.
 
 ## Deployment
 
