@@ -1,0 +1,38 @@
+name: Claude PR Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths-ignore:
+      - 'Gemfile.lock'
+      - 'db/structure.sql'
+      - 'db/schema_reference.rb'
+      - 'db/*_schema.rb'
+      - '**/*.svg'
+
+# Cancel an in-flight review if a new push lands
+concurrency:
+  group: claude-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    if: github.event.pull_request.draft == false && github.event.pull_request.user.type != 'Bot'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Review this PR using the checklist in .claude/agents/code-reviewer.md.
+            Read that file first — it contains the role, voice, checklist, and
+            output format. Follow it exactly.
+          claude_args: >-
+            --model claude-sonnet-4-6
+            --max-turns 5
+            --allowedTools "Read,Glob,Grep,Bash(git:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
