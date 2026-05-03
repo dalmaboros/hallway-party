@@ -13,4 +13,9 @@ export PORT="${PORT:-3000}"
 export RUBY_DEBUG_OPEN="true"
 export RUBY_DEBUG_LAZY="true"
 
-exec foreman start -f Procfile.dev "$@"
+# FOREMAN_ENV_FILE lets the container opt out of foreman's default `.env` load.
+if [ -n "$FOREMAN_ENV_FILE" ]; then
+  exec foreman start -e "$FOREMAN_ENV_FILE" -f Procfile.dev "$@"
+else
+  exec foreman start -f Procfile.dev "$@"
+fi

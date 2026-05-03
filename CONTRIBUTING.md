@@ -8,7 +8,17 @@ Be kind. This project follows the spirit of the [Contributor Covenant](https://w
 
 ## Getting set up
 
-Follow the [Getting started](README.md#getting-started) section of the README. If `bin/setup` succeeds and `bundle exec rspec` passes, you're ready to go.
+Follow the [Getting started](README.md#getting-started) section of the README. The fastest path is `docker compose up` — the only host requirement is Docker.
+
+You're ready when the app loads at [http://localhost:3000](http://localhost:3000) and the test suite passes:
+
+```sh
+# inside the dev container (VS Code terminal):
+bundle exec rspec
+
+# from the host, with `docker compose up` running:
+docker compose exec app bundle exec rspec
+```
 
 If something is broken in the setup steps, that's a bug — please open an issue.
 
@@ -29,7 +39,7 @@ CI must pass before a PR is merged.
 
 ## Local checks
 
-Before pushing, run:
+Before pushing, run (prefix with `docker compose exec app` if running outside the dev container):
 
 ```sh
 bundle exec rspec

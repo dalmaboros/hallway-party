@@ -1,0 +1,49 @@
+name: hallway-party
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - .:/workspaces/hallway-party:cached
+    working_dir: /workspaces/hallway-party
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: postgres
+      DB_USERNAME: hallway_party
+      DB_PASSWORD: hallway_party
+      BINDING: 0.0.0.0
+      # Without this foreman loads the host's bind-mounted `.env` and its
+      # DB_* values clobber the ones above.
+      FOREMAN_ENV_FILE: /dev/null
+    env_file:
+      - path: .env
+        required: false
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: bin/setup
+    # Without a TTY the tailwindcss watcher sees stdin close and exits, which
+    # tears down the whole foreman process group.
+    stdin_open: true
+    tty: true
+
+  postgres:
+    image: pgvector/pgvector:pg18
+    restart: unless-stopped
+    volumes:
+      - postgres-data:/var/lib/postgresql/18/docker
+    environment:
+      POSTGRES_USER: hallway_party
+      POSTGRES_PASSWORD: hallway_party
+      POSTGRES_DB: hallway_party_development
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hallway_party -d hallway_party_development"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres-data:
