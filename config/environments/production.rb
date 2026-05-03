@@ -26,14 +26,15 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
-  # Assume all access to the app is happening through a SSL-terminating reverse proxy.
-  # config.assume_ssl = true
+  # Kamal terminates TLS at the proxy, so app traffic arrives over HTTP.
+  # `assume_ssl` makes Rails trust the proxy's `X-Forwarded-Proto` so secure
+  # cookies and HSTS still apply.
+  config.assume_ssl = true
+  config.force_ssl = true
 
-  # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  # config.force_ssl = true
-
-  # Skip http-to-https redirect for the default health check endpoint.
-  # config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
+  # /up must respond over HTTP — Kamal's health probe runs against the
+  # container before TLS termination is in the picture.
+  config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
 
   # Log to STDOUT with the current request id as a default log tag.
   config.log_tags = [:request_id]
