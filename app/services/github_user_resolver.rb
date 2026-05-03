@@ -1,17 +1,11 @@
 # frozen_string_literal: true
 
-class GithubUserSyncService
-  class << self
-    def call(auth_hash)
-      new(auth_hash).call
-    end
-  end
-
+class GithubUserResolver
   def initialize(auth_hash)
     @auth_hash = auth_hash
   end
 
-  def call
+  def resolve
     user = User.find_or_initialize_by(provider: @auth_hash.provider, uid: @auth_hash.uid)
     user.assign_attributes(attributes_from_auth_hash) if user.new_record?
     user.save!

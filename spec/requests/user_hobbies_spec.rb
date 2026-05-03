@@ -89,13 +89,11 @@ RSpec.describe "UserHobbies" do
   end
 
   describe "DELETE /user_hobbies/:id" do
-    let(:first_hobby) { create(:hobby, name: "knitting") }
-    let(:second_hobby) { create(:hobby, name: "hiking") }
-    let(:removable) { create(:user_hobby, user: user, hobby: second_hobby) }
+    let(:removable) { create(:user_hobby, user: user) }
 
     before do
-      create(:user_hobby, user: user, hobby: first_hobby)
-      removable # force creation of the removable join row
+      create(:user_hobby, user: user) # so user has more than one
+      removable
     end
 
     it "removes the UserHobby join row" do
@@ -110,13 +108,19 @@ RSpec.describe "UserHobbies" do
       end.not_to change(Hobby, :count)
     end
 
-    it "refuses to remove the user's last hobby" do
-      delete user_hobby_path(removable)
-      last = user.user_hobbies.first
+    context "when removing the user's last hobby" do
+      before { delete user_hobby_path(removable) } # leave just one
 
-      expect do
+      let(:last) { user.user_hobbies.first }
+
+      it "refuses to remove it" do
+        expect { delete user_hobby_path(last) }.not_to change { user.user_hobbies.count }
+      end
+
+      it "flashes an error" do
         delete user_hobby_path(last)
-      end.not_to change { user.user_hobbies.count }
+        expect(flash[:alert]).to eq("You must have at least one hobby")
+      end
     end
   end
 end

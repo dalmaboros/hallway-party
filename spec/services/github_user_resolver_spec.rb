@@ -2,10 +2,10 @@
 
 require "rails_helper"
 
-RSpec.describe GithubUserSyncService do
+RSpec.describe GithubUserResolver do
   let(:auth_hash) { github_auth_hash }
 
-  describe ".call" do
+  describe "#resolve" do
     context "when the user does not exist" do
       let(:expected_attributes) do
         {
@@ -24,36 +24,36 @@ RSpec.describe GithubUserSyncService do
       end
 
       it "creates a new user" do
-        expect { described_class.call(auth_hash) }.to change(User, :count).by(1)
+        expect { described_class.new(auth_hash).resolve }.to change(User, :count).by(1)
       end
 
       it "populates attributes from the auth hash" do
-        user = described_class.call(auth_hash)
+        user = described_class.new(auth_hash).resolve
 
         expect(user).to have_attributes(expected_attributes)
       end
 
       it "falls back to username when GitHub name is blank" do
         auth_hash.info.name = nil
-        user = described_class.call(auth_hash)
+        user = described_class.new(auth_hash).resolve
         expect(user.name).to eq("octocat")
       end
 
       it "handles missing raw_info gracefully" do
         auth_hash.extra = nil
-        user = described_class.call(auth_hash)
+        user = described_class.new(auth_hash).resolve
         expect(user.location).to be_nil
       end
 
       it "handles missing email" do
         auth_hash.info.email = nil
-        user = described_class.call(auth_hash)
+        user = described_class.new(auth_hash).resolve
         expect(user.email).to be_nil
       end
 
       it "leaves twitter_url blank when GitHub has no twitter_username" do
         auth_hash.extra.raw_info.twitter_username = nil
-        user = described_class.call(auth_hash)
+        user = described_class.new(auth_hash).resolve
         expect(user.twitter_url).to be_nil
       end
     end
@@ -64,11 +64,11 @@ RSpec.describe GithubUserSyncService do
       end
 
       it "does not create a new user" do
-        expect { described_class.call(auth_hash) }.not_to change(User, :count)
+        expect { described_class.new(auth_hash).resolve }.not_to change(User, :count)
       end
 
       it "returns the existing user without overwriting attributes" do
-        user = described_class.call(auth_hash)
+        user = described_class.new(auth_hash).resolve
 
         expect(user).to eq(existing_user)
       end

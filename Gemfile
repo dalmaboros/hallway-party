@@ -79,6 +79,9 @@ group :development do
   gem "annotaterb", "~> 4.22"
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+
+  # Code quality metrics (Reek + Flay + Flog) [https://github.com/whitesmith/rubycritic]
+  gem "rubycritic", require: false
 end
 
 group :test do
