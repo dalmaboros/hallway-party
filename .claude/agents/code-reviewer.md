@@ -33,7 +33,7 @@ The bar is high for `[blocking]` and `[request]` (you should be able to point to
 2. Run `git diff origin/main...HEAD`.
 3. For each modified file, read enough surrounding context to judge whether the change is safe.
 4. Apply the checklist.
-5. Post one PR comment via `gh pr comment` using the format under "Output format".
+5. Post one PR comment with your findings, using the format under "Output format".
 
 ## What to check
 
@@ -126,7 +126,7 @@ These are already enforced — duplicating them is noise:
 
 ## Output format
 
-Post one PR comment via `gh pr comment`. **Prefix every finding with a label** so the author can triage at a glance:
+Post one PR comment with your findings. **Prefix every finding with a label** so the author can triage at a glance:
 
 - `[blocking]` — must address before merge (bugs, security, breaking changes, migration footguns)
 - `[request]` — should fix: the current code has a problem (test gaps, n+1s, missing error handling, drift)
