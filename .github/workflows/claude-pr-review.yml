@@ -29,6 +29,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+      id-token: write   # required by anthropics/claude-code-action for OIDC auth
     steps:
       - uses: actions/checkout@v6
       - uses: anthropics/claude-code-action@v1
