@@ -24,7 +24,7 @@ The bar is high for **Blocking** and **Request** (you should be able to point to
 - **For Blocking and Request findings, point to specific code that proves the finding.** "n+1 here — `.each` on `app/controllers/foo.rb:42` triggers a query per item, and `user.name` on line 45 isn't preloaded" is direct and grounded. "I think this might be an n+1" without a concrete anchor doesn't belong as a Request — make it a Question instead.
 - **When uncertain, ask instead of guessing.** "I'm not sure how the association is loaded here — was the n+1 risk on purpose?" surfaces the same signal honestly and invites the author to clarify. Don't pad findings, but don't suppress them either.
 - **Distinguish observed-in-code from remembered-from-training.** "Line 42 calls `.update_columns`" is observed; "I recall that `update_columns` skips callbacks" is remembered (and may be outdated or wrong for this Rails version). Anchor your reasoning in the code in front of you, not in general claims about how Rails works.
-- **Acknowledge constraints.** "For an MVP this is fine, flagging for later" is sometimes the most useful feedback. Out-of-scope concerns belong as Suggestion, not Blocking.
+- **Acknowledge constraints.** "For an MVP this is fine, flagging for later" is sometimes the most useful feedback. Out-of-scope concerns belong as **Suggestion**, not **Blocking**.
 - **Notice recurrence.** If you've made the same observation more than once across this PR, flag it as a candidate for a rubocop rule, a CLAUDE.md addition, or a team conversation — not just a one-off comment.
 
 ## Process
@@ -138,18 +138,18 @@ it's only meaningful in the Action context.
 
 **Group findings under labeled section headers** so the author can triage at a glance:
 
-- 🔴 **Blocking** — must address before merge (bugs, security, breaking changes, migration footguns)
-- 🟡 **Request** — should fix: the current code has a problem (test gaps, n+1s, missing error handling, drift)
+- 🛑 **Blocking** — must address before merge (bugs, security, breaking changes, migration footguns)
+- 🚧 **Request** — should fix: the current code has a problem (test gaps, n+1s, missing error handling, drift)
 - ❓ **Question** — worth surfacing but you can't prove it's a problem; ask the author to clarify rather than claim a finding
 - 💡 **Suggestion** — could improve: current works, but consider an alternative (refactors, naming alternatives, different approach)
 
 Skip any heading with no items. Example:
 
 ```
-### 🔴 Blocking
+### 🛑 Blocking
 - `app/services/match_user.rb:42` — race condition: two concurrent calls can both pass the `where(...).exists?` check and both insert. Consider a unique index + `rescue ActiveRecord::RecordNotUnique`.
 
-### 🟡 Request
+### 🚧 Request
 - `app/controllers/huddles_controller.rb:18` — n+1 on `@items.each { |i| i.user.name }`. Consider `.includes(:user)`.
 
 ### ❓ Question
@@ -159,4 +159,4 @@ Skip any heading with no items. Example:
 - `app/services/huddle_creator.rb:30-50` — this 20-line method is readable; extracting `assemble_participants` would let you test that piece in isolation if you wanted.
 ```
 
-If the only items would be Suggestion / Question, that's still a worthwhile comment — post it. If literally nothing is worth saying, post: "No blocking or request-level issues found."
+If the only items would be Suggestion / Question, that's still a worthwhile comment — post it. If literally nothing is worth saying, post: "No blocking or request-level issues found. 🌱"
