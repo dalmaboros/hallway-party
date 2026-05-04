@@ -37,7 +37,20 @@ jobs:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           show_full_output: true   # debug; remove once review is reliably posting
           prompt: |
-            Review this PR using the checklist in .claude/agents/code-reviewer.md.
-            Read that file first — it contains the role, voice, checklist, and
-            output format. Follow it exactly.
-          claude_args: --model claude-sonnet-4-6 --max-turns 15
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
+            Read the file .claude/agents/code-reviewer.md. It contains a role,
+            voice, checklist, and output format for evaluating pull requests.
+            Apply that checklist to this PR's diff.
+
+            Post your findings as a single top-level PR comment using
+            `gh pr comment`, formatted per the agent file's output format.
+            Only post GitHub comments — do not submit review text as messages.
+
+            Do not invoke the built-in `/review` slash command or skill. Use
+            only the instructions from .claude/agents/code-reviewer.md.
+          claude_args: >-
+            --model claude-sonnet-4-6
+            --max-turns 15
+            --allowedTools "Read,Glob,Grep,Bash(git:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
