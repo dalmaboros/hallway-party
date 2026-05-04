@@ -85,6 +85,15 @@ Names should be expressive and intention-revealing. Favor whole words over acron
 - `update_columns` / `save(validate: false)` without a stated reason.
 - Strong parameters bypassed; mass-assignment of attributes that should be guarded.
 
+### Layer responsibility
+
+Beyond the Rails-idiom checks above, watch for code that's structurally in the wrong layer:
+
+- **Specification test:** if testing a piece of code requires setup from a layer it shouldn't depend on, the logic is in the wrong place. A model spec needing HTTP setup means the model has a controller concern; a view test needing business-logic stubbing means the view has model concerns.
+- **Anemic model risk:** services performing calculations or business rules on model attributes often belong as model methods. Services should orchestrate, not contain domain logic.
+- **Premature abstraction:** new base classes, mixins, or DSLs introduced for fewer than 3 use cases. Per CLAUDE.md "Layer responsibilities," let patterns emerge from real code; one or two examples don't justify the indirection cost.
+- **Raw SQL in controllers / business calculations in ERB views** — push to model scopes, query objects, or presenters.
+
 ### Security (logic-level only)
 - Authorization checks missing on new endpoints, jobs, or admin-adjacent code.
 - User input flowing into raw SQL, shell commands, redirect targets, or `html_safe`.
