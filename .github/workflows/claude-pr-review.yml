@@ -35,8 +35,9 @@ jobs:
       - uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          show_full_output: true   # debug; remove once review is reliably posting
           prompt: |
             Review this PR using the checklist in .claude/agents/code-reviewer.md.
             Read that file first — it contains the role, voice, checklist, and
             output format. Follow it exactly.
-          claude_args: --model claude-sonnet-4-6 --max-turns 5
+          claude_args: --model claude-sonnet-4-6 --max-turns 15
