@@ -1,15 +1,16 @@
 <div class="max-w-3xl mx-auto">
   <h1 class="text-3xl font-bold mb-6">Events</h1>
 
-  <% if @events.any? %>
+  <% if @event_presenters.any? %>
     <ul class="divide-y divide-gray-200">
-      <% @events.each do |event| %>
+      <% @event_presenters.each do |presenter| %>
+        <% event = presenter.event %>
         <% attending = @attended_event_ids.include?(event.id) %>
         <li class="py-4">
           <%= link_to event_path(event), class: "block group" do %>
             <div class="flex items-baseline justify-between gap-4">
               <h2 class="text-lg font-semibold group-hover:text-party-cyan">
-                <%= event.name %>
+                <%= presenter.name %>
               </h2>
               <% if attending %>
                 <span class="text-xs uppercase tracking-wide text-party-green">
@@ -18,7 +19,7 @@
               <% end %>
             </div>
             <p class="text-sm text-gray-600">
-              <%= event_date_range(event) %> · <%= event.location %>
+              <%= presenter.date_range %> · <%= presenter.location %>
             </p>
           <% end %>
         </li>

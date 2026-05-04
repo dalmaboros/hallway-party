@@ -2,13 +2,9 @@
 
 class AttendeesController < ApplicationController
   before_action :set_event
+  before_action :set_attendee_presenters, only: [:index]
 
   def index
-    @attendees = AttendeeMatcher.new(
-      seed_hobbies: current_user.hobbies.to_a,
-      event: @event,
-      exclude_user: current_user,
-    ).call
     @current_user_hobby_ids = current_user.hobby_ids.to_set
   end
 
@@ -18,5 +14,17 @@ class AttendeesController < ApplicationController
     @event = current_user.events.find(params[:event_id])
   rescue ActiveRecord::RecordNotFound
     redirect_to dashboard_path, alert: "You're not attending that event."
+  end
+
+  def set_attendee_presenters
+    @attendee_presenters = attendees.map { |attendee| UserPresenter.new(attendee) }
+  end
+
+  def attendees
+    AttendeeMatcher.new(
+      seed_hobbies: current_user.hobbies.to_a,
+      event: @event,
+      exclude_user: current_user,
+    ).call
   end
 end

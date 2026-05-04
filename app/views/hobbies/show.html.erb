@@ -7,14 +7,14 @@
     People at <%= @event.name %> who like <%= @hobby.name %>
   </h1>
   <p class="text-gray-600 mb-8">
-    <%= pluralize(@attendees.size, "other attendee") %>.
+    <%= pluralize(@attendee_presenters.size, "other attendee") %>.
   </p>
 
-  <% if @attendees.any? %>
+  <% if @attendee_presenters.any? %>
     <ul class="divide-y divide-gray-200">
       <%= render partial: "attendees/attendee",
-            collection: @attendees,
-            as: :attendee,
+            collection: @attendee_presenters,
+            as: :presenter,
             locals: { current_user_hobby_ids: @current_user_hobby_ids } %>
     </ul>
   <% else %>

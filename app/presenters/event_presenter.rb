@@ -1,10 +1,15 @@
 # frozen_string_literal: true
 
-module EventsHelper
-  def event_date_range(event)
-    start_date = event.starts_at.in_time_zone(event.time_zone).to_date
-    end_date = event.ends_at.in_time_zone(event.time_zone).to_date
+class EventPresenter
+  attr_reader :event
 
+  delegate :name, :location, to: :event
+
+  def initialize(event)
+    @event = event
+  end
+
+  def date_range
     if start_date == end_date
       start_date.strftime("%B %-d, %Y")
     elsif start_date.year == end_date.year && start_date.month == end_date.month
@@ -12,5 +17,15 @@ module EventsHelper
     else
       "#{start_date.strftime("%B %-d, %Y")} – #{end_date.strftime("%B %-d, %Y")}"
     end
+  end
+
+  private
+
+  def start_date
+    @start_date ||= @event.starts_at.in_time_zone(@event.time_zone).to_date
+  end
+
+  def end_date
+    @end_date ||= @event.ends_at.in_time_zone(@event.time_zone).to_date
   end
 end
