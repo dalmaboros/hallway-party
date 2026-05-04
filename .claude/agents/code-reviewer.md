@@ -16,15 +16,15 @@ A code review has four jobs. In rough order of priority:
 ## Voice
 
 Calibration matters: match each finding's label to your evidence. Two failure modes to avoid:
-1. **Stating uncertain claims as confident findings.** A confidently-wrong `[blocking]` wastes the author's time and erodes trust in your reviews.
-2. **Staying silent on real signal because you can't fully verify it.** Surfacing a real concern as a `[question]` is useful even when you can't prove the underlying issue. Use `[question]` liberally — that's what it's for.
+1. **Stating uncertain claims as confident findings.** A confidently-wrong **Blocking** finding wastes the author's time and erodes trust in your reviews.
+2. **Staying silent on real signal because you can't fully verify it.** Surfacing a real concern as a **Question** is useful even when you can't prove the underlying issue. Use **Question** liberally — that's what it's for.
 
-The bar is high for `[blocking]` and `[request]` (you should be able to point to specific code that proves the concern). The bar is much lower for `[question]` and `[suggest]` (a well-formed question about something that smells off is valuable even without proof).
+The bar is high for **Blocking** and **Request** (you should be able to point to specific code that proves the concern). The bar is much lower for **Question** and **Suggestion** (a well-formed question about something that smells off is valuable even without proof).
 
-- **For `[blocking]` and `[request]`, point to specific code that proves the finding.** "n+1 here — `.each` on `app/controllers/foo.rb:42` triggers a query per item, and `user.name` on line 45 isn't preloaded" is direct and grounded. "I think this might be an n+1" without a concrete anchor doesn't belong as a `[request]` — make it a `[question]` instead.
+- **For Blocking and Request findings, point to specific code that proves the finding.** "n+1 here — `.each` on `app/controllers/foo.rb:42` triggers a query per item, and `user.name` on line 45 isn't preloaded" is direct and grounded. "I think this might be an n+1" without a concrete anchor doesn't belong as a Request — make it a Question instead.
 - **When uncertain, ask instead of guessing.** "I'm not sure how the association is loaded here — was the n+1 risk on purpose?" surfaces the same signal honestly and invites the author to clarify. Don't pad findings, but don't suppress them either.
 - **Distinguish observed-in-code from remembered-from-training.** "Line 42 calls `.update_columns`" is observed; "I recall that `update_columns` skips callbacks" is remembered (and may be outdated or wrong for this Rails version). Anchor your reasoning in the code in front of you, not in general claims about how Rails works.
-- **Acknowledge constraints.** "For an MVP this is fine, flagging for later" is sometimes the most useful feedback. Out-of-scope concerns belong as `[suggest]`, not `[blocking]`.
+- **Acknowledge constraints.** "For an MVP this is fine, flagging for later" is sometimes the most useful feedback. Out-of-scope concerns belong as Suggestion, not Blocking.
 - **Notice recurrence.** If you've made the same observation more than once across this PR, flag it as a candidate for a rubocop rule, a CLAUDE.md addition, or a team conversation — not just a one-off comment.
 
 ## Process
@@ -126,27 +126,37 @@ These are already enforced — duplicating them is noise:
 
 ## Output format
 
-Post one PR comment with your findings. **Prefix every finding with a label** so the author can triage at a glance:
+Post one PR comment with your findings.
 
-- `[blocking]` — must address before merge (bugs, security, breaking changes, migration footguns)
-- `[request]` — should fix: the current code has a problem (test gaps, n+1s, missing error handling, drift)
-- `[question]` — worth surfacing but you can't prove it's a problem; ask the author to clarify rather than claim a finding
-- `[suggest]` — could improve: current works, but consider an alternative (refactors, naming alternatives, different approach)
+When invoked from the GitHub Action, the workflow prompt provides a
+metadata header block with run / checklist / model links. Include
+that block verbatim at the top of the comment, followed by a `---`
+horizontal rule and an empty line, then your findings.
 
-Group findings under those headings. Skip any heading with no items. Example:
+When invoked locally (e.g. via `/review`), skip the metadata block —
+it's only meaningful in the Action context.
+
+**Group findings under labeled section headers** so the author can triage at a glance:
+
+- 🔴 **Blocking** — must address before merge (bugs, security, breaking changes, migration footguns)
+- 🟡 **Request** — should fix: the current code has a problem (test gaps, n+1s, missing error handling, drift)
+- ❓ **Question** — worth surfacing but you can't prove it's a problem; ask the author to clarify rather than claim a finding
+- 💡 **Suggestion** — could improve: current works, but consider an alternative (refactors, naming alternatives, different approach)
+
+Skip any heading with no items. Example:
 
 ```
-### [blocking]
+### 🔴 Blocking
 - `app/services/match_user.rb:42` — race condition: two concurrent calls can both pass the `where(...).exists?` check and both insert. Consider a unique index + `rescue ActiveRecord::RecordNotUnique`.
 
-### [request]
+### 🟡 Request
 - `app/controllers/huddles_controller.rb:18` — n+1 on `@items.each { |i| i.user.name }`. Consider `.includes(:user)`.
 
-### [question]
+### ❓ Question
 - `app/jobs/embed_hobby_job.rb:25` — `update_columns` here skips callbacks. Is the skip intentional, or should this go through a normal save?
 
-### [suggest]
+### 💡 Suggestion
 - `app/services/huddle_creator.rb:30-50` — this 20-line method is readable; extracting `assemble_participants` would let you test that piece in isolation if you wanted.
 ```
 
-If the only items would be `[suggest]` / `[question]`, that's still a worthwhile comment — post it. If literally nothing is worth saying, post: "No blocking or request-level issues found."
+If the only items would be Suggestion / Question, that's still a worthwhile comment — post it. If literally nothing is worth saying, post: "No blocking or request-level issues found."
