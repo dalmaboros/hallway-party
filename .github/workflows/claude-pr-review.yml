@@ -39,7 +39,4 @@ jobs:
             Review this PR using the checklist in .claude/agents/code-reviewer.md.
             Read that file first — it contains the role, voice, checklist, and
             output format. Follow it exactly.
-          claude_args: >-
-            --model claude-sonnet-4-6
-            --max-turns 5
-            --allowedTools "Read,Glob,Grep,Bash(git:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
+          claude_args: --model claude-sonnet-4-6 --max-turns 5
