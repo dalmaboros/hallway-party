@@ -2,7 +2,8 @@ name: Claude PR Review
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+
+    types: [opened, synchronize, reopened, ready_for_review, labeled]
     paths-ignore:
       - 'Gemfile.lock'
       - 'db/structure.sql'
@@ -17,7 +18,12 @@ concurrency:
 
 jobs:
   review:
-    if: github.event.pull_request.draft == false && github.event.pull_request.user.type != 'Bot'
+    # Opt-in: apply the `claude-review` label to trigger an automated review.
+    # Skip drafts and bot authors regardless.
+    if: |
+      github.event.pull_request.draft == false &&
+      github.event.pull_request.user.type != 'Bot' &&
+      contains(github.event.pull_request.labels.*.name, 'claude-review')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
