@@ -4,6 +4,12 @@
 
 Runs in Docker (`docker compose up`). Multiple Claude instances on the same project see the same container — no coordination needed.
 
+## Comment philosophy
+
+Comments should explain **why**, not what — and only when the why is non-obvious (a workaround, a hidden constraint, surprising behavior, a subtle invariant). A comment that restates what the code does is a signal the code itself could stand to be refactored to be more expressive and intention-revealing — not annotated.
+
+Default to no comment. When one is warranted, lead with the reason and keep it short.
+
 ## Layer responsibilities
 
 - **Models** model the persistence layer. They own DB access, validations, associations, and business invariants. They do **not** own display logic.
@@ -27,12 +33,6 @@ Architectural decisions deferred to specific triggers. When a PR (or development
 - **Second anemic job** (a single-line `perform` that just delegates to a model method) → consider the `active_job-performs` gem to fold the wrapper into the model class.
 - **First concrete mailer added** → do not call mailers from model callbacks (`after_create`, etc). Mailers are infrastructure; calling them from a model couples the domain layer to outbound notifications. Trigger from a service, a job, or the controller instead.
 - **Adoption of `ActiveSupport::CurrentAttributes` (`Current.user`, etc.)** → do not read `Current.*` from models or services. Pass values explicitly as parameters. `Current` is appropriate at the controller boundary (where the request lives) and nowhere below it.
-
-## Comment philosophy
-
-Comments should explain **why**, not what — and only when the why is non-obvious (a workaround, a hidden constraint, surprising behavior, a subtle invariant). A comment that restates what the code does is a signal the code itself could stand to be refactored to be more expressive and intention-revealing — not annotated.
-
-Default to no comment. When one is warranted, lead with the reason and keep it short.
 
 ## Agents
 
