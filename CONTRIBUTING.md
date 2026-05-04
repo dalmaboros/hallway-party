@@ -71,6 +71,12 @@ Or run the whole bundle with `bin/ci`.
 - Squash noisy WIP commits before opening the PR if you can.
 - Keep PRs focused — smaller is easier to review.
 
+## Requesting an automated review
+
+Apply the `claude-review` label to your PR to trigger an automated code review. The reviewer follows the checklist in [`.claude/agents/code-reviewer.md`](.claude/agents/code-reviewer.md) and the principles in [`CLAUDE.md`](CLAUDE.md), and posts a single comment grouped by severity (`[blocking]` / `[request]` / `[question]` / `[suggest]`) within about a minute.
+
+The review re-runs on subsequent pushes while the label is applied. Remove the label to stop further reviews.
+
 ## Questions?
 
 Open a discussion or an issue on GitHub.
