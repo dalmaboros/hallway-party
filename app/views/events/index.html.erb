@@ -3,23 +3,21 @@
 
   <% if @event_presenters.any? %>
     <ul class="divide-y divide-gray-200">
-      <% @event_presenters.each do |presenter| %>
-        <% event = presenter.event %>
-        <% attending = @attended_event_ids.include?(event.id) %>
+      <% @event_presenters.each do |event_presenter| %>
         <li class="py-4">
-          <%= link_to event_path(event), class: "block group" do %>
+          <%= link_to event_path(event_presenter), class: "block group" do %>
             <div class="flex items-baseline justify-between gap-4">
               <h2 class="text-lg font-semibold group-hover:text-party-cyan">
-                <%= presenter.name %>
+                <%= event_presenter.name %>
               </h2>
-              <% if attending %>
+              <% if @current_user_event_ids.include?(event_presenter.id) %>
                 <span class="text-xs uppercase tracking-wide text-party-green">
                   Attending
                 </span>
               <% end %>
             </div>
             <p class="text-sm text-gray-600">
-              <%= presenter.date_range %> · <%= presenter.location %>
+              <%= event_presenter.date_range %> · <%= event_presenter.location %>
             </p>
           <% end %>
         </li>

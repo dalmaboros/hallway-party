@@ -3,7 +3,7 @@
 class EventPresenter
   attr_reader :event
 
-  delegate :name, :location, to: :event
+  delegate :id, :to_param, :name, :location, :website, to: :event
 
   def initialize(event)
     @event = event

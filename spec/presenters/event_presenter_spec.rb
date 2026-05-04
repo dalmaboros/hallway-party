@@ -34,6 +34,15 @@ RSpec.describe EventPresenter do
       end
     end
 
+    context "with start and end crossing years" do
+      let(:starts_at) { ActiveSupport::TimeZone[zone].local(2026, 12, 30, 9) }
+      let(:ends_at) { ActiveSupport::TimeZone[zone].local(2027, 1, 2, 17) }
+
+      it "spells out both endpoints with their respective years" do
+        expect(presenter.date_range).to eq("December 30, 2026 – January 2, 2027")
+      end
+    end
+
     context "with the event in a non-default time zone" do
       # 23:30 UTC is the next day in Tokyo — proves the formatter uses the
       # event's own time zone rather than UTC or the system zone.

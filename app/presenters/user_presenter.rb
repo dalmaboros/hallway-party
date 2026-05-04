@@ -10,18 +10,28 @@ class UserPresenter
 
   attr_reader :user
 
-  delegate :name, :username, :avatar_url, :hobbies, to: :user
+  delegate :name,
+    :username,
+    :avatar_url,
+    :hobbies,
+    :bio,
+    :pronouns,
+    :location,
+    :twitter_url,
+    :website,
+    :events,
+    to: :user
 
   def initialize(user)
     @user = user
   end
 
   def initials
-    parts = name.to_s.split
-    return "" if parts.empty?
-    return parts.first[0].upcase if parts.size == 1
+    name_parts = name.to_s.split
+    return "" if name_parts.empty?
+    return name_parts.first[0].upcase if name_parts.size == 1
 
-    "#{parts.first[0]}#{parts.last[0]}".upcase
+    "#{name_parts.first[0]}#{name_parts.last[0]}".upcase
   end
 
   def avatar_color_class

@@ -2,7 +2,7 @@
 
 class HobbiesController < ApplicationController
   before_action :set_hobby, only: [:show]
-  before_action :set_event, only: [:show]
+  before_action :set_event_presenter, only: [:show]
   before_action :set_attendee_presenters, only: [:show]
 
   def show
@@ -15,16 +15,22 @@ class HobbiesController < ApplicationController
     @hobby = Hobby.find(params[:id])
   end
 
-  def set_event
-    @event = current_user.events.active.first
+  def set_event_presenter
+    return redirect_to(dashboard_path, alert: "Looks like you don't have an active event!") unless event
+
+    @event_presenter = EventPresenter.new(event)
   end
 
   def set_attendee_presenters
     @attendee_presenters = attendees.map { |attendee| UserPresenter.new(attendee) }
   end
 
+  def event
+    current_user.events.active.first
+  end
+
   def attendees
-    @event.users
+    event.users
       .joins(:user_hobbies)
       .where(user_hobbies: { hobby_id: @hobby.id })
       .where.not(id: current_user.id)

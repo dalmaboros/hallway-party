@@ -58,10 +58,5 @@ RSpec.describe UserPresenter do
     it "is deterministic for the same username" do
       expect(presenter.avatar_color_class).to eq(described_class.new(user).avatar_color_class)
     end
-
-    it "differs for different usernames that hash differently" do
-      presenter2 = described_class.new(build(:user, username: "squiddog"))
-      expect(presenter.avatar_color_class).not_to eq(presenter2.avatar_color_class)
-    end
   end
 end

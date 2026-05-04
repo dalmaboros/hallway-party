@@ -3,24 +3,24 @@
     <%= render "users/avatar", presenter: @user_presenter, size: :lg %>
     <div class="flex-1">
       <h1 class="text-3xl font-bold">
-        <%= @user.name %>
-        <% if @user.pronouns.present? %>
-          <span class="text-base font-normal text-gray-500">(<%= @user.pronouns %>)</span>
+        <%= @user_presenter.name %>
+        <% if @user_presenter.pronouns.present? %>
+          <span class="text-base font-normal text-gray-500">(<%= @user_presenter.pronouns %>)</span>
         <% end %>
       </h1>
-      <% if @user.location.present? %>
-        <div class="text-sm text-gray-500 mt-1"><%= @user.location %></div>
+      <% if @user_presenter.location.present? %>
+        <div class="text-sm text-gray-500 mt-1"><%= @user_presenter.location %></div>
       <% end %>
       <div class="flex gap-3 mt-2 text-gray-500">
-        <%= link_to "https://github.com/#{@user.username}",
+        <%= link_to "https://github.com/#{@user_presenter.username}",
               target: "_blank",
               rel: "noopener noreferrer",
               class: "hover:text-party-cyan",
               aria: { label: "GitHub" } do %>
           <%= render "icons/github" %>
         <% end %>
-        <% if @user.twitter_url.present? %>
-          <%= link_to @user.twitter_url,
+        <% if @user_presenter.twitter_url.present? %>
+          <%= link_to @user_presenter.twitter_url,
                 target: "_blank",
                 rel: "noopener noreferrer",
                 class: "hover:text-party-cyan",
@@ -28,8 +28,8 @@
             <%= render "icons/twitter" %>
           <% end %>
         <% end %>
-        <% if @user.website.present? %>
-          <%= link_to @user.website,
+        <% if @user_presenter.website.present? %>
+          <%= link_to @user_presenter.website,
                 target: "_blank",
                 rel: "noopener noreferrer",
                 class: "hover:text-party-cyan",
@@ -41,17 +41,17 @@
     </div>
   </header>
 
-  <% if @user.bio.present? %>
+  <% if @user_presenter.bio.present? %>
     <section class="mb-6">
-      <p class="whitespace-pre-line"><%= @user.bio %></p>
+      <p class="whitespace-pre-line"><%= @user_presenter.bio %></p>
     </section>
   <% end %>
 
   <section class="mb-6">
     <h2 class="text-sm uppercase tracking-wide text-gray-500 mb-2">Hobbies</h2>
-    <% if @user.hobbies.any? %>
+    <% if @user_presenter.hobbies.any? %>
       <ul class="flex flex-wrap gap-2">
-        <% @user.hobbies.sort_by(&:name).each do |hobby| %>
+        <% @user_presenter.hobbies.sort_by(&:name).each do |hobby| %>
           <%= render "hobbies/hobby_pill",
                 hobby: hobby,
                 shared: @current_user_hobby_ids.include?(hobby.id) %>
@@ -62,11 +62,11 @@
     <% end %>
   </section>
 
-  <% if @user.events.any? %>
+  <% if @user_presenter.events.any? %>
     <section class="mb-6">
       <h2 class="text-sm uppercase tracking-wide text-gray-500 mb-2">Attending</h2>
       <ul class="flex flex-wrap gap-2 text-sm">
-        <% @user.events.sort_by(&:starts_at).each do |event| %>
+        <% @user_presenter.events.sort_by(&:starts_at).each do |event| %>
           <li>
             <%= link_to event.name,
                   event_path(event),

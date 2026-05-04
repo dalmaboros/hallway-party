@@ -5,12 +5,9 @@
     <div class="flex items-center gap-5">
       <%= link_to "Events", events_path, class: "text-gray-700 hover:text-party-cyan" %>
 
-      <%# Layout chrome has no owning controller; constructing the presenter
-          inline here is an explicit exception to the "presenters live in
-          controllers" rule. Revisit if NavbarComponent is introduced. %>
-      <% presenter = UserPresenter.new(current_user) %>
-      <%= link_to profile_path(presenter.username), aria: { label: "Your profile" } do %>
-        <%= render "users/avatar", presenter: presenter, size: :sm %>
+      <% user_presenter = UserPresenter.new(current_user) %>
+      <%= link_to profile_path(user_presenter.username), aria: { label: "Your profile" } do %>
+        <%= render "users/avatar", presenter: user_presenter, size: :sm %>
       <% end %>
 
       <%= button_to "Sign out",
