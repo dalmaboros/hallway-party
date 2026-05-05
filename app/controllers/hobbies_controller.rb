@@ -16,8 +16,6 @@ class HobbiesController < ApplicationController
   end
 
   def set_event_presenter
-    return redirect_to(dashboard_path, alert: "Looks like you don't have an active event!") unless event
-
     @event_presenter = EventPresenter.new(event)
   end
 
