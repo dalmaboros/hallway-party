@@ -4,10 +4,10 @@ class OnboardingController < ApplicationController
   skip_before_action :require_event_attendance!, only: [:show, :create]
   skip_before_action :require_hobbies!
 
-  def show
-    @featured_event = Event.featured
+  before_action :set_featured_event_presenter, only: [:show]
 
-    render :no_events if @featured_event.nil?
+  def show
+    render :no_events if @featured_event_presenter.nil?
   end
 
   def create
@@ -30,4 +30,11 @@ class OnboardingController < ApplicationController
   end
 
   def hobbies; end
+
+  private
+
+  def set_featured_event_presenter
+    event = Event.featured
+    @featured_event_presenter = EventPresenter.new(event) if event
+  end
 end
