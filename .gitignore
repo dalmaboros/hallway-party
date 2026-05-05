@@ -42,3 +42,6 @@
 # macOS
 .DS_Store
 **/.DS_Store
+
+# Local review artifacts (audits, PR reviews, layered-design reviews).
+/docs/reviews/
