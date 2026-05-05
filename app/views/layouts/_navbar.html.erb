@@ -5,8 +5,9 @@
     <div class="flex items-center gap-5">
       <%= link_to "Events", events_path, class: "text-gray-700 hover:text-party-cyan" %>
 
-      <%= link_to profile_path(current_user.username), aria: { label: "Your profile" } do %>
-        <%= render "users/avatar", user: current_user, size: :sm %>
+      <% user_presenter = UserPresenter.new(current_user) %>
+      <%= link_to profile_path(user_presenter.username), aria: { label: "Your profile" } do %>
+        <%= render "users/avatar", presenter: user_presenter, size: :sm %>
       <% end %>
 
       <%= button_to "Sign out",

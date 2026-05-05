@@ -1,13 +1,13 @@
-<%# locals: (attendee:, current_user_hobby_ids:) %>
+<%# locals: (presenter:, current_user_hobby_ids:) %>
 <li class="py-4 flex gap-4">
-  <%= render "users/avatar", user: attendee, size: :md %>
+  <%= render "users/avatar", presenter: presenter, size: :md %>
   <div class="flex-1">
     <div class="font-semibold">
-      <%= link_to attendee.name, profile_path(attendee.username), class: "hover:text-party-cyan" %>
+      <%= link_to presenter.name, profile_path(presenter.username), class: "hover:text-party-cyan" %>
     </div>
-    <div class="text-sm text-gray-500 mb-2">@<%= attendee.username %></div>
+    <div class="text-sm text-gray-500 mb-2">@<%= presenter.username %></div>
     <ul class="flex flex-wrap gap-2">
-      <% attendee.hobbies.sort_by(&:name).each do |hobby| %>
+      <% presenter.hobbies.sort_by(&:name).each do |hobby| %>
         <%= render "hobbies/hobby_pill",
               hobby: hobby,
               shared: current_user_hobby_ids.include?(hobby.id) %>

@@ -1,10 +1,10 @@
-<%# locals: (user:, size: :lg) %>
+<%# locals: (presenter:, size: :lg) %>
 <% sizes = avatar_size_classes(size) %>
-<% if user.avatar_url.present? %>
-  <%= image_tag user.avatar_url, alt: "", class: "#{sizes[:box]} rounded-full shrink-0" %>
+<% if presenter.avatar_url.present? %>
+  <%= image_tag presenter.avatar_url, alt: "", class: "#{sizes[:box]} rounded-full shrink-0" %>
 <% else %>
-  <div class="<%= sizes[:box] %> rounded-full shrink-0 flex items-center justify-center text-white font-semibold <%= sizes[:text] %> <%= avatar_color_class(user) %>"
+  <div class="<%= sizes[:box] %> rounded-full shrink-0 flex items-center justify-center text-white font-semibold <%= sizes[:text] %> <%= presenter.avatar_color_class %>"
        aria-hidden="true">
-    <%= user_initials(user) %>
+    <%= presenter.initials %>
   </div>
 <% end %>
