@@ -21,11 +21,11 @@ class AttendeesController < ApplicationController
   end
 
   def event
-    current_user.events.find(params[:event_id])
+    @event ||= current_user.events.find(params[:event_id])
   end
 
   def attendees
-    AttendeeMatcher.new(
+    @attendees ||= AttendeeMatcher.new(
       seed_hobbies: current_user.hobbies.to_a,
       event: event,
       exclude_user: current_user,

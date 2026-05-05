@@ -27,15 +27,15 @@ class EventsController < ApplicationController
   end
 
   def event
-    Event.find(params[:id])
+    @event ||= Event.find(params[:id])
   end
 
   def events
-    Event.active.order(:starts_at)
+    @events ||= Event.active.order(:starts_at)
   end
 
   def attendees
-    AttendeeMatcher.new(
+    @attendees ||= AttendeeMatcher.new(
       seed_hobbies: current_user.hobbies.to_a,
       event: event,
       exclude_user: current_user,

@@ -26,11 +26,11 @@ class HobbiesController < ApplicationController
   end
 
   def event
-    current_user.events.active.first
+    @event ||= current_user.events.active.first
   end
 
   def attendees
-    event.users
+    @attendees ||= event.users
       .joins(:user_hobbies)
       .where(user_hobbies: { hobby_id: @hobby.id })
       .where.not(id: current_user.id)

@@ -14,6 +14,6 @@ class ProfilesController < ApplicationController
   end
 
   def user
-    User.includes(:hobbies, :events).find_by!(username: params[:username])
+    @user ||= User.includes(:hobbies, :events).find_by!(username: params[:username])
   end
 end
