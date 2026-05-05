@@ -1,13 +1,9 @@
 <div class="max-w-lg mx-auto text-center">
   <h1 class="text-4xl font-bold mb-6">
-    Are you attending <%= @featured_event.name %>?
+    Are you attending <%= @featured_event_presenter.name %>?
   </h1>
-  <p class="text-gray-600 mb-2">
-    <%= @featured_event.starts_at.in_time_zone(@featured_event.time_zone).to_date.strftime("%B %-d") %>
-    &ndash;
-    <%= @featured_event.ends_at.in_time_zone(@featured_event.time_zone).to_date.strftime("%B %-d, %Y") %>
-  </p>
-  <p class="text-gray-600 mb-8"><%= @featured_event.location %></p>
+  <p class="text-gray-600 mb-2"><%= @featured_event_presenter.date_range %></p>
+  <p class="text-gray-600 mb-8"><%= @featured_event_presenter.location %></p>
 
   <div class="flex gap-4 justify-center">
     <%= button_to "Yes, I'm attending",

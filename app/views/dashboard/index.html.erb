@@ -1,8 +1,8 @@
 <div class="max-w-2xl mx-auto">
   <h1 class="text-3xl font-bold mb-4">Dashboard</h1>
   <p class="mb-4">
-    Signed in as <strong><%= current_user.name %></strong>
-    (<%= current_user.username %>).
+    Signed in as <strong><%= @user_presenter.name %></strong>
+    (<%= @user_presenter.username %>).
   </p>
 
   <section class="mb-6">
@@ -17,11 +17,10 @@
     </ul>
   </section>
 
-  <% current_event = current_user.events.active.first %>
-  <% if current_event %>
+  <% if @current_event_presenter %>
     <section class="mb-6">
-      <%= link_to "See who else is at #{current_event.name}",
-            event_attendees_path(current_event),
+      <%= link_to "See who else is at #{@current_event_presenter.name}",
+            event_attendees_path(@current_event_presenter),
             class: "inline-block bg-party-lavender text-gray-900 px-6 py-3 rounded hover:brightness-95" %>
     </section>
   <% end %>
