@@ -3,10 +3,14 @@
 class EventPresenter
   attr_reader :event
 
-  delegate :id, :to_param, :name, :location, :website, to: :event
+  delegate :id, :to_param, :name, :location, to: :event
 
   def initialize(event)
     @event = event
+  end
+
+  def website
+    SafeUrl.parse(@event.website)
   end
 
   def date_range

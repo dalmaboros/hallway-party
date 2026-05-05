@@ -10,11 +10,4 @@ module ApplicationHelper
   def avatar_size_classes(size)
     AVATAR_SIZES.fetch(size)
   end
-
-  # Returns the URL only if it parses as an http(s) URL, else nil.
-  # Use whenever rendering a user- or admin-supplied URL into an href to
-  # prevent javascript: and data: scheme XSS.
-  def safe_external_url(url)
-    url if url.to_s.match?(%r{\Ahttps?://}i)
-  end
 end

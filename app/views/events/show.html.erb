@@ -3,9 +3,9 @@
     <h1 class="text-3xl font-bold mb-2"><%= @event_presenter.name %></h1>
     <p class="text-gray-600 mb-1"><%= @event_presenter.date_range %></p>
     <p class="text-gray-600 mb-2"><%= @event_presenter.location %></p>
-    <% if (website = safe_external_url(@event_presenter.website)) %>
-      <%= link_to website,
-            website,
+    <% if @event_presenter.website %>
+      <%= link_to @event_presenter.website,
+            @event_presenter.website,
             target: "_blank",
             rel: "noopener noreferrer",
             class: "inline-block text-party-cyan hover:opacity-80" %>

@@ -3,6 +3,34 @@
 require "rails_helper"
 
 RSpec.describe EventPresenter do
+  describe "#website" do
+    let(:presenter) { described_class.new(build(:event, website: stored_website)) }
+
+    context "with an https URL" do
+      let(:stored_website) { "https://example.com" }
+
+      it "returns it" do
+        expect(presenter.website).to eq("https://example.com")
+      end
+    end
+
+    context "with a javascript: URL" do
+      let(:stored_website) { "javascript:alert(1)" }
+
+      it "returns nil to prevent XSS" do
+        expect(presenter.website).to be_nil
+      end
+    end
+
+    context "with a blank website" do
+      let(:stored_website) { "" }
+
+      it "returns nil" do
+        expect(presenter.website).to be_nil
+      end
+    end
+  end
+
   describe "#date_range" do
     let(:zone) { "America/Los_Angeles" }
     let(:presenter) { described_class.new(build(:event, time_zone: zone, starts_at: starts_at, ends_at: ends_at)) }

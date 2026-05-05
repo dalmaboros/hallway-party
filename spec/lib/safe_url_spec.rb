@@ -2,15 +2,15 @@
 
 require "rails_helper"
 
-RSpec.describe ApplicationHelper do
-  describe "#safe_external_url" do
-    subject(:safe_url) { helper.safe_external_url(url) }
+RSpec.describe SafeUrl do
+  describe ".parse" do
+    subject(:parsed) { described_class.parse(url) }
 
     context "with an http URL" do
       let(:url) { "http://example.com" }
 
       it "returns it unchanged" do
-        expect(safe_url).to eq("http://example.com")
+        expect(parsed).to eq("http://example.com")
       end
     end
 
@@ -18,7 +18,7 @@ RSpec.describe ApplicationHelper do
       let(:url) { "https://example.com" }
 
       it "returns it unchanged" do
-        expect(safe_url).to eq("https://example.com")
+        expect(parsed).to eq("https://example.com")
       end
     end
 
@@ -26,7 +26,7 @@ RSpec.describe ApplicationHelper do
       let(:url) { "javascript:alert(1)" }
 
       it "returns nil to prevent XSS" do
-        expect(safe_url).to be_nil
+        expect(parsed).to be_nil
       end
     end
 
@@ -34,7 +34,7 @@ RSpec.describe ApplicationHelper do
       let(:url) { "data:text/html,<script>" }
 
       it "returns nil to prevent XSS" do
-        expect(safe_url).to be_nil
+        expect(parsed).to be_nil
       end
     end
 
@@ -42,7 +42,7 @@ RSpec.describe ApplicationHelper do
       let(:url) { nil }
 
       it "returns nil" do
-        expect(safe_url).to be_nil
+        expect(parsed).to be_nil
       end
     end
 
@@ -50,7 +50,7 @@ RSpec.describe ApplicationHelper do
       let(:url) { "" }
 
       it "returns nil" do
-        expect(safe_url).to be_nil
+        expect(parsed).to be_nil
       end
     end
   end

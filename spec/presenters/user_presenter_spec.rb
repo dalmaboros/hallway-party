@@ -47,6 +47,34 @@ RSpec.describe UserPresenter do
     end
   end
 
+  describe "#website" do
+    let(:presenter) { described_class.new(build(:user, website: stored_website)) }
+
+    context "with an https URL" do
+      let(:stored_website) { "https://example.com" }
+
+      it "returns it" do
+        expect(presenter.website).to eq("https://example.com")
+      end
+    end
+
+    context "with a javascript: URL" do
+      let(:stored_website) { "javascript:alert(1)" }
+
+      it "returns nil to prevent XSS" do
+        expect(presenter.website).to be_nil
+      end
+    end
+
+    context "with a blank website" do
+      let(:stored_website) { "" }
+
+      it "returns nil" do
+        expect(presenter.website).to be_nil
+      end
+    end
+  end
+
   describe "#avatar_color_class" do
     let(:user) { build(:user, username: "user") }
     let(:presenter) { described_class.new(user) }

@@ -18,12 +18,15 @@ class UserPresenter
     :pronouns,
     :location,
     :twitter_url,
-    :website,
     :events,
     to: :user
 
   def initialize(user)
     @user = user
+  end
+
+  def website
+    SafeUrl.parse(@user.website)
   end
 
   def initials
