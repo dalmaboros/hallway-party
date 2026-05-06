@@ -15,6 +15,11 @@ FileUtils.chdir APP_ROOT do
   puts "== Installing dependencies =="
   system("bundle check") || system!("bundle install")
 
+  if Dir.exist?(".git")
+    puts "\n== Installing git hooks =="
+    system! "ln -sf ../../bin/git-hooks/pre-commit .git/hooks/pre-commit"
+  end
+
   # puts "\n== Copying sample files =="
   # unless File.exist?("config/database.yml")
   #   FileUtils.cp "config/database.yml.sample", "config/database.yml"
