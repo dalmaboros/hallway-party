@@ -22,6 +22,15 @@
   </head>
 
   <body>
+    <% if Rails.env.development? %>
+      <div class="bg-amber-100 text-amber-900 text-xs px-4 py-1 flex items-center justify-between">
+        <span>
+          Dev mode<% if user_signed_in? %> · Signed in as <strong>@<%= current_user.username %></strong><% end %>
+        </span>
+        <%= link_to "Switch user →", dev_sign_in_path, class: "underline hover:no-underline" %>
+      </div>
+    <% end %>
+
     <% if user_signed_in? %>
       <%= render "layouts/navbar" %>
     <% end %>
