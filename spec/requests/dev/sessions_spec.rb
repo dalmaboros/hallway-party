@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Dev::Sessions", type: :request do
+RSpec.describe "Dev::Sessions" do
   # The dev sign-in routes are conditionally registered in routes.rb
   # (`if Rails.env.development?`). In any other environment (test included)
   # the routes must not exist — defense against the dev sign-in ever leaking
