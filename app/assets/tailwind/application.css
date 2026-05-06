@@ -1,10 +1,34 @@
 @import "tailwindcss";
 
 @theme {
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+
+  /* Warm buttercream base — golden, hand-painted feel. */
+  --color-cream: #f1e7cf;
+  --color-cream-100: #ebe1c5;
+  --color-cream-200: #e0d4b0;
+
   --color-party-lavender: #ddbdea;
   --color-party-green: #3b8f76;
   --color-party-red: #d9472a;
   --color-party-cyan: #67bed9;
+
+  /* Sprinkle palette — twelve named hues from a paired-text swatch
+     reference. Pills pick from these in (bg, text) pairs so each pill
+     reads as a small composition rather than just a colored capsule. */
+  --color-sprinkle-tea-green: #aacc96;
+  --color-sprinkle-forest: #25533f;
+  --color-sprinkle-peach-frost: #f4beae;
+  --color-sprinkle-blueberry: #52a5ce;
+  --color-sprinkle-bubblegum: #ff7bac;
+  --color-sprinkle-dry-earth: #876029;
+  --color-sprinkle-grape-juice: #6d1f42;
+  --color-sprinkle-lilacs: #d3b6d3;
+  --color-sprinkle-butter-yellow: #efce7b;
+  --color-sprinkle-iced-blue: #b8cee8;
+  --color-sprinkle-blood-orange: #ef6f3c;
+  --color-sprinkle-olive-green: #afab23;
 
   /* Tinted-white versions, used as fills for "matching" hobby pills.
      Mix percentages tuned per hue so all four land at roughly the same
@@ -13,4 +37,45 @@
   --color-party-green-soft: color-mix(in srgb, var(--color-party-green) 10%, white);
   --color-party-red-soft: color-mix(in srgb, var(--color-party-red) 12%, white);
   --color-party-cyan-soft: color-mix(in srgb, var(--color-party-cyan) 15%, white);
+}
+
+/* Default body — cream frosting background with a faint sprinkle dot texture. */
+body {
+  background-color: var(--color-cream);
+  background-image:
+    radial-gradient(var(--color-party-lavender) 1px, transparent 1px),
+    radial-gradient(var(--color-party-cyan) 1px, transparent 1px);
+  background-size: 32px 32px, 32px 32px;
+  background-position: 0 0, 16px 16px;
+  background-attachment: fixed;
+  background-blend-mode: multiply;
+  color: #1c1916;
+  font-family: var(--font-sans);
+}
+
+/* Soften the dot texture so it reads as atmosphere, not pattern. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: var(--color-cream);
+  opacity: 0.92;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Stagger reveal for sprinkle pills — one signature page-load moment. */
+@keyframes sprinkle-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.sprinkle-in {
+  animation: sprinkle-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }

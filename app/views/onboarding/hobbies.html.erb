@@ -1,38 +1,58 @@
-<div class="max-w-lg mx-auto">
-  <h1 class="text-4xl font-bold mb-4">What are you into (outside of code)?</h1>
-  <p class="text-gray-600 mb-6">
-    Add at least one hobby so you can meet people who share them.
+<div class="max-w-2xl mx-auto py-10">
+  <h1 class="font-display text-4xl md:text-5xl font-semibold mb-3 leading-[1.05] tracking-tight text-balance">
+    What are you into <span class="italic text-sprinkle-blueberry">(outside of code)?</span>
+  </h1>
+  <p class="text-stone-600 text-lg mb-8">
+    Add at least one — we'll find your people.
   </p>
 
-  <%= form_with url: user_hobbies_path, method: :post, class: "flex gap-2 mb-8" do %>
+  <%= form_with url: user_hobbies_path, method: :post, class: "flex gap-2 mb-10" do %>
     <%= text_field_tag :name,
           nil,
           autofocus: true,
           autocomplete: "off",
-          placeholder: "e.g. knitting, hiking, board games",
-          class: "border rounded px-3 py-2 flex-1" %>
+          placeholder: "knitting, hiking, board games...",
+          class: "flex-1 px-5 py-3 rounded-full bg-white border-2 border-cream-200 focus:border-sprinkle-blueberry focus:outline-none text-base placeholder:text-stone-400 shadow-sm transition-colors" %>
     <%= submit_tag "Add",
-          class: "bg-party-lavender text-gray-900 px-6 py-2 rounded hover:brightness-95" %>
+          class: "px-7 py-3 rounded-full bg-sprinkle-bubblegum text-sprinkle-grape-juice font-semibold hover:brightness-95 transition shadow-sm cursor-pointer" %>
   <% end %>
 
   <% user_hobbies = current_user.user_hobbies.includes(:hobby).order("hobbies.name") %>
 
   <% if user_hobbies.any? %>
-    <h2 class="text-xl font-semibold mb-3">Your hobbies</h2>
-    <ul class="mb-8">
-      <% user_hobbies.each do |user_hobby| %>
-        <li class="flex items-center justify-between py-2 border-b">
-          <span><%= user_hobby.hobby.name %></span>
-          <%= button_to "Remove",
-                user_hobby_path(user_hobby),
-                method: :delete,
-                class: "text-sm text-party-red hover:opacity-80" %>
+    <h2 class="font-display text-2xl font-semibold mb-4">Your hobbies</h2>
+    <%# Twelve (bg, text) sprinkle pairs from the swatch reference. Listing every
+        class string literally so Tailwind picks them up during static scanning. %>
+    <% sprinkle_pairs = [
+         "bg-sprinkle-tea-green text-sprinkle-forest",
+         "bg-sprinkle-forest text-sprinkle-tea-green",
+         "bg-sprinkle-peach-frost text-sprinkle-blood-orange",
+         "bg-sprinkle-blueberry text-sprinkle-butter-yellow",
+         "bg-sprinkle-bubblegum text-sprinkle-grape-juice",
+         "bg-sprinkle-dry-earth text-sprinkle-tea-green",
+         "bg-sprinkle-grape-juice text-sprinkle-lilacs",
+         "bg-sprinkle-lilacs text-sprinkle-grape-juice",
+         "bg-sprinkle-butter-yellow text-sprinkle-blood-orange",
+         "bg-sprinkle-iced-blue text-sprinkle-forest",
+         "bg-sprinkle-blood-orange text-sprinkle-butter-yellow",
+         "bg-sprinkle-olive-green text-sprinkle-grape-juice",
+       ] %>
+    <ul class="flex flex-wrap gap-2 mb-10">
+      <% user_hobbies.each_with_index do |user_hobby, i| %>
+        <%# Stable hash so the same hobby always lands on the same color, but the
+            list reads as an unordered scatter rather than a visible cycle. %>
+        <% pair = sprinkle_pairs[Zlib.crc32(user_hobby.hobby.name) % sprinkle_pairs.size] %>
+        <li class="sprinkle-in inline-block px-4 py-1.5 rounded-full text-sm font-semibold lowercase shadow-sm <%= pair %>"
+            style="animation-delay: <%= (i * 0.04).round(2) %>s">
+          <%= user_hobby.hobby.name %>
         </li>
       <% end %>
     </ul>
 
-    <%= link_to "Done — take me to the dashboard",
-          dashboard_path,
-          class: "bg-party-lavender text-gray-900 px-6 py-3 rounded hover:brightness-95 inline-block" %>
+    <%= link_to dashboard_path,
+          class: "inline-flex items-center gap-2 px-7 py-3 rounded-full bg-sprinkle-blood-orange text-sprinkle-butter-yellow font-semibold hover:brightness-95 transition shadow-md" do %>
+      <span>Done — take me to the party</span>
+      <span aria-hidden="true">→</span>
+    <% end %>
   <% end %>
 </div>
