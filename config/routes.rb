@@ -43,4 +43,12 @@ Rails.application.routes.draw do
 
   # Authenticated
   get "/dashboard", to: "dashboard#index", as: :dashboard
+
+  # Development-only quick sign-in (gated again at the controller level for safety)
+  if Rails.env.development?
+    namespace :dev do
+      get "sign_in", to: "sessions#index", as: :sign_in
+      post "sign_in_as/:username", to: "sessions#create", as: :sign_in_as
+    end
+  end
 end
