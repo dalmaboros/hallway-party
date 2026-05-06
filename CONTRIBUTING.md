@@ -39,7 +39,9 @@ CI must pass before a PR is merged.
 
 ## Local checks
 
-Before pushing, run (prefix with `docker compose exec app` if running outside the dev container):
+A pre-commit hook installed by `bin/setup` runs **RuboCop** on staged Ruby files, **erb_lint** on staged ERB files, and the full **RSpec** suite. If a check fails, the commit is aborted — fix and re-stage, or bypass deliberately with `git commit --no-verify` for genuine WIP commits.
+
+For checks not covered by the hook (Brakeman, bundler-audit, full RuboCop sweep), run them manually before pushing — or run `bin/ci` for the whole bundle:
 
 ```sh
 bundle exec rspec
@@ -47,9 +49,10 @@ bin/rubocop
 bin/erb_lint --lint-all
 bin/brakeman
 bin/bundler-audit
+bin/ci          # runs all of the above
 ```
 
-Or run the whole bundle with `bin/ci`.
+Prefix each with `docker compose exec app` if running outside the dev container. CI runs the same checks regardless.
 
 ## Coding conventions
 
