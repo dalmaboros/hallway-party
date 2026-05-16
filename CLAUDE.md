@@ -12,6 +12,10 @@ Runs in Docker (`docker compose up`). The Rails service is named `app`. Multiple
 
 Audits, code reviews, and ad-hoc analysis go in `docs/reviews/` (gitignored). Date-prefix filenames: `YYYY-MM-DD-<slug>.md`.
 
+## Styling
+
+Tailwind CSS. Chosen for the collaborative context — utility classes give every contributor a shared, predictable styling vocabulary regardless of their CSS background.
+
 ## Comment philosophy
 
 Default to no comment. Write one only when the *why* is non-obvious — a workaround, hidden constraint, subtle invariant, or surprising behavior. A comment restating what the code does is a signal to make the code more expressive, not to annotate. Lead with the reason; keep it short.
