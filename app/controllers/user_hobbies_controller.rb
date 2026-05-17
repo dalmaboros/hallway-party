@@ -19,7 +19,7 @@ class UserHobbiesController < ApplicationController
     current_user.user_hobbies.find_or_create_by!(hobby: hobby)
     GenerateHobbyEmbeddingJob.perform_later(hobby) if hobby.previously_new_record?
 
-    redirect_to onboarding_hobbies_path, notice: "Added \"#{hobby.name}\"."
+    redirect_to onboarding_hobbies_path, notice: "Added \"#{hobby.display_name}\"."
   end
 
   def destroy
@@ -30,6 +30,6 @@ class UserHobbiesController < ApplicationController
     end
 
     user_hobby.destroy!
-    redirect_to onboarding_hobbies_path, notice: "Removed \"#{user_hobby.hobby.name}\"."
+    redirect_to onboarding_hobbies_path, notice: "Removed \"#{user_hobby.hobby.display_name}\"."
   end
 end
