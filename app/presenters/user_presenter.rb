@@ -40,4 +40,12 @@ class UserPresenter
   def avatar_color_class
     AVATAR_BG_CLASSES[username.bytes.sum % AVATAR_BG_CLASSES.size]
   end
+
+  def shared_hobbies(current_user_hobby_ids)
+    hobbies.select { |hobby| current_user_hobby_ids.include?(hobby.id) }.sort_by(&:name)
+  end
+
+  def other_hobbies(current_user_hobby_ids)
+    hobbies.reject { |hobby| current_user_hobby_ids.include?(hobby.id) }.sort_by(&:name)
+  end
 end
