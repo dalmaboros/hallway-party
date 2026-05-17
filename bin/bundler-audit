@@ -1,6 +1,16 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require_relative "../config/boot"
 require "bundler/audit/cli"
+require "bundler/audit/database"
 
-ARGV.concat %w[ --config config/bundler-audit.yml ] if ARGV.empty? || ARGV.include?("check")
+# Refresh the advisory DB before checking so local runs catch CVEs published
+# since the last update. Pass --no-update to skip (e.g. in air-gapped runs).
+if ARGV.empty? || ARGV.include?("check")
+  skip_update = ARGV.delete("--no-update")
+  ARGV.push("--config", "config/bundler-audit.yml")
+  Bundler::Audit::Database.update!(quiet: false) unless skip_update
+end
+
 Bundler::Audit::CLI.start

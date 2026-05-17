@@ -1,10 +1,12 @@
 #!/usr/bin/env sh
 # Pre-commit checks: rubocop on staged Ruby files, erb_lint on staged ERB files,
-# and the full rspec suite. Bypass with `git commit --no-verify` if you need to.
+# bundler-audit when deps change, and the full rspec suite. Bypass with
+# `git commit --no-verify` if you need to.
 set -e
 
 staged_rb=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(rb|rake)$' || true)
 staged_erb=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.erb$' || true)
+staged_deps=$(git diff --cached --name-only --diff-filter=ACM | grep -E '^(Gemfile|Gemfile\.lock)$' || true)
 
 if [ -n "$staged_rb" ]; then
   echo "==> rubocop"
@@ -14,6 +16,11 @@ fi
 if [ -n "$staged_erb" ]; then
   echo "==> erb_lint"
   bundle exec erb_lint --format compact $staged_erb
+fi
+
+if [ -n "$staged_deps" ]; then
+  echo "==> bundler-audit"
+  bin/bundler-audit
 fi
 
 echo "==> rspec"
