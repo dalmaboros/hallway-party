@@ -71,12 +71,12 @@ RSpec.describe Event do
     end
   end
 
-  describe ".active" do
+  describe ".not_past" do
     context "when the event is upcoming" do
       let!(:event) { create(:event, :upcoming) }
 
       it "is included" do
-        expect(described_class.active).to include(event)
+        expect(described_class.not_past).to include(event)
       end
     end
 
@@ -84,7 +84,7 @@ RSpec.describe Event do
       let!(:event) { create(:event, :in_progress) }
 
       it "is included" do
-        expect(described_class.active).to include(event)
+        expect(described_class.not_past).to include(event)
       end
     end
 
@@ -92,7 +92,85 @@ RSpec.describe Event do
       let!(:event) { create(:event, :past) }
 
       it "is excluded" do
-        expect(described_class.active).not_to include(event)
+        expect(described_class.not_past).not_to include(event)
+      end
+    end
+  end
+
+  describe ".upcoming" do
+    context "when the event is upcoming" do
+      let!(:event) { create(:event, :upcoming) }
+
+      it "is included" do
+        expect(described_class.upcoming).to include(event)
+      end
+    end
+
+    context "when the event is in progress" do
+      let!(:event) { create(:event, :in_progress) }
+
+      it "is excluded" do
+        expect(described_class.upcoming).not_to include(event)
+      end
+    end
+
+    context "when the event has ended" do
+      let!(:event) { create(:event, :past) }
+
+      it "is excluded" do
+        expect(described_class.upcoming).not_to include(event)
+      end
+    end
+  end
+
+  describe ".in_progress" do
+    context "when the event is upcoming" do
+      let!(:event) { create(:event, :upcoming) }
+
+      it "is excluded" do
+        expect(described_class.in_progress).not_to include(event)
+      end
+    end
+
+    context "when the event is in progress" do
+      let!(:event) { create(:event, :in_progress) }
+
+      it "is included" do
+        expect(described_class.in_progress).to include(event)
+      end
+    end
+
+    context "when the event has ended" do
+      let!(:event) { create(:event, :past) }
+
+      it "is excluded" do
+        expect(described_class.in_progress).not_to include(event)
+      end
+    end
+  end
+
+  describe ".past" do
+    context "when the event is upcoming" do
+      let!(:event) { create(:event, :upcoming) }
+
+      it "is excluded" do
+        expect(described_class.past).not_to include(event)
+      end
+    end
+
+    context "when the event is in progress" do
+      let!(:event) { create(:event, :in_progress) }
+
+      it "is excluded" do
+        expect(described_class.past).not_to include(event)
+      end
+    end
+
+    context "when the event has ended" do
+      let!(:event) { create(:event, :past) }
+
+      it "is included" do
+        expect(described_class.past).to include(event)
       end
     end
   end

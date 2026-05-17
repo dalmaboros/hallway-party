@@ -11,7 +11,7 @@ class DashboardController < ApplicationController
 
   def set_dashboard_presenters
     @user_presenter = UserPresenter.new(current_user)
-    current_event = current_user.events.active.first
+    current_event = current_user.events.not_past.first
     @current_event_presenter = EventPresenter.new(current_event) if current_event
   end
 end

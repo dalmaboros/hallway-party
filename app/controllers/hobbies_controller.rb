@@ -24,7 +24,7 @@ class HobbiesController < ApplicationController
   end
 
   def event
-    @event ||= current_user.events.active.first
+    @event ||= current_user.events.not_past.first
   end
 
   def attendees

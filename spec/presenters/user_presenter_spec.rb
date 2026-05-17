@@ -150,4 +150,48 @@ RSpec.describe UserPresenter do
       end
     end
   end
+
+  describe "#not_past_events" do
+    let(:user) { create(:user) }
+    let(:presenter) { described_class.new(user) }
+
+    it "returns events the user is attending whose end date hasn't passed" do
+      upcoming = create(:event, :upcoming)
+      in_progress = create(:event, :in_progress)
+      past = create(:event, :past)
+      [upcoming, in_progress, past].each { |e| create(:event_attendance, user: user, event: e) }
+
+      expect(presenter.not_past_events).to contain_exactly(upcoming, in_progress)
+    end
+
+    it "orders by start date ascending — the soonest upcoming first" do
+      farther = create(:event, starts_at: 3.months.from_now, ends_at: 3.months.from_now + 2.days)
+      sooner = create(:event, starts_at: 1.week.from_now, ends_at: 1.week.from_now + 2.days)
+      [farther, sooner].each { |e| create(:event_attendance, user: user, event: e) }
+
+      expect(presenter.not_past_events).to eq([sooner, farther])
+    end
+  end
+
+  describe "#past_events" do
+    let(:user) { create(:user) }
+    let(:presenter) { described_class.new(user) }
+
+    it "returns events the user attended whose end date has passed" do
+      upcoming = create(:event, :upcoming)
+      in_progress = create(:event, :in_progress)
+      past = create(:event, :past)
+      [upcoming, in_progress, past].each { |e| create(:event_attendance, user: user, event: e) }
+
+      expect(presenter.past_events).to eq([past])
+    end
+
+    it "orders by start date descending — the most-recent past event first" do
+      older = create(:event, starts_at: 1.year.ago, ends_at: 1.year.ago + 2.days)
+      newer = create(:event, starts_at: 2.months.ago, ends_at: 2.months.ago + 2.days)
+      [older, newer].each { |e| create(:event_attendance, user: user, event: e) }
+
+      expect(presenter.past_events).to eq([newer, older])
+    end
+  end
 end
