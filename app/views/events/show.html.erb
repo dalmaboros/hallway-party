@@ -2,6 +2,11 @@
   <header class="mb-8">
     <h1 class="text-3xl font-bold mb-2"><%= @event_presenter.name %></h1>
     <p class="text-gray-600 mb-1"><%= @event_presenter.date_range %></p>
+    <% if @event_presenter.current_day %>
+      <p class="inline-block text-sm font-semibold text-party-green border border-party-green/40 rounded-full px-3 py-1 mb-2">
+        Day <%= @event_presenter.current_day %> of <%= @event_presenter.total_days %>
+      </p>
+    <% end %>
     <p class="text-gray-600 mb-2"><%= @event_presenter.location %></p>
     <% if @event_presenter.website %>
       <%= link_to @event_presenter.website,

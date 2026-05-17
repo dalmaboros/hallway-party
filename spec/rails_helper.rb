@@ -77,6 +77,9 @@ RSpec.configure do |config|
   # FactoryBot
   config.include FactoryBot::Syntax::Methods
 
+  # Time helpers — enables `travel_to`, `freeze_time`, etc. in any spec.
+  config.include ActiveSupport::Testing::TimeHelpers
+
   # Configure OmniAuth test mode globally for request specs
   config.before(:each, type: :request) do
     OmniAuth.config.test_mode = true
