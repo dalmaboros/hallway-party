@@ -11,8 +11,19 @@
   <section class="bg-party-lavender-soft border border-party-lavender/40 rounded-lg px-4 py-3 mb-6">
     <p>
       <% if @next_event_presenter.nil? %>
-        No events on your calendar —
-        <%= link_to "see what's coming up", events_path, class: "underline hover:text-party-cyan" %>
+        <% most_recent_event = @user_presenter.past_events.first %>
+        <% if most_recent_event %>
+          Thanks for being part of <strong><%= most_recent_event.name %></strong>. <br>
+          We'll let you know when the next conference rolls around. <br>
+          <%= link_to event_path(most_recent_event),
+                class: "font-bold underline hover:text-party-cyan" do %>
+            See the people you met at <%= most_recent_event.name %> →
+          <% end %>
+        <% else %>
+          <%# require_event_attendance! normally guarantees a past event in this branch; fallback for the no-attendance edge %>
+          No events on your calendar —
+          <%= link_to "see what's coming up", events_path, class: "underline hover:text-party-cyan" %>
+        <% end %>
       <% elsif @next_event_presenter.happening_today? %>
         You're at <strong><%= @next_event_presenter.name %></strong> <br>
         Day <%= @next_event_presenter.current_day %> of <%= @next_event_presenter.total_days %> <br>

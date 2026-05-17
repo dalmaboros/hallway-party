@@ -110,17 +110,26 @@ RSpec.describe "Dashboard" do
       end
     end
 
-    context "with only past attendance" do
-      let!(:past_event) { create(:event, :past) }
+    context "with only past attendance (soft sunset)" do
+      let!(:past_event) { create(:event, :past, name: "RailsConf 2025") }
 
       before { create(:event_attendance, user: user, event: past_event) }
 
-      it "shows the empty-state callout with a re-engagement CTA" do
+      it "renders 200 rather than redirecting to onboarding" do
         get dashboard_path
-        aggregate_failures do
-          expect(response.body).to include("No events on your calendar")
-          expect(response.body).to include(events_path)
-        end
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "shows the soft-sunset goodbye in place of the empty state", :aggregate_failures do
+        get dashboard_path
+        expect(response.body).to include("Thanks for being part of")
+        expect(response.body).to include("RailsConf 2025")
+        expect(response.body).not_to include("No events on your calendar")
+      end
+
+      it "links to the past event so the user can revisit who they met" do
+        get dashboard_path
+        expect(response.body).to include(event_path(past_event))
       end
 
       it "hides the Your Events section" do
