@@ -23,6 +23,16 @@ class EventPresenter
     end
   end
 
+  def current_day
+    return unless current_date.between?(start_date, end_date)
+
+    (current_date - start_date).to_i + 1
+  end
+
+  def total_days
+    (end_date - start_date).to_i + 1
+  end
+
   private
 
   def start_date
@@ -31,5 +41,9 @@ class EventPresenter
 
   def end_date
     @end_date ||= @event.ends_at.in_time_zone(@event.time_zone).to_date
+  end
+
+  def current_date
+    Time.current.in_time_zone(@event.time_zone).to_date
   end
 end
