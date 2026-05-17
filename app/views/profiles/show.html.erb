@@ -81,15 +81,30 @@
     </section>
   <% end %>
 
-  <% if @user_presenter.events.any? %>
+  <% if @user_presenter.not_past_events.any? %>
     <section class="mb-6">
       <h2 class="text-sm uppercase tracking-wide text-gray-500 mb-2">Attending</h2>
       <ul class="flex flex-wrap gap-2 text-sm">
-        <% @user_presenter.events.sort_by(&:starts_at).each do |event| %>
+        <% @user_presenter.not_past_events.each do |event| %>
           <li>
             <%= link_to event.name,
                   event_path(event),
                   class: "inline-block bg-gray-100 border border-gray-200 rounded-full px-3 py-1 transition hover:bg-gray-200" %>
+          </li>
+        <% end %>
+      </ul>
+    </section>
+  <% end %>
+
+  <% if @user_presenter.past_events.any? %>
+    <section class="mb-6">
+      <h2 class="text-sm uppercase tracking-wide text-gray-500 mb-2">Past events</h2>
+      <ul class="flex flex-wrap gap-2 text-sm">
+        <% @user_presenter.past_events.each do |event| %>
+          <li>
+            <%= link_to event.name,
+                  event_path(event),
+                  class: "inline-block bg-gray-100 border border-gray-200 rounded-full px-3 py-1 text-gray-600 transition hover:bg-gray-200" %>
           </li>
         <% end %>
       </ul>

@@ -31,7 +31,7 @@ class EventsController < ApplicationController
   end
 
   def events
-    @events ||= Event.active.order(:starts_at)
+    @events ||= Event.not_past.order(:starts_at)
   end
 
   def attendees
