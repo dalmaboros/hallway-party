@@ -28,13 +28,28 @@
             event_attendees_path(@current_event_presenter),
             class: "inline-block bg-party-lavender text-gray-900 px-6 py-3 rounded hover:brightness-95" %>
     </section>
+  <% elsif @user_presenter.past_events.any? %>
+    <section class="mb-6">
+      <h2 class="text-xl font-semibold mb-2">
+        Thanks for being part of <%= @user_presenter.past_events.first.name %>.
+      </h2>
+      <p class="text-gray-600 mb-3">
+        We'll let you know when the next conference rolls around.
+      </p>
+      <%= link_to "See the people you met at #{@user_presenter.past_events.first.name}",
+            event_attendees_path(@user_presenter.past_events.first),
+            class: "inline-block bg-party-lavender text-gray-900 px-6 py-3 rounded hover:brightness-95" %>
+    </section>
   <% end %>
 
-  <% if @user_presenter.past_events.any? %>
+  <% if (@current_event_presenter && @user_presenter.past_events.any?) || @user_presenter.past_events.size > 1 %>
     <section class="mb-6">
-      <h2 class="text-sm uppercase tracking-wide text-gray-500 mb-2">Past events</h2>
+      <h2 class="text-sm uppercase tracking-wide text-gray-500 mb-2">
+        <%= @current_event_presenter ? "Past events" : "Other past events" %>
+      </h2>
       <ul class="flex flex-wrap gap-2 text-sm">
-        <% @user_presenter.past_events.each do |event| %>
+        <% @user_presenter.past_events.each_with_index do |event, index| %>
+          <% next if @current_event_presenter.nil? && index.zero? %>
           <li>
             <%= link_to event.name,
                   event_path(event),
