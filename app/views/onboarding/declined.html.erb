@@ -1,0 +1,19 @@
+<div class="max-w-lg mx-auto text-center">
+  <h1 class="text-3xl font-bold mb-4">Thanks for stopping by.</h1>
+
+  <p class="text-lg text-gray-600 mb-8">
+    hallway-party is meant to help you connect with other Rubyists at conferences.
+    When you're heading to one, sign back in and we'll match you with some people who share your interests.
+  </p>
+
+  <div class="flex gap-3 justify-center">
+    <%= link_to "Actually, I am attending",
+          onboarding_path,
+          class: "bg-party-lavender text-gray-900 px-6 py-3 rounded hover:brightness-95" %>
+
+    <%= button_to "Sign out",
+          sign_out_path,
+          method: :delete,
+          class: "bg-gray-200 text-gray-800 px-6 py-3 rounded hover:bg-gray-300" %>
+  </div>
+</div>

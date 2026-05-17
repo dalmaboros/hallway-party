@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class OnboardingController < ApplicationController
-  skip_before_action :require_event_attendance!, only: [:show, :create]
+  skip_before_action :require_event_attendance!, only: [:show, :create, :declined]
   skip_before_action :require_hobbies!
 
   before_action :set_featured_event_presenter, only: [:show]
@@ -22,14 +22,17 @@ class OnboardingController < ApplicationController
       EventAttendance.create!(user: current_user, event: featured_event)
       redirect_to onboarding_hobbies_path, notice: "You're attending #{featured_event.name}! Now add a few hobbies."
     when "no"
-      reset_session
-      redirect_to root_path, notice: "No problem — Hallway Party is event-specific. Come back when you're attending one."
+      redirect_to onboarding_declined_path
     else
       redirect_to onboarding_path, alert: "Please choose yes or no."
     end
   end
 
-  def hobbies; end
+  def hobbies
+  end
+
+  def declined
+  end
 
   private
 
