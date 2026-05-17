@@ -1,7 +1,7 @@
 <%# locals: (hobby:, shared: false) %>
 <% theme = hobby_pill_theme(hobby) %>
 <li>
-  <%= link_to hobby.name,
+  <%= link_to hobby.display_name,
         hobby_path(hobby),
         class: [
           "inline-block rounded-full px-3 py-1 text-sm transition hover:text-white hover:border-transparent",

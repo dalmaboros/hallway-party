@@ -38,6 +38,17 @@ RSpec.describe Hobby do
     end
   end
 
+  describe "#display_name" do
+    it "returns the name lowercased regardless of how it was stored" do
+      hobby = create(:hobby, name: "Knitting")
+      expect(hobby.display_name).to eq("knitting")
+    end
+
+    it "returns nil when name is nil" do
+      expect(build(:hobby, name: nil).display_name).to be_nil
+    end
+  end
+
   describe "programming hobby rejection" do
     it "is invalid when the name is a programming term" do
       expect(build(:hobby, name: "Ruby")).not_to be_valid
