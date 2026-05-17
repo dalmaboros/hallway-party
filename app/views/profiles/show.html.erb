@@ -47,20 +47,39 @@
     </section>
   <% end %>
 
-  <section class="mb-6">
-    <h2 class="text-sm uppercase tracking-wide text-gray-500 mb-2">Hobbies</h2>
-    <% if @user_presenter.hobbies.any? %>
-      <ul class="flex flex-wrap gap-2">
-        <% @user_presenter.hobbies.sort_by(&:name).each do |hobby| %>
-          <%= render "hobbies/hobby_pill",
-                hobby: hobby,
-                shared: @current_user_hobby_ids.include?(hobby.id) %>
-        <% end %>
-      </ul>
-    <% else %>
-      <p class="text-gray-500 text-sm">No hobbies listed yet.</p>
+  <% if @user_presenter.hobbies.any? %>
+    <% if @user_presenter.shared_hobbies(@current_user_hobby_ids).any? %>
+      <section class="mb-6">
+        <h2 class="text-sm uppercase tracking-wide text-gray-500 mb-2">
+          Shared with you
+          <span class="text-gray-400">· <%= @user_presenter.shared_hobbies(@current_user_hobby_ids).size %></span>
+        </h2>
+        <ul class="flex flex-wrap gap-2">
+          <% @user_presenter.shared_hobbies(@current_user_hobby_ids).each do |hobby| %>
+            <%= render "hobbies/hobby_pill", hobby: hobby, shared: true %>
+          <% end %>
+        </ul>
+      </section>
     <% end %>
-  </section>
+
+    <% if @user_presenter.other_hobbies(@current_user_hobby_ids).any? %>
+      <section class="mb-6">
+        <h2 class="text-sm uppercase tracking-wide text-gray-500 mb-2">
+          <%= @user_presenter.shared_hobbies(@current_user_hobby_ids).any? ? "Also into" : "Hobbies" %>
+        </h2>
+        <ul class="flex flex-wrap gap-2">
+          <% @user_presenter.other_hobbies(@current_user_hobby_ids).each do |hobby| %>
+            <%= render "hobbies/hobby_pill", hobby: hobby, shared: false %>
+          <% end %>
+        </ul>
+      </section>
+    <% end %>
+  <% else %>
+    <section class="mb-6">
+      <h2 class="text-sm uppercase tracking-wide text-gray-500 mb-2">Hobbies</h2>
+      <p class="text-gray-500 text-sm">No hobbies listed yet.</p>
+    </section>
+  <% end %>
 
   <% if @user_presenter.events.any? %>
     <section class="mb-6">
