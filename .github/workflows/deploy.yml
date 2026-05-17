@@ -30,7 +30,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           # Kamal builds the image from a fresh git clone of HEAD,
           # so it needs full git history.
