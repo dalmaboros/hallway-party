@@ -23,8 +23,12 @@ class EventPresenter
     end
   end
 
+  def in_progress?
+    current_date.between?(start_date, end_date)
+  end
+
   def current_day
-    return unless current_date.between?(start_date, end_date)
+    return unless in_progress?
 
     (current_date - start_date).to_i + 1
   end

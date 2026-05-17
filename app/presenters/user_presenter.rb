@@ -48,4 +48,12 @@ class UserPresenter
   def other_hobbies(current_user_hobby_ids)
     hobbies.reject { |hobby| current_user_hobby_ids.include?(hobby.id) }.sort_by(&:name)
   end
+
+  def not_past_events
+    events.not_past.order(:starts_at)
+  end
+
+  def past_events
+    events.past.order(starts_at: :desc)
+  end
 end
