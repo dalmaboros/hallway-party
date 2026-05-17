@@ -28,6 +28,7 @@ Rails.application.routes.draw do
   get "/onboarding", to: "onboarding#show", as: :onboarding
   post "/onboarding", to: "onboarding#create"
   get "/onboarding/hobbies", to: "onboarding#hobbies", as: :onboarding_hobbies
+  get "/onboarding/declined", to: "onboarding#declined", as: :onboarding_declined
 
   # Hobbies
   resources :user_hobbies, only: [:create, :destroy]

@@ -91,14 +91,26 @@ RSpec.describe "Onboarding" do
       end.not_to change(EventAttendance, :count)
     end
 
-    it "signs the user out" do
+    it "keeps the user signed in" do
       post onboarding_path, params: { answer: "no" }
-      expect(session[:user_id]).to be_nil
+      expect(session[:user_id]).to eq(user.id)
     end
 
-    it "redirects to root" do
+    it "redirects to the declined page" do
       post onboarding_path, params: { answer: "no" }
-      expect(response).to redirect_to(root_path)
+      expect(response).to redirect_to(onboarding_declined_path)
+    end
+  end
+
+  describe "GET /onboarding/declined" do
+    it "renders without requiring event attendance" do
+      get onboarding_declined_path
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "offers a way back to the onboarding question for users who change their mind" do
+      get onboarding_declined_path
+      expect(response.body).to include(onboarding_path)
     end
   end
 
