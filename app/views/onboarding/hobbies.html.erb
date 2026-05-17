@@ -22,7 +22,7 @@
     <ul class="mb-8">
       <% user_hobbies.each do |user_hobby| %>
         <li class="flex items-center justify-between py-2 border-b">
-          <span><%= user_hobby.hobby.name %></span>
+          <span><%= user_hobby.hobby.display_name %></span>
           <%= button_to "Remove",
                 user_hobby_path(user_hobby),
                 method: :delete,
