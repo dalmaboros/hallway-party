@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 class OnboardingController < ApplicationController
-  skip_before_action :require_event_attendance!, only: [:show, :create, :declined]
+  skip_before_action :require_event_attendance!, only: [:welcome, :submit_attendance, :declined]
   skip_before_action :require_hobbies!
 
-  def show
+  def welcome
     @featured_event_presenter = EventPresenter.new(featured_event) if featured_event
     render :no_events if @featured_event_presenter.nil?
   end
 
-  def create
+  def submit_attendance
     return redirect_to onboarding_path if featured_event.nil?
 
     case params[:answer]
@@ -23,7 +23,7 @@ class OnboardingController < ApplicationController
     end
   end
 
-  def hobbies
+  def manage_hobbies
     @user_hobby_presenters = current_user.user_hobbies
       .includes(:hobby)
       .order("hobbies.name")

@@ -102,6 +102,28 @@ RSpec.describe "Onboarding" do
     end
   end
 
+  describe "POST /onboarding with an invalid answer" do
+    before do
+      create(:event, :upcoming)
+    end
+
+    it "does not create an EventAttendance" do
+      expect do
+        post onboarding_path, params: { answer: "maybe" }
+      end.not_to change(EventAttendance, :count)
+    end
+
+    it "redirects back to the onboarding question" do
+      post onboarding_path, params: { answer: "maybe" }
+      expect(response).to redirect_to(onboarding_path)
+    end
+
+    it "sets an alert about choosing yes or no" do
+      post onboarding_path, params: { answer: "maybe" }
+      expect(flash[:alert]).to include("yes or no")
+    end
+  end
+
   describe "GET /onboarding/declined" do
     it "renders without requiring event attendance" do
       get onboarding_declined_path
