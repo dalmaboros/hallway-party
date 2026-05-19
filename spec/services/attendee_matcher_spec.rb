@@ -17,12 +17,12 @@ RSpec.describe AttendeeMatcher do
 
   before { create(:event_attendance, user: viewer, event: event) }
 
-  def match(seed_hobbies: viewer.hobbies.to_a)
-    described_class.new(seed_hobbies: seed_hobbies, event: event, exclude_user: viewer).call
+  def match
+    described_class.new(user: viewer, event: event).match_attendees
   end
 
-  describe ".call" do
-    context "with embedded seed hobbies and embedded attendee hobbies" do
+  describe "#match_attendees" do
+    context "with embedded user hobbies and embedded attendee hobbies" do
       let(:crafter) { create(:user, name: "Alex") }
       let(:hiker) { create(:user, name: "Blair") }
       let(:fiber_arts) { create(:hobby, name: "fiber arts", embedding: vector(craft: 0.99, outdoor: 0.01)) }
@@ -55,21 +55,22 @@ RSpec.describe AttendeeMatcher do
       end
     end
 
-    context "when the viewer has no embedded seed hobbies" do
+    context "when the viewer has no embedded hobbies" do
       before do
         create(:event_attendance, user: create(:user, name: "Alice"), event: event)
         create(:event_attendance, user: create(:user, name: "Bob"), event: event)
       end
 
-      it "falls back to alphabetical attendee listing" do
-        expect(match(seed_hobbies: []).map(&:name)).to eq(["Alice", "Bob"])
+      it "returns an empty array since ranking by similarity is impossible" do
+        expect(match).to eq([])
       end
     end
 
     context "when no other attendees exist" do
       it "returns an empty array" do
         knitting = create(:hobby, name: "knitting", embedding: vector(craft: 1.0))
-        expect(match(seed_hobbies: [knitting])).to eq([])
+        create(:user_hobby, user: viewer, hobby: knitting)
+        expect(match).to eq([])
       end
     end
   end

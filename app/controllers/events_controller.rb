@@ -23,10 +23,6 @@ class EventsController < ApplicationController
   end
 
   def attendees_matched_by_hobby
-    @attendees_matched_by_hobby ||= AttendeeMatcher.new(
-      seed_hobbies: current_user.hobbies.to_a,
-      event: event,
-      exclude_user: current_user,
-    ).call
+    @attendees_matched_by_hobby ||= AttendeeMatcher.new(user: current_user, event:).match_attendees
   end
 end

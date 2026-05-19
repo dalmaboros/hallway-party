@@ -81,13 +81,20 @@ RSpec.describe "Events" do
       expect(response.body).to include("July 14–16, 2026")
     end
 
-    it "renders the attendees section when the viewer is attending" do
-      other = create(:user, name: "Blair Other")
-      create(:event_attendance, user: other, event: attended_event)
-      create(:user_hobby, user: other, hobby: create(:hobby, name: "hiking"))
+    context "with another attendee who shares an embedded hobby" do
+      before do
+        hiking = create(:hobby, name: "hiking", embedding: Array.new(Embedder::DIMENSIONS, 0.5))
+        create(:user_hobby, user: user, hobby: hiking)
 
-      get event_path(attended_event)
-      expect(response.body).to include("People here", "Blair Other", "hiking")
+        other = create(:user, name: "Blair Other")
+        create(:event_attendance, user: other, event: attended_event)
+        create(:user_hobby, user: other, hobby: hiking)
+      end
+
+      it "renders the attendees section ranked by hobby similarity" do
+        get event_path(attended_event)
+        expect(response.body).to include("People here", "Blair Other", "hiking")
+      end
     end
 
     it "does not list the current user in the attendees section" do
