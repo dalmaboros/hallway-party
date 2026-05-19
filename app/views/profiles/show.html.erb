@@ -48,27 +48,27 @@
   <% end %>
 
   <% if @user_presenter.hobbies.any? %>
-    <% if @user_presenter.shared_hobbies(@current_user_hobby_ids).any? %>
+    <% if @user_presenter.shared_hobbies.any? %>
       <section class="mb-6">
         <h2 class="text-sm uppercase tracking-wide text-gray-500 mb-2">
           Shared with you
-          <span class="text-gray-400">· <%= @user_presenter.shared_hobbies(@current_user_hobby_ids).size %></span>
+          <span class="text-gray-400">· <%= @user_presenter.shared_hobbies.size %></span>
         </h2>
         <ul class="flex flex-wrap gap-2">
-          <% @user_presenter.shared_hobbies(@current_user_hobby_ids).each do |hobby| %>
+          <% @user_presenter.shared_hobbies.each do |hobby| %>
             <%= render "hobbies/hobby_pill", hobby: hobby, shared: true %>
           <% end %>
         </ul>
       </section>
     <% end %>
 
-    <% if @user_presenter.other_hobbies(@current_user_hobby_ids).any? %>
+    <% if @user_presenter.other_hobbies.any? %>
       <section class="mb-6">
         <h2 class="text-sm uppercase tracking-wide text-gray-500 mb-2">
-          <%= @user_presenter.shared_hobbies(@current_user_hobby_ids).any? ? "Also into" : "Hobbies" %>
+          <%= @user_presenter.shared_hobbies.any? ? "Also into" : "Hobbies" %>
         </h2>
         <ul class="flex flex-wrap gap-2">
-          <% @user_presenter.other_hobbies(@current_user_hobby_ids).each do |hobby| %>
+          <% @user_presenter.other_hobbies.each do |hobby| %>
             <%= render "hobbies/hobby_pill", hobby: hobby, shared: false %>
           <% end %>
         </ul>

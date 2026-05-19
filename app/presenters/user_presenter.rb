@@ -21,8 +21,9 @@ class UserPresenter
     :events,
     to: :user
 
-  def initialize(user)
+  def initialize(user, current_user: nil)
     @user = user
+    @current_user = current_user
   end
 
   def website
@@ -41,19 +42,25 @@ class UserPresenter
     AVATAR_BG_CLASSES[username.bytes.sum % AVATAR_BG_CLASSES.size]
   end
 
-  def shared_hobbies(current_user_hobby_ids)
-    hobbies.select { |hobby| current_user_hobby_ids.include?(hobby.id) }.sort_by(&:name)
+  def shared_hobbies
+    @shared_hobbies ||= hobbies.select { |hobby| current_user_hobby_ids.include?(hobby.id) }.sort_by(&:name)
   end
 
-  def other_hobbies(current_user_hobby_ids)
-    hobbies.reject { |hobby| current_user_hobby_ids.include?(hobby.id) }.sort_by(&:name)
+  def other_hobbies
+    @other_hobbies ||= hobbies.reject { |hobby| current_user_hobby_ids.include?(hobby.id) }.sort_by(&:name)
   end
 
   def not_past_events
-    events.not_past.order(:starts_at)
+    events.not_past
   end
 
   def past_events
-    events.past.order(starts_at: :desc)
+    events.past
+  end
+
+  private
+
+  def current_user_hobby_ids
+    @current_user_hobby_ids ||= @current_user&.hobby_ids&.to_set || Set.new
   end
 end
