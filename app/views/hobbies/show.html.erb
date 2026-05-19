@@ -14,8 +14,7 @@
     <ul class="divide-y divide-gray-200">
       <%= render partial: "attendees/attendee",
             collection: @attendee_presenters,
-            as: :presenter,
-            locals: { current_user_hobby_ids: @current_user_hobby_ids } %>
+            as: :presenter %>
     </ul>
   <% else %>
     <div class="text-center py-16 text-gray-600">
