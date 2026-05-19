@@ -92,6 +92,31 @@ RSpec.describe UserPresenter do
     end
   end
 
+  describe "#hobby_presenters" do
+    let(:user) { create(:user) }
+    let(:current_user) { nil }
+
+    context "when the user has hobbies" do
+      before do
+        user.hobbies << [create(:hobby, name: "knitting"), create(:hobby, name: "bouldering")]
+      end
+
+      it "returns the hobbies wrapped as HobbyPresenters, sorted by name" do
+        expect(presenter.hobby_presenters.map(&:name)).to eq(["bouldering", "knitting"])
+      end
+
+      it "wraps each as a HobbyPresenter" do
+        expect(presenter.hobby_presenters).to all(be_a(HobbyPresenter))
+      end
+    end
+
+    context "when the user has no hobbies" do
+      it "returns an empty array" do
+        expect(presenter.hobby_presenters).to eq([])
+      end
+    end
+  end
+
   describe "#shared_hobby_presenters" do
     let(:user) { create(:user) }
     let(:current_user) { create(:user) }
