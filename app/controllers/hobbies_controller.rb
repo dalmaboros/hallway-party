@@ -3,8 +3,7 @@
 class HobbiesController < ApplicationController
   def show
     @hobby_presenter = HobbyPresenter.new(hobby)
-    @event_presenter = EventPresenter.new(event)
-    @attendee_presenters = attendees_with_hobby.map { |attendee| UserPresenter.new(attendee) }
+    @user_presenters = hobbyists.map { |hobbyist| UserPresenter.new(hobbyist) }
   end
 
   private
@@ -13,14 +12,8 @@ class HobbiesController < ApplicationController
     @hobby ||= Hobby.find(params[:id])
   end
 
-  def event
-    @event ||= current_user.events.not_past.first
-  end
-
-  def attendees_with_hobby
-    @attendees_with_hobby ||= event.users
-      .joins(:user_hobbies)
-      .where(user_hobbies: { hobby_id: hobby.id })
+  def hobbyists
+    @hobbyists ||= hobby.users
       .where.not(id: current_user.id)
       .includes(:hobbies)
       .order(:name)
