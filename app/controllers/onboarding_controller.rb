@@ -5,6 +5,7 @@ class OnboardingController < ApplicationController
   skip_before_action :require_hobbies!
 
   before_action :featured_event, only: [:show, :create]
+  before_action :set_user_hobby_presenters, only: [:hobbies]
 
   def show
     @featured_event_presenter = EventPresenter.new(@featured_event) if @featured_event
@@ -35,5 +36,12 @@ class OnboardingController < ApplicationController
 
   def featured_event
     @featured_event = Event.featured
+  end
+
+  def set_user_hobby_presenters
+    @user_hobby_presenters = current_user.user_hobbies
+      .includes(:hobby)
+      .order("hobbies.name")
+      .map { |user_hobby| UserHobbyPresenter.new(user_hobby) }
   end
 end

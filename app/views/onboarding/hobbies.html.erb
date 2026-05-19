@@ -15,16 +15,14 @@
           class: "bg-party-lavender text-gray-900 px-6 py-2 rounded hover:brightness-95" %>
   <% end %>
 
-  <% user_hobbies = current_user.user_hobbies.includes(:hobby).order("hobbies.name") %>
-
-  <% if user_hobbies.any? %>
+  <% if @user_hobby_presenters.any? %>
     <h2 class="text-xl font-semibold mb-3">Your hobbies</h2>
     <ul class="mb-8">
-      <% user_hobbies.each do |user_hobby| %>
+      <% @user_hobby_presenters.each do |user_hobby_presenter| %>
         <li class="flex items-center justify-between py-2 border-b">
-          <span><%= HobbyPresenter.new(user_hobby.hobby).name %></span>
+          <span><%= user_hobby_presenter.hobby_name %></span>
           <%= button_to "Remove",
-                user_hobby_path(user_hobby),
+                user_hobby_path(user_hobby_presenter),
                 method: :delete,
                 class: "text-sm text-party-red hover:opacity-80" %>
         </li>
