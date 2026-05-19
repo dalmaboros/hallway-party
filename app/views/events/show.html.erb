@@ -17,7 +17,7 @@
     <% end %>
   </header>
 
-  <% if current_user.attendee_of?(@event_presenter) %>
+  <% if @event_presenter.attended_by?(current_user) %>
     <section>
       <h2 class="text-xl font-semibold mb-2">People here</h2>
       <p class="text-gray-600 mb-4">Ranked by shared interests.</p>

@@ -10,7 +10,7 @@
               <h2 class="text-lg font-semibold group-hover:text-party-cyan">
                 <%= event_presenter.name %>
               </h2>
-              <% if current_user.attendee_of?(event_presenter) %>
+              <% if event_presenter.attended_by?(current_user) %>
                 <span class="text-xs uppercase tracking-wide text-party-green">
                   Attending
                 </span>
