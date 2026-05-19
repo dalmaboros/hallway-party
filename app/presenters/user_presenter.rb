@@ -48,13 +48,13 @@ class UserPresenter
   end
 
   def shared_hobby_presenters
-    @shared_hobby_presenters ||= (user_hobbies & current_user_hobbies).sort_by(&:name).map do |hobby|
+    @shared_hobby_presenters ||= shared_hobbies.map do |hobby|
       HobbyPresenter.new(hobby)
     end
   end
 
   def non_shared_hobby_presenters
-    @non_shared_hobby_presenters ||= (user_hobbies - current_user_hobbies).sort_by(&:name).map do |hobby|
+    @non_shared_hobby_presenters ||= non_shared_hobbies.map do |hobby|
       HobbyPresenter.new(hobby)
     end
   end
@@ -75,5 +75,13 @@ class UserPresenter
 
   def current_user_hobbies
     @current_user_hobbies ||= @current_user&.hobbies.to_a
+  end
+
+  def shared_hobbies
+    (user_hobbies & current_user_hobbies).sort_by(&:name)
+  end
+
+  def non_shared_hobbies
+    (user_hobbies - current_user_hobbies).sort_by(&:name)
   end
 end
