@@ -13,7 +13,6 @@ class UserPresenter
   delegate :name,
     :username,
     :avatar_url,
-    :hobbies,
     :bio,
     :pronouns,
     :location,
@@ -24,6 +23,10 @@ class UserPresenter
   def initialize(user, current_user: nil)
     @user = user
     @current_user = current_user
+  end
+
+  def hobbies
+    @hobbies ||= user_hobbies.sort_by(&:name).map { |h| HobbyPresenter.new(h) }
   end
 
   def website
@@ -43,11 +46,11 @@ class UserPresenter
   end
 
   def shared_hobbies
-    @shared_hobbies ||= (hobbies & current_user_hobbies).sort_by(&:name)
+    @shared_hobbies ||= (user_hobbies & current_user_hobbies).sort_by(&:name).map { |h| HobbyPresenter.new(h) }
   end
 
   def other_hobbies
-    @other_hobbies ||= (hobbies - current_user_hobbies).sort_by(&:name)
+    @other_hobbies ||= (user_hobbies - current_user_hobbies).sort_by(&:name).map { |h| HobbyPresenter.new(h) }
   end
 
   def not_past_events
@@ -59,6 +62,10 @@ class UserPresenter
   end
 
   private
+
+  def user_hobbies
+    @user_hobbies ||= user.hobbies.to_a
+  end
 
   def current_user_hobbies
     @current_user_hobbies ||= @current_user&.hobbies.to_a

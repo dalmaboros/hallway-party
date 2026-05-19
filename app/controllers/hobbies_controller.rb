@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class HobbiesController < ApplicationController
-  before_action :set_hobby, only: [:show]
+  before_action :set_hobby_presenter, only: [:show]
   before_action :set_event_presenter, only: [:show]
   before_action :set_attendee_presenters, only: [:show]
 
@@ -10,8 +10,8 @@ class HobbiesController < ApplicationController
 
   private
 
-  def set_hobby
-    @hobby = Hobby.find(params[:id])
+  def set_hobby_presenter
+    @hobby_presenter = HobbyPresenter.new(hobby)
   end
 
   def set_event_presenter
@@ -22,6 +22,10 @@ class HobbiesController < ApplicationController
     @attendee_presenters = attendees.map { |attendee| UserPresenter.new(attendee) }
   end
 
+  def hobby
+    @hobby ||= Hobby.find(params[:id])
+  end
+
   def event
     @event ||= current_user.events.not_past.first
   end
@@ -29,7 +33,7 @@ class HobbiesController < ApplicationController
   def attendees
     @attendees ||= event.users
       .joins(:user_hobbies)
-      .where(user_hobbies: { hobby_id: @hobby.id })
+      .where(user_hobbies: { hobby_id: hobby.id })
       .where.not(id: current_user.id)
       .includes(:hobbies)
       .order(:name)

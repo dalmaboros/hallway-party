@@ -116,7 +116,11 @@ RSpec.describe UserPresenter do
       let(:current_user_hobbies) { [knitting, cycling] }
 
       it "returns just the shared ones, sorted alphabetically" do
-        expect(presenter.shared_hobbies).to eq([cycling, knitting])
+        expect(presenter.shared_hobbies.map(&:name)).to eq(["cycling", "knitting"])
+      end
+
+      it "wraps the results as HobbyPresenters" do
+        expect(presenter.shared_hobbies).to all(be_a(HobbyPresenter))
       end
     end
 
@@ -124,7 +128,7 @@ RSpec.describe UserPresenter do
       let(:current_user_hobbies) { [knitting, cycling, sourdough] }
 
       it "returns all of them, sorted alphabetically" do
-        expect(presenter.shared_hobbies).to eq([cycling, knitting, sourdough])
+        expect(presenter.shared_hobbies.map(&:name)).to eq(["cycling", "knitting", "sourdough"])
       end
     end
 
@@ -153,7 +157,11 @@ RSpec.describe UserPresenter do
       let(:current_user_hobbies) { [] }
 
       it "returns all of them, sorted alphabetically" do
-        expect(presenter.other_hobbies).to eq([cycling, knitting, sourdough])
+        expect(presenter.other_hobbies.map(&:name)).to eq(["cycling", "knitting", "sourdough"])
+      end
+
+      it "wraps the results as HobbyPresenters" do
+        expect(presenter.other_hobbies).to all(be_a(HobbyPresenter))
       end
     end
 
@@ -161,7 +169,7 @@ RSpec.describe UserPresenter do
       let(:current_user_hobbies) { [knitting, cycling] }
 
       it "returns just the non-shared ones, sorted alphabetically" do
-        expect(presenter.other_hobbies).to eq([sourdough])
+        expect(presenter.other_hobbies.map(&:name)).to eq(["sourdough"])
       end
     end
 
