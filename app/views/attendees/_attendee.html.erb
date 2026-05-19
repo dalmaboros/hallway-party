@@ -1,16 +1,18 @@
 <%# locals: (presenter:) %>
 <li class="py-4 flex gap-4">
-  <%= render "users/avatar", presenter: presenter, size: :md %>
+  <%= render partial: "users/avatar", locals: { presenter: presenter, size: :md } %>
   <div class="flex-1">
     <div class="font-semibold">
       <%= link_to presenter.name, profile_path(presenter.username), class: "hover:text-party-cyan" %>
     </div>
     <div class="text-sm text-gray-500 mb-2">@<%= presenter.username %></div>
     <ul class="flex flex-wrap gap-2">
-      <% presenter.hobbies.each do |hobby_presenter| %>
-        <%= render "hobbies/hobby_pill",
-              presenter: hobby_presenter,
-              shared: hobby_presenter.shared_with?(current_user) %>
+      <% presenter.hobby_presenters.each do |hobby_presenter| %>
+        <%= render partial: "hobbies/hobby_pill",
+              locals: {
+                presenter: hobby_presenter,
+                shared: hobby_presenter.shared_with?(current_user),
+              } %>
       <% end %>
     </ul>
   </div>

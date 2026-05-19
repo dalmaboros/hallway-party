@@ -7,7 +7,7 @@
 
       <% user_presenter = UserPresenter.new(current_user) %>
       <%= link_to profile_path(user_presenter.username), aria: { label: "Your profile" } do %>
-        <%= render "users/avatar", presenter: user_presenter, size: :sm %>
+        <%= render partial: "users/avatar", locals: { presenter: user_presenter, size: :sm } %>
       <% end %>
 
       <%= button_to "Sign out",
