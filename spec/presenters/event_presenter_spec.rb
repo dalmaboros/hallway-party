@@ -84,37 +84,6 @@ RSpec.describe EventPresenter do
     end
   end
 
-  describe "#in_progress?" do
-    let(:zone) { "Australia/Sydney" }
-    let(:starts_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 14, 9) }
-    let(:ends_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 16, 17) }
-    let(:presenter) { described_class.new(build(:event, time_zone: zone, starts_at: starts_at, ends_at: ends_at)) }
-
-    context "when today is before the event starts" do
-      it "is false" do
-        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 13, 12)) do
-          expect(presenter.in_progress?).to be(false)
-        end
-      end
-    end
-
-    context "when today is within the event window" do
-      it "is true" do
-        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 15, 12)) do
-          expect(presenter.in_progress?).to be(true)
-        end
-      end
-    end
-
-    context "when today is after the event ends" do
-      it "is false" do
-        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 17, 12)) do
-          expect(presenter.in_progress?).to be(false)
-        end
-      end
-    end
-  end
-
   describe "#current_day" do
     let(:zone) { "Australia/Sydney" }
     let(:starts_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 14, 9) }

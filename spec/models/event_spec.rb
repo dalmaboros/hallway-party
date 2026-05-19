@@ -95,6 +95,15 @@ RSpec.describe Event do
         expect(described_class.not_past).not_to include(event)
       end
     end
+
+    context "when there are multiple not_past events" do
+      let!(:sooner_event) { create(:event, starts_at: 1.week.from_now, ends_at: 1.week.from_now + 2.days) }
+      let!(:later_event) { create(:event, starts_at: 3.months.from_now, ends_at: 3.months.from_now + 2.days) }
+
+      it "orders by start date ascending" do
+        expect(described_class.not_past).to eq([sooner_event, later_event])
+      end
+    end
   end
 
   describe ".upcoming" do
@@ -119,6 +128,15 @@ RSpec.describe Event do
 
       it "is excluded" do
         expect(described_class.upcoming).not_to include(event)
+      end
+    end
+
+    context "when there are multiple upcoming events" do
+      let!(:sooner_event) { create(:event, starts_at: 1.week.from_now, ends_at: 1.week.from_now + 2.days) }
+      let!(:later_event) { create(:event, starts_at: 3.months.from_now, ends_at: 3.months.from_now + 2.days) }
+
+      it "orders by start date ascending" do
+        expect(described_class.upcoming).to eq([sooner_event, later_event])
       end
     end
   end
@@ -147,6 +165,15 @@ RSpec.describe Event do
         expect(described_class.in_progress).not_to include(event)
       end
     end
+
+    context "when there are multiple in_progress events" do
+      let!(:sooner_event) { create(:event, starts_at: 2.days.ago, ends_at: 1.day.from_now) }
+      let!(:later_event) { create(:event, starts_at: 1.hour.ago, ends_at: 2.days.from_now) }
+
+      it "orders by start date ascending" do
+        expect(described_class.in_progress).to eq([sooner_event, later_event])
+      end
+    end
   end
 
   describe ".past" do
@@ -171,6 +198,15 @@ RSpec.describe Event do
 
       it "is included" do
         expect(described_class.past).to include(event)
+      end
+    end
+
+    context "when there are multiple past events" do
+      let!(:sooner_event) { create(:event, starts_at: 1.year.ago, ends_at: 1.year.ago + 2.days) }
+      let!(:later_event) { create(:event, starts_at: 2.months.ago, ends_at: 2.months.ago + 2.days) }
+
+      it "orders by start date descending — most-recent past first" do
+        expect(described_class.past).to eq([later_event, sooner_event])
       end
     end
   end
@@ -218,6 +254,102 @@ RSpec.describe Event do
 
       it "returns the soonest upcoming event" do
         expect(described_class.featured).to eq(soon)
+      end
+    end
+  end
+
+  describe "#start_date" do
+    let(:event) do
+      build(
+        :event,
+        time_zone: "Australia/Sydney",
+        starts_at: Time.utc(2026, 7, 13, 23, 30),
+        ends_at: Time.utc(2026, 7, 16, 12),
+      )
+    end
+
+    it "returns the start time as a date in the event's time zone" do
+      # 23:30 UTC July 13 is 09:30 July 14 in Sydney (UTC+10).
+      expect(event.start_date).to eq(Date.new(2026, 7, 14))
+    end
+  end
+
+  describe "#end_date" do
+    let(:event) do
+      build(
+        :event,
+        time_zone: "Australia/Sydney",
+        starts_at: Time.utc(2026, 7, 13, 12),
+        ends_at: Time.utc(2026, 7, 16, 23, 30),
+      )
+    end
+
+    it "returns the end time as a date in the event's time zone" do
+      # 23:30 UTC July 16 is 09:30 July 17 in Sydney (UTC+10).
+      expect(event.end_date).to eq(Date.new(2026, 7, 17))
+    end
+  end
+
+  describe "#current_date" do
+    let(:event) { build(:event, time_zone: "Australia/Sydney") }
+
+    it "returns 'today' as the date seen from the event's time zone" do
+      # 23:30 UTC July 13 is July 14 in Sydney.
+      travel_to(Time.utc(2026, 7, 13, 23, 30)) do
+        expect(event.current_date).to eq(Date.new(2026, 7, 14))
+      end
+    end
+  end
+
+  describe "#happening_today?" do
+    let(:zone) { "Australia/Sydney" }
+    let(:starts_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 14, 9) }
+    let(:ends_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 16, 17) }
+    let(:event) { build(:event, time_zone: zone, starts_at: starts_at, ends_at: ends_at) }
+
+    context "when today is before the event starts" do
+      it "is false" do
+        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 13, 12)) do
+          expect(event.happening_today?).to be(false)
+        end
+      end
+    end
+
+    context "when today is within the event window" do
+      it "is true" do
+        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 15, 12)) do
+          expect(event.happening_today?).to be(true)
+        end
+      end
+    end
+
+    context "when today is after the event ends" do
+      it "is false" do
+        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 17, 12)) do
+          expect(event.happening_today?).to be(false)
+        end
+      end
+    end
+
+    context "when 'now' in UTC has already crossed midnight in the event's zone" do
+      # 23:30 UTC on July 13 is already July 14 in Sydney — so a Sydney
+      # conference starting July 14 is happening today.
+      it "uses the event's time zone, not UTC" do
+        travel_to(Time.utc(2026, 7, 13, 23, 30)) do
+          expect(event.happening_today?).to be(true)
+        end
+      end
+    end
+
+    context "when 'now' in UTC has crossed midnight but the event's zone hasn't" do
+      # 01:30 UTC on July 14 is still July 13 in Honolulu (UTC-10) — so a
+      # Honolulu conference starting July 14 is not yet happening.
+      let(:zone) { "Pacific/Honolulu" }
+
+      it "uses the event's time zone, not UTC" do
+        travel_to(Time.utc(2026, 7, 14, 1, 30)) do
+          expect(event.happening_today?).to be(false)
+        end
       end
     end
   end
