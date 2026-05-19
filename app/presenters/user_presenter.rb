@@ -43,11 +43,11 @@ class UserPresenter
   end
 
   def shared_hobbies
-    @shared_hobbies ||= hobbies.select { |hobby| @current_user&.has_hobby?(hobby) }.sort_by(&:name)
+    @shared_hobbies ||= (hobbies & current_user_hobbies).sort_by(&:name)
   end
 
   def other_hobbies
-    @other_hobbies ||= hobbies.reject { |hobby| @current_user&.has_hobby?(hobby) }.sort_by(&:name)
+    @other_hobbies ||= (hobbies - current_user_hobbies).sort_by(&:name)
   end
 
   def not_past_events
@@ -56,5 +56,11 @@ class UserPresenter
 
   def past_events
     events.past
+  end
+
+  private
+
+  def current_user_hobbies
+    @current_user_hobbies ||= @current_user&.hobbies.to_a
   end
 end
