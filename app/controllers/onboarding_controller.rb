@@ -4,21 +4,18 @@ class OnboardingController < ApplicationController
   skip_before_action :require_event_attendance!, only: [:show, :create, :declined]
   skip_before_action :require_hobbies!
 
-  before_action :featured_event, only: [:show, :create]
-  before_action :set_user_hobby_presenters, only: [:hobbies]
-
   def show
-    @featured_event_presenter = EventPresenter.new(@featured_event) if @featured_event
+    @featured_event_presenter = EventPresenter.new(featured_event) if featured_event
     render :no_events if @featured_event_presenter.nil?
   end
 
   def create
-    return redirect_to onboarding_path if @featured_event.nil?
+    return redirect_to onboarding_path if featured_event.nil?
 
     case params[:answer]
     when "yes"
-      EventAttendance.create!(user: current_user, event: @featured_event)
-      redirect_to onboarding_hobbies_path, notice: "You're attending #{@featured_event.name}! Now add a few hobbies."
+      EventAttendance.create!(user: current_user, event: featured_event)
+      redirect_to onboarding_hobbies_path, notice: "You're attending #{featured_event.name}! Now add a few hobbies."
     when "no"
       redirect_to onboarding_declined_path
     else
@@ -27,6 +24,10 @@ class OnboardingController < ApplicationController
   end
 
   def hobbies
+    @user_hobby_presenters = current_user.user_hobbies
+      .includes(:hobby)
+      .order("hobbies.name")
+      .map { |user_hobby| UserHobbyPresenter.new(user_hobby) }
   end
 
   def declined
@@ -35,13 +36,6 @@ class OnboardingController < ApplicationController
   private
 
   def featured_event
-    @featured_event = Event.featured
-  end
-
-  def set_user_hobby_presenters
-    @user_hobby_presenters = current_user.user_hobbies
-      .includes(:hobby)
-      .order("hobbies.name")
-      .map { |user_hobby| UserHobbyPresenter.new(user_hobby) }
+    @featured_event ||= Event.featured
   end
 end

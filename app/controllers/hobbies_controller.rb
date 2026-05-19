@@ -1,26 +1,13 @@
 # frozen_string_literal: true
 
 class HobbiesController < ApplicationController
-  before_action :set_hobby_presenter, only: [:show]
-  before_action :set_event_presenter, only: [:show]
-  before_action :set_attendee_presenters, only: [:show]
-
   def show
+    @hobby_presenter = HobbyPresenter.new(hobby)
+    @event_presenter = EventPresenter.new(event)
+    @attendee_presenters = attendees.map { |attendee| UserPresenter.new(attendee) }
   end
 
   private
-
-  def set_hobby_presenter
-    @hobby_presenter = HobbyPresenter.new(hobby)
-  end
-
-  def set_event_presenter
-    @event_presenter = EventPresenter.new(event)
-  end
-
-  def set_attendee_presenters
-    @attendee_presenters = attendees.map { |attendee| UserPresenter.new(attendee) }
-  end
 
   def hobby
     @hobby ||= Hobby.find(params[:id])

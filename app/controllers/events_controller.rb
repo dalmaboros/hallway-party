@@ -1,27 +1,18 @@
 # frozen_string_literal: true
 
 class EventsController < ApplicationController
-  before_action :set_event_presenter, only: [:show]
-  before_action :set_event_presenters, only: [:index]
-
   def index
+    @event_presenters = events.map { |e| EventPresenter.new(e) }
   end
 
   def show
-    return unless current_user.attendee_of?(event)
+    @event_presenter = EventPresenter.new(event)
+    return unless @event_presenter.attended_by?(current_user)
 
     @attendee_presenters = attendees.map { |attendee| UserPresenter.new(attendee) }
   end
 
   private
-
-  def set_event_presenter
-    @event_presenter = EventPresenter.new(event)
-  end
-
-  def set_event_presenters
-    @event_presenters = events.map { |e| EventPresenter.new(e) }
-  end
 
   def event
     @event ||= Event.find(params[:id])
