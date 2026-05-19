@@ -28,15 +28,31 @@ class Event < ApplicationRecord
     inclusion: { in: ActiveSupport::TimeZone.all.map { |tz| tz.tzinfo.name } }
   validate :ends_after_starts
 
-  scope :not_past, -> { where("ends_at > ?", Time.current) }
-  scope :past, -> { where(ends_at: ...Time.current) }
-  scope :upcoming, -> { where("starts_at > ?", Time.current) }
-  scope :in_progress, -> { where("starts_at <= ? AND ends_at > ?", Time.current, Time.current) }
+  scope :not_past, -> { where("ends_at > ?", Time.current).order(:starts_at) }
+  scope :upcoming, -> { where("starts_at > ?", Time.current).order(:starts_at) }
+  scope :in_progress, -> { where("starts_at <= ? AND ends_at > ?", Time.current, Time.current).order(:starts_at) }
+  scope :past, -> { where(ends_at: ...Time.current).order(starts_at: :desc) }
 
   class << self
     def featured
-      not_past.order(:starts_at).first
+      not_past.first
     end
+  end
+
+  def happening_today?
+    current_date.between?(start_date, end_date)
+  end
+
+  def start_date
+    starts_at.in_time_zone(time_zone).to_date
+  end
+
+  def end_date
+    ends_at.in_time_zone(time_zone).to_date
+  end
+
+  def current_date
+    Time.current.in_time_zone(time_zone).to_date
   end
 
   private
