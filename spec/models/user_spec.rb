@@ -68,4 +68,60 @@ RSpec.describe User do
       expect(user.email).to eq("mixedcase@example.com")
     end
   end
+
+  describe "#has_hobby?" do
+    let(:user) { create(:user) }
+    let(:knitting) { create(:hobby, name: "knitting") }
+    let(:cycling) { create(:hobby, name: "cycling") }
+
+    context "when the user has the hobby" do
+      before { user.hobbies << knitting }
+
+      it "returns true" do
+        expect(user.has_hobby?(knitting)).to be(true)
+      end
+    end
+
+    context "when the user does not have the hobby" do
+      before { user.hobbies << knitting }
+
+      it "returns false" do
+        expect(user.has_hobby?(cycling)).to be(false)
+      end
+    end
+
+    context "when the user has no hobbies" do
+      it "returns false" do
+        expect(user.has_hobby?(knitting)).to be(false)
+      end
+    end
+  end
+
+  describe "#attendee_of?" do
+    let(:user) { create(:user) }
+    let(:rubyconf) { create(:event) }
+    let(:railsconf) { create(:event) }
+
+    context "when the user attends the event" do
+      before { user.events << rubyconf }
+
+      it "returns true" do
+        expect(user.attendee_of?(rubyconf)).to be(true)
+      end
+    end
+
+    context "when the user does not attend the event" do
+      before { user.events << railsconf }
+
+      it "returns false" do
+        expect(user.attendee_of?(rubyconf)).to be(false)
+      end
+    end
+
+    context "when the user attends no events" do
+      it "returns false" do
+        expect(user.attendee_of?(rubyconf)).to be(false)
+      end
+    end
+  end
 end

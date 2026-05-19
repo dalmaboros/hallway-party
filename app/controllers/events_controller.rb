@@ -5,15 +5,12 @@ class EventsController < ApplicationController
   before_action :set_event_presenters, only: [:index]
 
   def index
-    @current_user_event_ids = current_user.event_ids.to_set
   end
 
   def show
-    @current_user_attending = current_user.events.exists?(id: event.id)
-    return unless @current_user_attending
+    return unless current_user.attendee_of?(event)
 
     @attendee_presenters = attendees.map { |attendee| UserPresenter.new(attendee) }
-    @current_user_hobby_ids = current_user.hobby_ids.to_set
   end
 
   private

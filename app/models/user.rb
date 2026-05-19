@@ -45,9 +45,25 @@ class User < ApplicationRecord
 
   before_save :downcase_email
 
+  def has_hobby?(hobby)
+    hobby_id_set.include?(hobby.id)
+  end
+
+  def attendee_of?(event)
+    event_id_set.include?(event.id)
+  end
+
   private
 
   def downcase_email
     self.email = email.downcase if email.present?
+  end
+
+  def hobby_id_set
+    @hobby_id_set ||= hobby_ids.to_set
+  end
+
+  def event_id_set
+    @event_id_set ||= event_ids.to_set
   end
 end

@@ -17,7 +17,7 @@
     <% end %>
   </header>
 
-  <% if @current_user_attending %>
+  <% if current_user.attendee_of?(@event_presenter) %>
     <section>
       <h2 class="text-xl font-semibold mb-2">People here</h2>
       <p class="text-gray-600 mb-4">Ranked by shared interests.</p>
@@ -26,8 +26,7 @@
         <ul class="divide-y divide-gray-200">
           <%= render partial: "attendees/attendee",
                 collection: @attendee_presenters,
-                as: :presenter,
-                locals: { current_user_hobby_ids: @current_user_hobby_ids } %>
+                as: :presenter %>
         </ul>
       <% else %>
         <div class="text-center py-16 text-gray-600">

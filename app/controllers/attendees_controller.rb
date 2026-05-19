@@ -5,7 +5,6 @@ class AttendeesController < ApplicationController
   before_action :set_attendee_presenters, only: [:index]
 
   def index
-    @current_user_hobby_ids = current_user.hobby_ids.to_set
   end
 
   private

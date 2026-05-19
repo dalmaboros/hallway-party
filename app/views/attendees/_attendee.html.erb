@@ -1,4 +1,4 @@
-<%# locals: (presenter:, current_user_hobby_ids:) %>
+<%# locals: (presenter:) %>
 <li class="py-4 flex gap-4">
   <%= render "users/avatar", presenter: presenter, size: :md %>
   <div class="flex-1">
@@ -10,7 +10,7 @@
       <% presenter.hobbies.sort_by(&:name).each do |hobby| %>
         <%= render "hobbies/hobby_pill",
               hobby: hobby,
-              shared: current_user_hobby_ids.include?(hobby.id) %>
+              shared: current_user.has_hobby?(hobby) %>
       <% end %>
     </ul>
   </div>
