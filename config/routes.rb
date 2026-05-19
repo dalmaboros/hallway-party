@@ -25,9 +25,9 @@ Rails.application.routes.draw do
   delete "/sign_out", to: "sessions#destroy", as: :sign_out
 
   # Onboarding
-  get "/onboarding", to: "onboarding#show", as: :onboarding
-  post "/onboarding", to: "onboarding#create"
-  get "/onboarding/hobbies", to: "onboarding#hobbies", as: :onboarding_hobbies
+  get "/onboarding", to: "onboarding#welcome", as: :onboarding
+  post "/onboarding", to: "onboarding#submit_attendance"
+  get "/onboarding/hobbies", to: "onboarding#manage_hobbies", as: :onboarding_hobbies
   get "/onboarding/declined", to: "onboarding#declined", as: :onboarding_declined
 
   # Hobbies
