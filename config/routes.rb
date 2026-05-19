@@ -37,10 +37,8 @@ Rails.application.routes.draw do
   # Profiles
   resources :profiles, only: [:show], param: :username
 
-  # Events + attendees
-  resources :events, only: [:index, :show] do
-    resources :attendees, only: [:index]
-  end
+  # Events
+  resources :events, only: [:index, :show]
 
   # Authenticated
   get "/dashboard", to: "dashboard#index", as: :dashboard
