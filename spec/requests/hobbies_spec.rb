@@ -23,14 +23,13 @@ RSpec.describe "Hobbies" do
       expect(response).to have_http_status(:ok)
     end
 
-    it "shows the hobby and event in the heading" do
+    it "shows the hobby name in the heading" do
       get hobby_path(hobby)
-      expect(response.body).to include("bouldering").and include(event.name)
+      expect(response.body).to include("bouldering")
     end
 
-    it "lists other attendees who share the hobby" do
+    it "lists other users who share the hobby" do
       sharer = create(:user, name: "Sharer Person")
-      create(:event_attendance, user: sharer, event: event)
       create(:user_hobby, user: sharer, hobby: hobby)
 
       get hobby_path(hobby)
@@ -42,24 +41,23 @@ RSpec.describe "Hobbies" do
       expect(response.body).not_to include(user.name)
     end
 
-    it "does not list attendees of the event who lack the hobby" do
-      other_attendee = create(:user, name: "Other Attendee")
-      create(:event_attendance, user: other_attendee, event: event)
-      create(:user_hobby, user: other_attendee, hobby: create(:hobby, name: "knitting"))
+    it "does not list users who lack the hobby" do
+      other_user = create(:user, name: "Other Person")
+      create(:user_hobby, user: other_user, hobby: create(:hobby, name: "knitting"))
 
       get hobby_path(hobby)
-      expect(response.body).not_to include("Other Attendee")
+      expect(response.body).not_to include("Other Person")
     end
 
-    it "does not list users with the hobby who aren't attending the event" do
+    it "lists users with the hobby regardless of event attendance" do
       outsider = create(:user, name: "Outside Person")
       create(:user_hobby, user: outsider, hobby: hobby)
 
       get hobby_path(hobby)
-      expect(response.body).not_to include("Outside Person")
+      expect(response.body).to include("Outside Person")
     end
 
-    it "shows the empty state when no other attendees share the hobby" do
+    it "shows the empty state when no other users share the hobby" do
       get hobby_path(hobby)
       expect(response.body).to include("be the conversation-starter")
     end

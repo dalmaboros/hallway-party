@@ -1,24 +1,20 @@
 <div class="max-w-3xl mx-auto">
-  <%= link_to "← Back to people at #{@event_presenter.name}",
-        event_path(@event_presenter),
-        class: "inline-block text-sm text-gray-500 hover:text-gray-700 mb-4" %>
-
   <h1 class="text-3xl font-bold mb-2">
-    People at <%= @event_presenter.name %> who like <%= @hobby_presenter.name %>
+    People who like <%= @hobby_presenter.name %>
   </h1>
   <p class="text-gray-600 mb-8">
-    <%= pluralize(@attendee_presenters.size, "other attendee") %>.
+    <%= pluralize(@user_presenters.size, "other person", "other people") %>.
   </p>
 
-  <% if @attendee_presenters.any? %>
+  <% if @user_presenters.any? %>
     <ul class="divide-y divide-gray-200">
       <%= render partial: "attendees/attendee",
-            collection: @attendee_presenters,
+            collection: @user_presenters,
             as: :presenter %>
     </ul>
   <% else %>
     <div class="text-center py-16 text-gray-600">
-      Nobody else here lists <%= @hobby_presenter.name %> yet — be the conversation-starter.
+      Nobody else lists <%= @hobby_presenter.name %> yet — be the conversation-starter.
     </div>
   <% end %>
 </div>
