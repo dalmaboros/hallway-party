@@ -12,7 +12,7 @@
         <div class="text-sm text-gray-500 mt-1"><%= @user_presenter.location %></div>
       <% end %>
       <div class="flex gap-3 mt-2 text-gray-500">
-        <%= link_to "https://github.com/#{@user_presenter.username}",
+        <%= link_to @user_presenter.github_url,
               target: "_blank",
               rel: "noopener noreferrer",
               class: "hover:text-party-cyan",

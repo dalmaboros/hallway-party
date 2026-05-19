@@ -45,6 +45,10 @@ class User < ApplicationRecord
 
   before_save :downcase_email
 
+  def github_url
+    "https://github.com/#{username}"
+  end
+
   def has_hobby?(hobby)
     hobby_id_set.include?(hobby.id)
   end

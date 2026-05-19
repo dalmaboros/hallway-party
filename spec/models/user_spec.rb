@@ -69,6 +69,14 @@ RSpec.describe User do
     end
   end
 
+  describe "#github_url" do
+    let(:user) { build(:user, username: "dalmaboros") }
+
+    it "returns the user's GitHub profile URL" do
+      expect(user.github_url).to eq("https://github.com/dalmaboros")
+    end
+  end
+
   describe "#has_hobby?" do
     let(:user) { create(:user) }
     let(:knitting) { create(:hobby, name: "knitting") }
