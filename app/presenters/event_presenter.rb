@@ -40,4 +40,8 @@ class EventPresenter
   def total_days
     (end_date - start_date).to_i + 1
   end
+
+  def attended_by?(user)
+    user.attendee_of?(event)
+  end
 end

@@ -188,4 +188,24 @@ RSpec.describe EventPresenter do
       end
     end
   end
+
+  describe "#attended_by?" do
+    let(:event) { create(:event) }
+    let(:presenter) { described_class.new(event) }
+    let(:user) { create(:user) }
+
+    context "when the user attends the event" do
+      before { user.events << event }
+
+      it "returns true" do
+        expect(presenter.attended_by?(user)).to be(true)
+      end
+    end
+
+    context "when the user does not attend the event" do
+      it "returns false" do
+        expect(presenter.attended_by?(user)).to be(false)
+      end
+    end
+  end
 end
