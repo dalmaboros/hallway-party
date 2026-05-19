@@ -90,6 +90,11 @@ RSpec.describe "Events" do
       expect(response.body).to include("People here", "Blair Other", "hiking")
     end
 
+    it "does not list the current user in the attendees section" do
+      get event_path(attended_event)
+      expect(response.body).not_to include(user.name)
+    end
+
     it "shows the empty attendees state when no other attendees exist" do
       get event_path(attended_event)
       expect(response.body).to include("People here", "You're early")
