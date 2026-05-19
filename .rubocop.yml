@@ -31,6 +31,9 @@ AllCops:
 Style/MethodCallWithArgsParentheses:
   Enabled: false
 
+RSpec/MultipleMemoizedHelpers:
+  Max: 6
+
 Rails/I18nLocaleTexts:
   Enabled: false
 

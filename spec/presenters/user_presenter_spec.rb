@@ -3,8 +3,11 @@
 require "rails_helper"
 
 RSpec.describe UserPresenter do
+  subject(:presenter) { described_class.new(user, current_user:) }
+
   describe "#initials" do
-    let(:presenter) { described_class.new(build(:user, name: name)) }
+    let(:user) { build(:user, name: name) }
+    let(:current_user) { nil }
 
     context "with a two-name user" do
       let(:name) { "Mona Octocat" }
@@ -48,7 +51,8 @@ RSpec.describe UserPresenter do
   end
 
   describe "#website" do
-    let(:presenter) { described_class.new(build(:user, website: stored_website)) }
+    let(:user) { build(:user, website: stored_website) }
+    let(:current_user) { nil }
 
     context "with an https URL" do
       let(:stored_website) { "https://example.com" }
@@ -77,7 +81,7 @@ RSpec.describe UserPresenter do
 
   describe "#avatar_color_class" do
     let(:user) { build(:user, username: "user") }
-    let(:presenter) { described_class.new(user) }
+    let(:current_user) { nil }
 
     it "returns one of the AVATAR_BG_CLASSES" do
       expect(described_class::AVATAR_BG_CLASSES).to include(presenter.avatar_color_class)
@@ -90,63 +94,82 @@ RSpec.describe UserPresenter do
 
   describe "#shared_hobbies" do
     let(:user) { create(:user) }
-    let(:presenter) { described_class.new(user) }
+    let(:current_user) { create(:user) }
     let!(:knitting) { create(:hobby, name: "knitting") }
     let!(:cycling) { create(:hobby, name: "cycling") }
     let!(:sourdough) { create(:hobby, name: "sourdough") }
 
-    before { user.hobbies << [knitting, cycling, sourdough] }
+    before do
+      user.hobbies << [knitting, cycling, sourdough]
+      current_user.hobbies << current_user_hobbies
+    end
 
     context "when the current user shares none of the user's hobbies" do
+      let(:current_user_hobbies) { [] }
+
       it "returns an empty array" do
-        expect(presenter.shared_hobbies([])).to eq([])
+        expect(presenter.shared_hobbies).to eq([])
       end
     end
 
     context "when the current user shares a subset of the user's hobbies" do
+      let(:current_user_hobbies) { [knitting, cycling] }
+
       it "returns just the shared ones, sorted alphabetically" do
-        expect(presenter.shared_hobbies([knitting.id, cycling.id])).to eq([cycling, knitting])
+        expect(presenter.shared_hobbies).to eq([cycling, knitting])
       end
     end
 
     context "when the current user shares every one of the user's hobbies" do
+      let(:current_user_hobbies) { [knitting, cycling, sourdough] }
+
       it "returns all of them, sorted alphabetically" do
-        expect(presenter.shared_hobbies([knitting.id, cycling.id, sourdough.id])).to eq([cycling, knitting, sourdough])
+        expect(presenter.shared_hobbies).to eq([cycling, knitting, sourdough])
       end
     end
 
-    context "when the current user's ids include hobbies the user does not have" do
-      it "ignores the unrelated ids" do
-        unrelated = create(:hobby, name: "rock climbing")
-        expect(presenter.shared_hobbies([unrelated.id])).to eq([])
+    context "when the current user has hobbies the user does not have" do
+      let(:current_user_hobbies) { [create(:hobby, name: "rock climbing")] }
+
+      it "ignores the unrelated hobbies" do
+        expect(presenter.shared_hobbies).to eq([])
       end
     end
   end
 
   describe "#other_hobbies" do
     let(:user) { create(:user) }
-    let(:presenter) { described_class.new(user) }
+    let(:current_user) { create(:user) }
     let!(:knitting) { create(:hobby, name: "knitting") }
     let!(:cycling) { create(:hobby, name: "cycling") }
     let!(:sourdough) { create(:hobby, name: "sourdough") }
 
-    before { user.hobbies << [knitting, cycling, sourdough] }
+    before do
+      user.hobbies << [knitting, cycling, sourdough]
+      current_user.hobbies << current_user_hobbies
+    end
 
     context "when the current user shares none of the user's hobbies" do
+      let(:current_user_hobbies) { [] }
+
       it "returns all of them, sorted alphabetically" do
-        expect(presenter.other_hobbies([])).to eq([cycling, knitting, sourdough])
+        expect(presenter.other_hobbies).to eq([cycling, knitting, sourdough])
       end
     end
 
     context "when the current user shares a subset of the user's hobbies" do
+      let(:current_user_hobbies) { [knitting, cycling] }
+
       it "returns just the non-shared ones, sorted alphabetically" do
-        expect(presenter.other_hobbies([knitting.id, cycling.id])).to eq([sourdough])
+        expect(presenter.other_hobbies).to eq([sourdough])
       end
     end
 
     context "when the current user shares every one of the user's hobbies" do
+      let(:current_user_hobbies) { [knitting, cycling, sourdough] }
+
       it "returns an empty array" do
-        expect(presenter.other_hobbies([knitting.id, cycling.id, sourdough.id])).to eq([])
+        expect(presenter.other_hobbies).to eq([])
       end
     end
   end
