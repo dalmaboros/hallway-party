@@ -1,6 +1,6 @@
 <div class="max-w-2xl mx-auto">
   <header class="flex gap-4 mb-6">
-    <%= render "users/avatar", presenter: @user_presenter, size: :lg %>
+    <%= render partial: "users/avatar", locals: { presenter: @user_presenter, size: :lg } %>
     <div class="flex-1">
       <h1 class="text-3xl font-bold">
         <%= @user_presenter.name %>
@@ -17,7 +17,7 @@
               rel: "noopener noreferrer",
               class: "hover:text-party-cyan",
               aria: { label: "GitHub" } do %>
-          <%= render "icons/github" %>
+          <%= render partial: "icons/github" %>
         <% end %>
         <% if @user_presenter.twitter_url.present? %>
           <%= link_to @user_presenter.twitter_url,
@@ -25,7 +25,7 @@
                 rel: "noopener noreferrer",
                 class: "hover:text-party-cyan",
                 aria: { label: "Twitter" } do %>
-            <%= render "icons/twitter" %>
+            <%= render partial: "icons/twitter" %>
           <% end %>
         <% end %>
         <% if @user_presenter.website.present? %>
@@ -34,7 +34,7 @@
                 rel: "noopener noreferrer",
                 class: "hover:text-party-cyan",
                 aria: { label: "Website" } do %>
-            <%= render "icons/globe" %>
+            <%= render partial: "icons/globe" %>
           <% end %>
         <% end %>
       </div>
@@ -47,30 +47,32 @@
     </section>
   <% end %>
 
-  <% if @user_presenter.hobbies.any? %>
-    <% if @user_presenter.shared_hobbies.any? %>
+  <% if @user_presenter.hobby_presenters.any? %>
+    <% if @user_presenter.shared_hobby_presenters.any? %>
       <section class="mb-6">
         <h2 class="text-sm uppercase tracking-wide text-gray-500 mb-2">
           Shared with you
-          <span class="text-gray-400">· <%= @user_presenter.shared_hobbies.size %></span>
+          <span class="text-gray-400">· <%= @user_presenter.shared_hobby_presenters.size %></span>
         </h2>
         <ul class="flex flex-wrap gap-2">
-          <% @user_presenter.shared_hobbies.each do |hobby_presenter| %>
-            <%= render "hobbies/hobby_pill", presenter: hobby_presenter, shared: true %>
-          <% end %>
+          <%= render partial: "hobbies/hobby_pill",
+                collection: @user_presenter.shared_hobby_presenters,
+                as: :presenter,
+                locals: { shared: true } %>
         </ul>
       </section>
     <% end %>
 
-    <% if @user_presenter.other_hobbies.any? %>
+    <% if @user_presenter.non_shared_hobby_presenters.any? %>
       <section class="mb-6">
         <h2 class="text-sm uppercase tracking-wide text-gray-500 mb-2">
-          <%= @user_presenter.shared_hobbies.any? ? "Also into" : "Hobbies" %>
+          <%= @user_presenter.shared_hobby_presenters.any? ? "Also into" : "Hobbies" %>
         </h2>
         <ul class="flex flex-wrap gap-2">
-          <% @user_presenter.other_hobbies.each do |hobby_presenter| %>
-            <%= render "hobbies/hobby_pill", presenter: hobby_presenter, shared: false %>
-          <% end %>
+          <%= render partial: "hobbies/hobby_pill",
+                collection: @user_presenter.non_shared_hobby_presenters,
+                as: :presenter,
+                locals: { shared: false } %>
         </ul>
       </section>
     <% end %>

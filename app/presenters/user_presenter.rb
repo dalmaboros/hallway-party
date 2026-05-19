@@ -25,8 +25,10 @@ class UserPresenter
     @current_user = current_user
   end
 
-  def hobbies
-    @hobbies ||= user_hobbies.sort_by(&:name).map { |h| HobbyPresenter.new(h) }
+  def hobby_presenters
+    @hobby_presenters ||= user_hobbies.sort_by(&:name).map do |hobby|
+      HobbyPresenter.new(hobby)
+    end
   end
 
   def website
@@ -45,12 +47,16 @@ class UserPresenter
     AVATAR_BG_CLASSES[username.bytes.sum % AVATAR_BG_CLASSES.size]
   end
 
-  def shared_hobbies
-    @shared_hobbies ||= (user_hobbies & current_user_hobbies).sort_by(&:name).map { |h| HobbyPresenter.new(h) }
+  def shared_hobby_presenters
+    @shared_hobby_presenters ||= (user_hobbies & current_user_hobbies).sort_by(&:name).map do |hobby|
+      HobbyPresenter.new(hobby)
+    end
   end
 
-  def other_hobbies
-    @other_hobbies ||= (user_hobbies - current_user_hobbies).sort_by(&:name).map { |h| HobbyPresenter.new(h) }
+  def non_shared_hobby_presenters
+    @non_shared_hobby_presenters ||= (user_hobbies - current_user_hobbies).sort_by(&:name).map do |hobby|
+      HobbyPresenter.new(hobby)
+    end
   end
 
   def not_past_events

@@ -11,9 +11,9 @@
       <%= link_to "Edit", onboarding_hobbies_path, class: "text-sm text-party-cyan hover:opacity-80" %>
     </div>
     <ul class="flex flex-wrap gap-2">
-      <% @hobby_presenters.each do |hobby_presenter| %>
-        <%= render "hobbies/hobby_pill", presenter: hobby_presenter %>
-      <% end %>
+      <%= render partial: "hobbies/hobby_pill",
+            collection: @hobby_presenters,
+            as: :presenter %>
     </ul>
   </section>
 
