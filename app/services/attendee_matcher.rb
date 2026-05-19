@@ -3,50 +3,46 @@
 class AttendeeMatcher
   TOP_N_NEIGHBORS = 10
   RESULT_LIMIT = 50
-  # Cosine similarity below this is treated as noise and not credited.
-  # OpenAI text embeddings rarely drop unrelated hobbies below ~0.3, so a 0.5
-  # floor still admits genuinely related concepts (e.g. knitting↔fiber arts).
+  # Cosine similarity has a floor near 0.3 even for unrelated hobbies, so a 0.5
+  # threshold still admits genuinely related concepts (e.g. knitting ↔ fiber arts).
   SIMILARITY_THRESHOLD = 0.5
 
-  def initialize(seed_hobbies:, event:, exclude_user:)
-    @seed_hobbies = seed_hobbies
+  def initialize(user:, event:)
+    @user = user
     @event = event
-    @exclude_user = exclude_user
   end
 
-  def call
-    return fallback_attendees if embedded_seeds.empty?
+  def match_attendees
+    return [] if ranked_user_ids.empty?
 
-    ranked_ids = compute_ranked_user_ids
-    return fallback_attendees if ranked_ids.empty?
-
-    users_by_id = User.where(id: ranked_ids).includes(:hobbies).index_by(&:id)
-    ranked_ids.filter_map { |id| users_by_id[id] }
+    users_by_id = User.where(id: ranked_user_ids).includes(:hobbies).index_by(&:id)
+    ranked_user_ids.filter_map { |id| users_by_id[id] }
   end
 
   private
 
-  attr_reader :seed_hobbies, :event, :exclude_user
-
-  def embedded_seeds
-    @embedded_seeds ||= seed_hobbies.select { |hobby| hobby.embedding.present? }
+  def embedded_user_hobbies
+    @embedded_user_hobbies ||= @user.hobbies.to_a.select { |hobby| hobby.embedding.present? }
   end
 
   def candidate_user_ids
     @candidate_user_ids ||= User
       .joins(:event_attendances)
-      .where(event_attendances: { event_id: event.id })
-      .where.not(id: exclude_user.id)
+      .where(event_attendances: { event_id: @event.id })
+      .where.not(id: @user.id)
       .pluck(:id)
   end
 
-  def compute_ranked_user_ids
-    scores = Hash.new(0.0)
+  def ranked_user_ids
+    @ranked_user_ids ||= rank_by_normalized_score(similarity_scores)
+  end
 
-    embedded_seeds.each do |seed|
+  def similarity_scores
+    scores = Hash.new(0.0)
+    embedded_user_hobbies.each do |hobby|
       Hobby
         .where.not(embedding: nil)
-        .nearest_neighbors(:embedding, seed.embedding, distance: "cosine")
+        .nearest_neighbors(:embedding, hobby.embedding, distance: "cosine")
         .limit(TOP_N_NEIGHBORS)
         .each do |neighbor|
           similarity = 1.0 - neighbor.neighbor_distance
@@ -57,7 +53,10 @@ class AttendeeMatcher
           end
         end
     end
+    scores
+  end
 
+  def rank_by_normalized_score(scores)
     # Normalize by sqrt(candidate's hobby count) so users with many hobbies
     # don't out-rank users with fewer, stronger overlaps just by accumulation.
     scores
@@ -72,16 +71,5 @@ class AttendeeMatcher
       .where(user_id: candidate_user_ids)
       .group(:user_id)
       .count
-  end
-
-  def fallback_attendees
-    User
-      .joins(:event_attendances)
-      .where(event_attendances: { event_id: event.id })
-      .where.not(id: exclude_user.id)
-      .includes(:hobbies)
-      .order(:name)
-      .limit(RESULT_LIMIT)
-      .to_a
   end
 end
