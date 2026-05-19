@@ -17,6 +17,7 @@ class UserPresenter
     :pronouns,
     :location,
     :twitter_url,
+    :github_url,
     :events,
     to: :user
 
