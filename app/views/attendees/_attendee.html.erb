@@ -7,10 +7,10 @@
     </div>
     <div class="text-sm text-gray-500 mb-2">@<%= presenter.username %></div>
     <ul class="flex flex-wrap gap-2">
-      <% presenter.hobbies.sort_by(&:name).each do |hobby| %>
+      <% presenter.hobbies.each do |hobby_presenter| %>
         <%= render "hobbies/hobby_pill",
-              hobby: hobby,
-              shared: current_user.has_hobby?(hobby) %>
+              presenter: hobby_presenter,
+              shared: hobby_presenter.shared_with?(current_user) %>
       <% end %>
     </ul>
   </div>

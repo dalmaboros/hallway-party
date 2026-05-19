@@ -11,21 +11,21 @@
       <%= link_to "Edit", onboarding_hobbies_path, class: "text-sm text-party-cyan hover:opacity-80" %>
     </div>
     <ul class="flex flex-wrap gap-2">
-      <% @hobbies.each do |hobby| %>
-        <%= render "hobbies/hobby_pill", hobby: hobby %>
+      <% @hobby_presenters.each do |hobby_presenter| %>
+        <%= render "hobbies/hobby_pill", presenter: hobby_presenter %>
       <% end %>
     </ul>
   </section>
 
-  <% if @current_event_presenter %>
+  <% if @event_presenter %>
     <section class="mb-6">
-      <% if @current_event_presenter.happening_today? %>
+      <% if @event_presenter.happening_today? %>
         <p class="inline-block text-sm font-semibold text-party-green border border-party-green/40 rounded-full px-3 py-1 mb-3">
-          Day <%= @current_event_presenter.current_day %> of <%= @current_event_presenter.total_days %>
+          Day <%= @event_presenter.current_day %> of <%= @event_presenter.total_days %>
         </p>
       <% end %>
-      <%= link_to "See who else is at #{@current_event_presenter.name}",
-            event_attendees_path(@current_event_presenter),
+      <%= link_to "See who else is at #{@event_presenter.name}",
+            event_attendees_path(@event_presenter),
             class: "inline-block bg-party-lavender text-gray-900 px-6 py-3 rounded hover:brightness-95" %>
     </section>
   <% end %>
@@ -34,10 +34,10 @@
     <section class="mb-6">
       <h2 class="text-sm uppercase tracking-wide text-gray-500 mb-2">Past events</h2>
       <ul class="flex flex-wrap gap-2 text-sm">
-        <% @user_presenter.past_events.each do |event| %>
+        <% @user_presenter.past_events.each do |past_event| %>
           <li>
-            <%= link_to event.name,
-                  event_path(event),
+            <%= link_to past_event.name,
+                  event_path(past_event),
                   class: "inline-block bg-gray-100 border border-gray-200 rounded-full px-3 py-1 text-gray-600 transition hover:bg-gray-200" %>
           </li>
         <% end %>

@@ -24,10 +24,6 @@ class Hobby < ApplicationRecord
   validates :name, presence: true, uniqueness: { case_sensitive: false }
   validate :not_programming_related
 
-  def display_name
-    name&.downcase
-  end
-
   private
 
   def not_programming_related

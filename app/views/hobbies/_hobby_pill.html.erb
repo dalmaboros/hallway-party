@@ -1,11 +1,6 @@
-<%# locals: (hobby:, shared: false) %>
-<% theme = hobby_pill_theme(hobby) %>
+<%# locals: (presenter:, shared: false) %>
 <li>
-  <%= link_to hobby.display_name,
-        hobby_path(hobby),
-        class: [
-          "inline-block rounded-full px-3 py-1 text-sm transition hover:text-white hover:border-transparent",
-          theme[:hover],
-          (shared ? "#{theme[:soft]} border-2 #{theme[:border]}" : "bg-gray-100 border border-gray-200"),
-        ].join(" ") %>
+  <%= link_to presenter.name,
+        hobby_path(presenter),
+        class: presenter.pill_classes(shared: shared) %>
 </li>
