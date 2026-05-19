@@ -2,14 +2,14 @@
 
 class EventsController < ApplicationController
   def index
-    @event_presenters = not_past_events.map { |e| EventPresenter.new(e) }
+    @event_presenters = not_past_events.map { |event| EventPresenter.new(event) }
   end
 
   def show
     @event_presenter = EventPresenter.new(event)
     return unless @event_presenter.attended_by?(current_user)
 
-    @attendee_presenters = attendees_matched_by_hobby.map { |attendee| UserPresenter.new(attendee) }
+    @user_presenters = attendees_matched_by_hobby.map { |attendee| UserPresenter.new(attendee) }
   end
 
   private
