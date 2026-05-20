@@ -287,6 +287,37 @@ RSpec.describe EventPresenter do
     end
   end
 
+  describe "#upcoming?" do
+    let(:zone) { "Australia/Sydney" }
+    let(:starts_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 14, 9) }
+    let(:ends_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 16, 17) }
+    let(:presenter) { described_class.new(build(:event, time_zone: zone, starts_at: starts_at, ends_at: ends_at)) }
+
+    context "when the event is in the future" do
+      it "returns true" do
+        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 1, 12)) do
+          expect(presenter.upcoming?).to be(true)
+        end
+      end
+    end
+
+    context "when the event starts today" do
+      it "returns false" do
+        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 14, 12)) do
+          expect(presenter.upcoming?).to be(false)
+        end
+      end
+    end
+
+    context "when the event is in the past" do
+      it "returns false" do
+        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 20, 12)) do
+          expect(presenter.upcoming?).to be(false)
+        end
+      end
+    end
+  end
+
   describe "#total_days" do
     let(:zone) { "Australia/Sydney" }
     let(:presenter) { described_class.new(build(:event, time_zone: zone, starts_at: starts_at, ends_at: ends_at)) }

@@ -49,6 +49,10 @@ class EventPresenter
     (start_date - current_date).to_i
   end
 
+  def upcoming?
+    days_until_start.positive?
+  end
+
   def total_days
     (end_date - start_date).to_i + 1
   end

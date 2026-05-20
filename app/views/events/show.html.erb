@@ -6,6 +6,10 @@
       <p class="inline-block text-sm font-semibold text-party-green border border-party-green/40 rounded-full px-3 py-1 mb-2">
         Day <%= @event_presenter.current_day %> of <%= @event_presenter.total_days %>
       </p>
+    <% elsif @event_presenter.upcoming? %>
+      <p class="inline-block text-sm font-semibold text-party-lavender border border-party-lavender/40 rounded-full px-3 py-1 mb-2">
+        Starts in <%= pluralize(@event_presenter.days_until_start, "day") %>
+      </p>
     <% end %>
     <p class="text-gray-600 mb-2"><%= @event_presenter.location %></p>
     <% if @event_presenter.website %>
