@@ -3,7 +3,7 @@
 class UserHobbyPresenter
   attr_reader :user_hobby
 
-  delegate :id, :to_param, to: :user_hobby
+  delegate :to_param, to: :user_hobby
 
   def initialize(user_hobby)
     @user_hobby = user_hobby

@@ -3,6 +3,19 @@
 require "rails_helper"
 
 RSpec.describe EventPresenter do
+  describe "delegations" do
+    let(:presenter) { described_class.new(build(:event)) }
+    let(:delegated_methods) { [:to_param, :name, :location, :start_date, :end_date, :current_date, :happening_today?] }
+
+    it "delegates the listed methods to event" do
+      aggregate_failures do
+        delegated_methods.each do |method|
+          expect(presenter).to delegate_method(method).to(:event)
+        end
+      end
+    end
+  end
+
   describe "#website" do
     let(:presenter) { described_class.new(build(:event, website: stored_website)) }
 

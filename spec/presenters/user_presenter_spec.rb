@@ -5,6 +5,20 @@ require "rails_helper"
 RSpec.describe UserPresenter do
   subject(:presenter) { described_class.new(user, current_user:) }
 
+  describe "delegations" do
+    let(:user) { build(:user) }
+    let(:current_user) { nil }
+    let(:delegated_methods) { [:name, :username, :avatar_url, :bio, :pronouns, :location, :twitter_url, :github_url, :events] }
+
+    it "delegates the listed methods to user" do
+      aggregate_failures do
+        delegated_methods.each do |method|
+          expect(presenter).to delegate_method(method).to(:user)
+        end
+      end
+    end
+  end
+
   describe "#initials" do
     let(:user) { build(:user, name: name) }
     let(:current_user) { nil }

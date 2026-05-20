@@ -3,6 +3,19 @@
 require "rails_helper"
 
 RSpec.describe UserHobbyPresenter do
+  describe "delegations" do
+    let(:presenter) { described_class.new(build(:user_hobby)) }
+    let(:delegated_methods) { [:to_param] }
+
+    it "delegates the listed methods to user_hobby" do
+      aggregate_failures do
+        delegated_methods.each do |method|
+          expect(presenter).to delegate_method(method).to(:user_hobby)
+        end
+      end
+    end
+  end
+
   describe "#hobby_name" do
     let(:user) { create(:user) }
     let(:hobby) { create(:hobby, name: "Knitting") }
@@ -11,15 +24,6 @@ RSpec.describe UserHobbyPresenter do
 
     it "returns the underlying hobby's name lowercased" do
       expect(presenter.hobby_name).to eq("knitting")
-    end
-  end
-
-  describe "URL helper compatibility" do
-    let(:user_hobby) { create(:user_hobby) }
-    let(:presenter) { described_class.new(user_hobby) }
-
-    it "delegates to_param so Rails URL helpers route through the underlying record" do
-      expect(presenter.to_param).to eq(user_hobby.id.to_s)
     end
   end
 end
