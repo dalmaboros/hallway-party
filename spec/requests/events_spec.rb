@@ -127,6 +127,19 @@ RSpec.describe "Events" do
         get event_path(in_progress_event)
         expect(response.body).to include("People here")
       end
+
+      it "shows the Day X of Y pill, not the countdown pill" do
+        get event_path(in_progress_event)
+        aggregate_failures do
+          expect(response.body).to match(/Day \d+ of \d+/)
+          expect(response.body).not_to match(/Starts in \d+ days?/)
+        end
+      end
+    end
+
+    it "shows a 'Starts in N days' pill on upcoming events" do
+      get event_path(attended_event)
+      expect(response.body).to match(/Starts in \d+ days?/)
     end
 
     it "404s for an unknown event id" do
