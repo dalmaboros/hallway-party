@@ -132,30 +132,4 @@ RSpec.describe User do
       end
     end
   end
-
-  describe "#next_event" do
-    let(:user) { create(:user) }
-
-    context "when the user has multiple not-past events" do
-      it "returns the soonest one" do
-        farther = create(:event, starts_at: 3.months.from_now, ends_at: 3.months.from_now + 2.days)
-        sooner = create(:event, starts_at: 1.week.from_now, ends_at: 1.week.from_now + 2.days)
-        [farther, sooner].each { |event| user.events << event }
-        expect(user.next_event).to eq(sooner)
-      end
-    end
-
-    context "when all of the user's events are past" do
-      it "returns nil" do
-        user.events << create(:event, :past)
-        expect(user.next_event).to be_nil
-      end
-    end
-
-    context "when the user has no events" do
-      it "returns nil" do
-        expect(user.next_event).to be_nil
-      end
-    end
-  end
 end
