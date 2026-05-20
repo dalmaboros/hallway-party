@@ -35,6 +35,10 @@ class EventPresenter
     (current_date - start_date).to_i + 1
   end
 
+  def days_until_start
+    (start_date - current_date).to_i
+  end
+
   def total_days
     (end_date - start_date).to_i + 1
   end
