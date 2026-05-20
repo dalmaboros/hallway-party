@@ -57,10 +57,6 @@ class User < ApplicationRecord
     event_id_set.include?(event.id)
   end
 
-  def next_event
-    @next_event ||= events.not_past.first
-  end
-
   private
 
   def downcase_email
