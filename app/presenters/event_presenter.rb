@@ -29,6 +29,16 @@ class EventPresenter
     end
   end
 
+  def short_date_range
+    if start_date == end_date
+      start_date.strftime("%b %-d, %Y")
+    elsif start_date.year == end_date.year && start_date.month == end_date.month
+      "#{start_date.strftime("%b %-d")}–#{end_date.day}, #{end_date.year}"
+    else
+      "#{start_date.strftime("%b %-d, %Y")} – #{end_date.strftime("%b %-d, %Y")}"
+    end
+  end
+
   def current_day
     return unless happening_today?
 
