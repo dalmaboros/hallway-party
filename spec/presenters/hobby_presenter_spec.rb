@@ -3,6 +3,19 @@
 require "rails_helper"
 
 RSpec.describe HobbyPresenter do
+  describe "delegations" do
+    let(:presenter) { described_class.new(build(:hobby)) }
+    let(:delegated_methods) { [:to_param] }
+
+    it "delegates the listed methods to hobby" do
+      aggregate_failures do
+        delegated_methods.each do |method|
+          expect(presenter).to delegate_method(method).to(:hobby)
+        end
+      end
+    end
+  end
+
   describe "#name" do
     let(:presenter) { described_class.new(build(:hobby, name: stored_name)) }
 
