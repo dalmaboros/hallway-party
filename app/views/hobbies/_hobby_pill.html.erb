@@ -1,6 +1,6 @@
 <%# locals: (presenter:, shared: false) %>
 <li>
   <%= link_to presenter.name,
-        hobby_path(presenter),
+        hobby_path(presenter.hobby),
         class: presenter.pill_classes(shared: shared) %>
 </li>

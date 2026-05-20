@@ -5,7 +5,7 @@
     <ul class="divide-y divide-gray-200">
       <% @event_presenters.each do |event_presenter| %>
         <li class="py-4">
-          <%= link_to event_path(event_presenter), class: "block group" do %>
+          <%= link_to event_path(event_presenter.event), class: "block group" do %>
             <div class="flex items-baseline justify-between gap-4">
               <h2 class="text-lg font-semibold group-hover:text-party-cyan">
                 <%= event_presenter.name %>

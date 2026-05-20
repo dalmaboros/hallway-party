@@ -13,8 +13,6 @@ class HobbyPresenter
 
   attr_reader :hobby
 
-  delegate :to_param, to: :hobby
-
   def initialize(hobby)
     @hobby = hobby
   end
