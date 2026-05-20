@@ -93,7 +93,7 @@ RSpec.describe "Events" do
 
       it "renders the attendees section ranked by hobby similarity" do
         get event_path(attended_event)
-        expect(response.body).to include("People here", "Blair Other", "hiking")
+        expect(response.body).to include("People attending", "Blair Other", "hiking")
       end
     end
 
@@ -104,18 +104,29 @@ RSpec.describe "Events" do
 
     it "shows the empty attendees state when no other attendees exist" do
       get event_path(attended_event)
-      expect(response.body).to include("People here", "You're early")
+      expect(response.body).to include("People attending", "You're early")
     end
 
     it "hides the attendees section when the viewer is not attending" do
       create(:user_hobby, user: create(:user, name: "Hidden Person"), hobby: create(:hobby, name: "hiking"))
       get event_path(other_event)
-      expect(response.body).not_to include("People here", "Hidden Person")
+      expect(response.body).not_to include("People attending", "Hidden Person")
     end
 
     it "still renders details for events the viewer is not attending" do
       get event_path(other_event)
       expect(response.body).to include("RubyConfAT 2026", "Vienna, Austria")
+    end
+
+    context "when the event is in progress" do
+      let!(:in_progress_event) { create(:event, :in_progress) }
+
+      before { create(:event_attendance, user: user, event: in_progress_event) }
+
+      it "uses the present-tense 'People here' attendees heading" do
+        get event_path(in_progress_event)
+        expect(response.body).to include("People here")
+      end
     end
 
     it "404s for an unknown event id" do
