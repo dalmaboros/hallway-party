@@ -29,7 +29,7 @@ class ApplicationController < ActionController::Base
 
   def require_event_attendance!
     return unless user_signed_in?
-    return if current_user.events.not_past.exists?
+    return if current_user.events.exists?
 
     redirect_to onboarding_path
   end

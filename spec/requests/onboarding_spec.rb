@@ -137,14 +137,28 @@ RSpec.describe "Onboarding" do
   end
 
   describe "dashboard access gating" do
-    context "when the user has no active attendance" do
+    context "when the user has no attendance at all" do
       it "redirects /dashboard to /onboarding" do
         get "/dashboard"
         expect(response).to redirect_to(onboarding_path)
       end
     end
 
-    context "when the user has an attendance but no hobbies" do
+    context "when the user has only past attendance" do
+      let!(:past_event) { create(:event, :past) }
+
+      before do
+        create(:event_attendance, user: user, event: past_event)
+        create(:user_hobby, user: user)
+      end
+
+      it "allows /dashboard" do
+        get "/dashboard"
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "when the user has an upcoming attendance but no hobbies" do
       let!(:featured) { create(:event, :upcoming) }
 
       before { create(:event_attendance, user: user, event: featured) }
@@ -155,7 +169,7 @@ RSpec.describe "Onboarding" do
       end
     end
 
-    context "when the user has an attendance and at least one hobby" do
+    context "when the user has an upcoming attendance and at least one hobby" do
       let!(:featured) { create(:event, :upcoming) }
 
       before do
