@@ -106,6 +106,34 @@ RSpec.describe UserPresenter do
     end
   end
 
+  describe "#viewed_by_self?" do
+    let(:user) { create(:user) }
+
+    context "when the viewer is the same user" do
+      let(:current_user) { user }
+
+      it "returns true" do
+        expect(presenter.viewed_by_self?).to be(true)
+      end
+    end
+
+    context "when the viewer is a different user" do
+      let(:current_user) { create(:user) }
+
+      it "returns false" do
+        expect(presenter.viewed_by_self?).to be(false)
+      end
+    end
+
+    context "when there is no viewer" do
+      let(:current_user) { nil }
+
+      it "returns false" do
+        expect(presenter.viewed_by_self?).to be(false)
+      end
+    end
+  end
+
   describe "#hobby_presenters" do
     let(:user) { create(:user) }
     let(:current_user) { nil }

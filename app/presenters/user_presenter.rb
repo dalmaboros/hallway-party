@@ -48,6 +48,10 @@ class UserPresenter
     AVATAR_BG_CLASSES[username.bytes.sum % AVATAR_BG_CLASSES.size]
   end
 
+  def viewed_by_self?
+    @user == @current_user
+  end
+
   def shared_hobby_presenters
     @shared_hobby_presenters ||= shared_hobbies.map do |hobby|
       HobbyPresenter.new(hobby)

@@ -47,7 +47,22 @@
     </section>
   <% end %>
 
-  <% if @user_presenter.hobby_presenters.any? %>
+  <% if @user_presenter.hobby_presenters.empty? %>
+    <section class="mb-6">
+      <h2 class="text-sm uppercase tracking-wide text-gray-500 mb-2">Hobbies</h2>
+      <p class="text-gray-500 text-sm">No hobbies listed yet.</p>
+    </section>
+  <% elsif @user_presenter.viewed_by_self? %>
+    <section class="mb-6">
+      <h2 class="text-sm uppercase tracking-wide text-gray-500 mb-2">Hobbies</h2>
+      <ul class="flex flex-wrap gap-2">
+        <%= render partial: "hobbies/hobby_pill",
+              collection: @user_presenter.hobby_presenters,
+              as: :presenter,
+              locals: { shared: false } %>
+      </ul>
+    </section>
+  <% else %>
     <% if @user_presenter.shared_hobby_presenters.any? %>
       <section class="mb-6">
         <h2 class="text-sm uppercase tracking-wide text-gray-500 mb-2">
@@ -76,11 +91,6 @@
         </ul>
       </section>
     <% end %>
-  <% else %>
-    <section class="mb-6">
-      <h2 class="text-sm uppercase tracking-wide text-gray-500 mb-2">Hobbies</h2>
-      <p class="text-gray-500 text-sm">No hobbies listed yet.</p>
-    </section>
   <% end %>
 
   <% if @user_presenter.not_past_events.any? %>
