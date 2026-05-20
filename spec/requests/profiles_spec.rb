@@ -72,5 +72,13 @@ RSpec.describe "Profiles" do
       get profile_path(other.username)
       expect(response).to redirect_to(root_path)
     end
+
+    it "renders hobbies without the Shared-with-you split on your own profile", :aggregate_failures do
+      create(:user_hobby, user: user, hobby: create(:hobby, name: "bouldering"))
+
+      get profile_path(user.username)
+      expect(response.body).not_to include("Shared with you")
+      expect(response.body).to include("bouldering")
+    end
   end
 end
