@@ -9,6 +9,10 @@ class EventPresenter
     :end_date,
     :current_date,
     :happening_today?,
+    :current_day,
+    :days_until_start,
+    :upcoming?,
+    :total_days,
     to: :event
 
   def initialize(event)
@@ -37,24 +41,6 @@ class EventPresenter
     else
       "#{start_date.strftime("%b %-d, %Y")} – #{end_date.strftime("%b %-d, %Y")}"
     end
-  end
-
-  def current_day
-    return unless happening_today?
-
-    (current_date - start_date).to_i + 1
-  end
-
-  def days_until_start
-    (start_date - current_date).to_i
-  end
-
-  def upcoming?
-    days_until_start.positive?
-  end
-
-  def total_days
-    (end_date - start_date).to_i + 1
   end
 
   def attended_by?(user)

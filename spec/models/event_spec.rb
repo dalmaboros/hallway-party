@@ -353,4 +353,203 @@ RSpec.describe Event do
       end
     end
   end
+
+  describe "#current_day" do
+    let(:zone) { "Australia/Sydney" }
+    let(:starts_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 14, 9) }
+    let(:ends_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 16, 17) }
+    let(:event) { build(:event, time_zone: zone, starts_at: starts_at, ends_at: ends_at) }
+
+    context "when today is before the event starts" do
+      it "returns nil" do
+        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 13, 12)) do
+          expect(event.current_day).to be_nil
+        end
+      end
+    end
+
+    context "when today is the first day of the event" do
+      it "returns 1" do
+        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 14, 12)) do
+          expect(event.current_day).to eq(1)
+        end
+      end
+    end
+
+    context "when today is the middle day of the event" do
+      it "returns 2" do
+        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 15, 12)) do
+          expect(event.current_day).to eq(2)
+        end
+      end
+    end
+
+    context "when today is the last day of the event" do
+      it "returns the total day count" do
+        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 16, 12)) do
+          expect(event.current_day).to eq(3)
+        end
+      end
+    end
+
+    context "when today is after the event ends" do
+      it "returns nil" do
+        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 17, 12)) do
+          expect(event.current_day).to be_nil
+        end
+      end
+    end
+
+    context "when 'now' in UTC is earlier than 'now' in the event's zone" do
+      # 23:30 UTC on July 13 is already July 14 in Sydney — so for a
+      # Sydney conference starting July 14, this is day 1, not day 0.
+      it "uses the event's time zone to determine the current day" do
+        travel_to(Time.utc(2026, 7, 13, 23, 30)) do
+          expect(event.current_day).to eq(1)
+        end
+      end
+    end
+
+    context "when 'now' in UTC is later than 'now' in the event's zone" do
+      # 01:30 UTC on July 14 is still July 13 in Honolulu (UTC-10) — so for a
+      # Honolulu conference starting July 14, this is pre-event.
+      let(:zone) { "Pacific/Honolulu" }
+      let(:starts_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 14, 9) }
+      let(:ends_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 16, 17) }
+
+      it "uses the event's time zone to determine the current day" do
+        travel_to(Time.utc(2026, 7, 14, 1, 30)) do
+          expect(event.current_day).to be_nil
+        end
+      end
+    end
+
+    context "when today is the only day of a single-day event" do
+      let(:starts_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 14, 9) }
+      let(:ends_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 14, 17) }
+
+      it "returns 1" do
+        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 14, 12)) do
+          expect(event.current_day).to eq(1)
+        end
+      end
+    end
+  end
+
+  describe "#days_until_start" do
+    let(:zone) { "Australia/Sydney" }
+    let(:starts_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 14, 9) }
+    let(:ends_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 16, 17) }
+    let(:event) { build(:event, time_zone: zone, starts_at: starts_at, ends_at: ends_at) }
+
+    context "with the event 12 days away" do
+      it "returns 12" do
+        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 2, 12)) do
+          expect(event.days_until_start).to eq(12)
+        end
+      end
+    end
+
+    context "with the event 1 day away" do
+      it "returns 1" do
+        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 13, 12)) do
+          expect(event.days_until_start).to eq(1)
+        end
+      end
+    end
+
+    context "with the event starting today" do
+      it "returns 0" do
+        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 14, 12)) do
+          expect(event.days_until_start).to eq(0)
+        end
+      end
+    end
+
+    context "when 'now' in UTC is earlier than 'now' in the event's zone" do
+      # 23:30 UTC on July 12 is already July 13 in Sydney — one day from
+      # the July 14 start, not two.
+      it "uses the event's time zone to determine the day count" do
+        travel_to(Time.utc(2026, 7, 12, 23, 30)) do
+          expect(event.days_until_start).to eq(1)
+        end
+      end
+    end
+
+    context "when 'now' in UTC is later than 'now' in the event's zone" do
+      # 01:30 UTC on July 14 is still July 13 in Honolulu (UTC-10) — so for a
+      # Honolulu conference starting July 14, this is 1 day until start.
+      let(:zone) { "Pacific/Honolulu" }
+      let(:starts_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 14, 9) }
+      let(:ends_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 16, 17) }
+
+      it "uses the event's time zone to determine the day count" do
+        travel_to(Time.utc(2026, 7, 14, 1, 30)) do
+          expect(event.days_until_start).to eq(1)
+        end
+      end
+    end
+  end
+
+  describe "#upcoming?" do
+    let(:zone) { "Australia/Sydney" }
+    let(:starts_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 14, 9) }
+    let(:ends_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 16, 17) }
+    let(:event) { build(:event, time_zone: zone, starts_at: starts_at, ends_at: ends_at) }
+
+    context "when the event is in the future" do
+      it "returns true" do
+        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 1, 12)) do
+          expect(event.upcoming?).to be(true)
+        end
+      end
+    end
+
+    context "when the event starts today" do
+      it "returns false" do
+        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 14, 12)) do
+          expect(event.upcoming?).to be(false)
+        end
+      end
+    end
+
+    context "when the event is in progress (mid-conference)" do
+      it "returns false" do
+        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 15, 12)) do
+          expect(event.upcoming?).to be(false)
+        end
+      end
+    end
+
+    context "when the event is in the past" do
+      it "returns false" do
+        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 20, 12)) do
+          expect(event.upcoming?).to be(false)
+        end
+      end
+    end
+  end
+
+  describe "#total_days" do
+    let(:zone) { "Australia/Sydney" }
+    let(:event) { build(:event, time_zone: zone, starts_at: starts_at, ends_at: ends_at) }
+
+    context "with a single-day event" do
+      let(:starts_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 14, 9) }
+      let(:ends_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 14, 17) }
+
+      it "returns 1" do
+        expect(event.total_days).to eq(1)
+      end
+    end
+
+    context "with a 3-day event" do
+      let(:starts_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 14, 9) }
+      let(:ends_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 16, 17) }
+
+      it "returns 3" do
+        expect(event.total_days).to eq(3)
+      end
+    end
+  end
 end
