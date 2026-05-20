@@ -22,7 +22,7 @@
         <li class="flex items-center justify-between py-2 border-b">
           <span><%= user_hobby_presenter.hobby_name %></span>
           <%= button_to "Remove",
-                user_hobby_path(user_hobby_presenter),
+                user_hobby_path(user_hobby_presenter.user_hobby),
                 method: :delete,
                 class: "text-sm text-party-red hover:opacity-80" %>
         </li>

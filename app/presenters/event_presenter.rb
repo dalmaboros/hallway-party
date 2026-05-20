@@ -3,8 +3,7 @@
 class EventPresenter
   attr_reader :event
 
-  delegate :to_param,
-    :name,
+  delegate :name,
     :location,
     :start_date,
     :end_date,
