@@ -179,6 +179,61 @@ RSpec.describe EventPresenter do
     end
   end
 
+  describe "#days_until_start" do
+    let(:zone) { "Australia/Sydney" }
+    let(:starts_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 14, 9) }
+    let(:ends_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 16, 17) }
+    let(:presenter) { described_class.new(build(:event, time_zone: zone, starts_at: starts_at, ends_at: ends_at)) }
+
+    context "with the event 12 days away" do
+      it "returns 12" do
+        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 2, 12)) do
+          expect(presenter.days_until_start).to eq(12)
+        end
+      end
+    end
+
+    context "with the event 1 day away" do
+      it "returns 1" do
+        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 13, 12)) do
+          expect(presenter.days_until_start).to eq(1)
+        end
+      end
+    end
+
+    context "with the event starting today" do
+      it "returns 0" do
+        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 14, 12)) do
+          expect(presenter.days_until_start).to eq(0)
+        end
+      end
+    end
+
+    context "when 'now' in UTC is earlier than 'now' in the event's zone" do
+      # 23:30 UTC on July 12 is already July 13 in Sydney — one day from
+      # the July 14 start, not two.
+      it "uses the event's time zone to determine the day count" do
+        travel_to(Time.utc(2026, 7, 12, 23, 30)) do
+          expect(presenter.days_until_start).to eq(1)
+        end
+      end
+    end
+
+    context "when 'now' in UTC is later than 'now' in the event's zone" do
+      # 01:30 UTC on July 14 is still July 13 in Honolulu (UTC-10) — so for a
+      # Honolulu conference starting July 14, this is 1 day until start.
+      let(:zone) { "Pacific/Honolulu" }
+      let(:starts_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 14, 9) }
+      let(:ends_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 16, 17) }
+
+      it "uses the event's time zone to determine the day count" do
+        travel_to(Time.utc(2026, 7, 14, 1, 30)) do
+          expect(presenter.days_until_start).to eq(1)
+        end
+      end
+    end
+  end
+
   describe "#total_days" do
     let(:zone) { "Australia/Sydney" }
     let(:presenter) { described_class.new(build(:event, time_zone: zone, starts_at: starts_at, ends_at: ends_at)) }
