@@ -55,6 +55,24 @@ class Event < ApplicationRecord
     Time.current.in_time_zone(time_zone).to_date
   end
 
+  def current_day
+    return unless happening_today?
+
+    (current_date - start_date).to_i + 1
+  end
+
+  def days_until_start
+    (start_date - current_date).to_i
+  end
+
+  def upcoming?
+    days_until_start.positive?
+  end
+
+  def total_days
+    (end_date - start_date).to_i + 1
+  end
+
   private
 
   def ends_after_starts
