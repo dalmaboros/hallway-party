@@ -309,6 +309,14 @@ RSpec.describe EventPresenter do
       end
     end
 
+    context "when the event is in progress (mid-conference)" do
+      it "returns false" do
+        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 15, 12)) do
+          expect(presenter.upcoming?).to be(false)
+        end
+      end
+    end
+
     context "when the event is in the past" do
       it "returns false" do
         travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 20, 12)) do
