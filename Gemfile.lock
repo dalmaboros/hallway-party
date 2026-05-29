@@ -258,14 +258,14 @@ GEM
     mini_magick (5.3.1)
       logger
     mini_mime (1.1.5)
-    minitest (6.0.5)
+    minitest (6.0.6)
       drb (~> 2.0)
       prism (~> 1.5)
     msgpack (1.8.0)
     multi_xml (0.8.1)
       bigdecimal (>= 3.1, < 5)
     multipart-post (2.4.1)
-    neighbor (1.0.0)
+    neighbor (1.1.1)
       activerecord (>= 7.2)
     net-http (0.9.1)
       uri (>= 0.11.1)
@@ -601,7 +601,7 @@ DEPENDENCIES
   image_processing (~> 1.2)
   importmap-rails
   kamal
-  neighbor (~> 1.0)
+  neighbor (~> 1.1)
   omniauth (~> 2.1)
   omniauth-github (~> 2.0)
   omniauth-rails_csrf_protection (~> 2.0)
@@ -633,7 +633,6 @@ DEPENDENCIES
   web-console
   webmock (~> 3.26)
 
-CHECKSUMS
   action_text-trix (2.1.18) sha256=3fdb83f8bff4145d098be283cdd47ac41caf5110bfa6df4695ed7127d7fb3642
   actioncable (8.1.3) sha256=e5bc7f75e44e6a22de29c4f43176927c3a9ce4824464b74ed18d8226e75a80f0
   actionmailbox (8.1.3) sha256=df7da474eaa0e70df4ed5a6fef66eb3b3b0f2dbf7f14518deee8d77f1b4aae59
@@ -723,11 +722,11 @@ CHECKSUMS
   marcel (1.1.0) sha256=fdcfcfa33cc52e93c4308d40e4090a5d4ea279e160a7f6af988260fa970e0bee
   mini_magick (5.3.1) sha256=29395dfd76badcabb6403ee5aff6f681e867074f8f28ce08d78661e9e4a351c4
   mini_mime (1.1.5) sha256=8681b7e2e4215f2a159f9400b5816d85e9d8c6c6b491e96a12797e798f8bccef
-  minitest (6.0.5) sha256=f007d7246bf4feea549502842cd7c6aba8851cdc9c90ba06de9c476c0d01155c
+  minitest (6.0.6) sha256=153ea36d1d987a62942382b61075745042a2b3123b1cd48f4c3675af9cc7d6f1
   msgpack (1.8.0) sha256=e64ce0212000d016809f5048b48eb3a65ffb169db22238fb4b72472fecb2d732
   multi_xml (0.8.1) sha256=addba0290bac34e9088bfe73dc4878530297a82a7bbd66cb44dcd0a4b86edf5a
   multipart-post (2.4.1) sha256=9872d03a8e552020ca096adadbf5e3cb1cd1cdd6acd3c161136b8a5737cdb4a8
-  neighbor (1.0.0) sha256=5c63eed3ccabe0c48b04cfa4d90ed315d4d749242a1000765a8f5574c2825f32
+  neighbor (1.1.1) sha256=819180fe053af62738884927b2665764f4a8ed1ac2616c6956679ff2d707f1c7
   net-http (0.9.1) sha256=25ba0b67c63e89df626ed8fac771d0ad24ad151a858af2cc8e6a716ca4336996
   net-imap (0.6.4) sha256=9a5598c67a3022c284d98430ef1d4948e7dbdb62596f61081ea8ca933270a02b
   net-pop (0.1.2) sha256=848b4e982013c15b2f0382792268763b748cce91c9e91e36b0f27ed26420dff3
