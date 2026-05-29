@@ -6,8 +6,8 @@ Event.find_or_create_by!(name: "RubyConfAT 2026") do |event|
   event.website = "https://rubyconf.at/"
   event.location = "Vienna, Austria"
   event.time_zone = "Europe/Vienna"
-  event.starts_at = Time.zone.parse("2026-05-28 09:00")
-  event.ends_at = Time.zone.parse("2026-05-30 18:00")
+  event.starts_at = Time.zone.parse("2026-05-29 09:00")
+  event.ends_at = Time.zone.parse("2026-05-31 18:00")
 end
 
 Event.find_or_create_by!(name: "RubyConf 2026") do |event|

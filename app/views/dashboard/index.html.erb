@@ -14,7 +14,7 @@
         No events on your calendar —
         <%= link_to "see what's coming up", events_path, class: "underline hover:text-party-cyan" %>
       <% elsif @next_event_presenter.happening_today? %>
-        You're at <strong><%= @next_event_presenter.name %></strong> —
+        You're at <strong><%= @next_event_presenter.name %></strong> <br>
         Day <%= @next_event_presenter.current_day %> of <%= @next_event_presenter.total_days %>
       <% else %>
         You're attending <strong><%= @next_event_presenter.name %></strong>
