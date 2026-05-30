@@ -4,15 +4,23 @@
     Add at least one hobby so you can meet people who share them.
   </p>
 
-  <%= form_with url: user_hobbies_path, method: :post, class: "flex gap-2 mb-8" do %>
+  <%= form_with url: user_hobbies_path, method: :post, class: "flex gap-2 mb-3" do %>
     <%= text_field_tag :name,
           nil,
           autofocus: true,
           autocomplete: "off",
-          placeholder: "e.g. knitting, hiking, board games",
+          placeholder: "e.g. surfing",
           class: "border rounded px-3 py-2 flex-1" %>
     <%= submit_tag "Add",
           class: "bg-party-lavender text-gray-900 px-6 py-2 rounded hover:brightness-95" %>
+  <% end %>
+
+  <% if @event_presenter %>
+    <p class="mb-8">
+      <%= link_to "See who else shares your interests!",
+            event_path(@event_presenter.event),
+            class: "text-sm text-party-cyan hover:opacity-80" %>
+    </p>
   <% end %>
 
   <% if @user_hobby_presenters.any? %>

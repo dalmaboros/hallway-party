@@ -9,7 +9,8 @@ class EventsController < ApplicationController
     @event_presenter = EventPresenter.new(event)
     return unless @event_presenter.attended_by?(current_user)
 
-    @user_presenters = attendees_matched_by_hobby.map { |attendee| UserPresenter.new(attendee) }
+    @matched_user_presenters = matched_attendees.map { |attendee| UserPresenter.new(attendee) }
+    @other_user_presenters = other_attendees.map { |attendee| UserPresenter.new(attendee) }
   end
 
   private
@@ -22,7 +23,14 @@ class EventsController < ApplicationController
     @not_past_events ||= Event.not_past
   end
 
-  def attendees_matched_by_hobby
-    @attendees_matched_by_hobby ||= AttendeeMatcher.new(user: current_user, event:).match_attendees
+  def matched_attendees
+    @matched_attendees ||= AttendeeMatcher.new(user: current_user, event:).match_attendees
+  end
+
+  def other_attendees
+    event.users
+      .where.not(id: [current_user.id, *matched_attendees.map(&:id)])
+      .includes(:hobbies)
+      .order(:name)
   end
 end

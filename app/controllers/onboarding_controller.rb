@@ -28,6 +28,7 @@ class OnboardingController < ApplicationController
       .includes(:hobby)
       .order("hobbies.name")
       .map { |user_hobby| UserHobbyPresenter.new(user_hobby) }
+    @event_presenter = EventPresenter.new(attending_event) if attending_event
   end
 
   def declined
@@ -37,5 +38,9 @@ class OnboardingController < ApplicationController
 
   def featured_event
     @featured_event ||= Event.featured
+  end
+
+  def attending_event
+    @attending_event ||= current_user.events.not_past.first
   end
 end

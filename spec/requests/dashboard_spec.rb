@@ -102,6 +102,12 @@ RSpec.describe "Dashboard" do
         get dashboard_path
         expect(response.body).not_to match(/in \d+ days?/)
       end
+
+      it "links to the event page to see who shares interests", :aggregate_failures do
+        get dashboard_path
+        expect(response.body).to include("See who here shares your interests")
+        expect(response.body).to include(event_path(in_progress))
+      end
     end
 
     context "with only past attendance" do
