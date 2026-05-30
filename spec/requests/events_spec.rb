@@ -93,7 +93,20 @@ RSpec.describe "Events" do
 
       it "renders the attendees section ranked by hobby similarity" do
         get event_path(attended_event)
-        expect(response.body).to include("People attending", "Blair Other", "hiking")
+        expect(response.body).to include("People attending", "People who share your interests", "Blair Other", "hiking")
+      end
+    end
+
+    context "with an attendee who shares no interests" do
+      before do
+        stranger = create(:user, name: "Casey Stranger")
+        create(:event_attendance, user: stranger, event: attended_event)
+        create(:user_hobby, user: stranger, hobby: create(:hobby, name: "spelunking"))
+      end
+
+      it "lists them under the everyone-else section" do
+        get event_path(attended_event)
+        expect(response.body).to include("Everyone else here", "Casey Stranger")
       end
     end
 

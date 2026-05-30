@@ -58,6 +58,12 @@ RSpec.describe "Onboarding" do
       get onboarding_hobbies_path
       expect(response.body).to include("knitting")
     end
+
+    it "links to the event page to discover who shares interests", :aggregate_failures do
+      get onboarding_hobbies_path
+      expect(response.body).to include("See who else shares your interests")
+      expect(response.body).to include(event_path(featured))
+    end
   end
 
   describe "POST /onboarding with answer: 'yes'" do
