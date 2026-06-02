@@ -8,9 +8,9 @@
         profile_path(@user_presenter.username),
         class: "inline-block text-sm text-party-cyan hover:opacity-80 mb-6" %>
 
-  <%= render "status_banner", dashboard_events: @dashboard_events %>
+  <%= render "status_banner", dashboard_events_presenter: @dashboard_events_presenter %>
 
-  <%= render "events", dashboard_events: @dashboard_events %>
+  <%= render "events", dashboard_events_presenter: @dashboard_events_presenter %>
 
   <%= render "hobbies", hobby_presenters: @hobby_presenters %>
 </div>

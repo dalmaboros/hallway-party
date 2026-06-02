@@ -1,29 +1,27 @@
-<%# locals: (dashboard_events:) %>
+<%# locals: (dashboard_events_presenter:) %>
 <section id="status-banner" class="bg-party-lavender-soft border border-party-lavender/40 rounded-lg px-4 py-3 mb-6">
   <p>
-    <% case dashboard_events.banner_state %>
+    <% case dashboard_events_presenter.banner_state %>
     <% when :soft_sunset %>
-      <% past_event = dashboard_events.most_recent_past_event %>
-      Thanks for being a part of <strong><%= past_event.name %></strong>! <br>
+      Thanks for being a part of <strong><%= dashboard_events_presenter.most_recent_past_event.name %></strong>! <br>
       We'll let you know when the next conference rolls around. <br><br>
-      <%= link_to event_path(past_event.event),
+      <%= link_to event_path(dashboard_events_presenter.most_recent_past_event.event),
             class: "font-bold underline hover:text-party-cyan" do %>
-        See the Rubyists who were at <%= past_event.name %> →
+        See the Rubyists who were at <%= dashboard_events_presenter.most_recent_past_event.name %> →
       <% end %>
     <% when :no_events %>
       No events on your calendar —
       <%= link_to "see what's coming up", events_path, class: "underline hover:text-party-cyan" %>
     <% when :happening_today %>
-      <% next_event = dashboard_events.next_event %>
-      You're at <strong><%= next_event.name %></strong> <br>
-      Day <%= next_event.current_day %> of <%= next_event.total_days %> <br>
-      <%= link_to event_path(next_event.event),
+      You're at <strong><%= dashboard_events_presenter.next_event.name %></strong> <br>
+      Day <%= dashboard_events_presenter.next_event.current_day %> of <%= dashboard_events_presenter.next_event.total_days %> <br>
+      <%= link_to event_path(dashboard_events_presenter.next_event.event),
             class: "font-bold underline hover:text-party-cyan" do %>
         See who here shares your interests! →
       <% end %>
     <% when :upcoming %>
-      You're attending <strong><%= dashboard_events.next_event.name %></strong>
-      in <%= pluralize(dashboard_events.next_event.days_until_start, "day") %>
+      You're attending <strong><%= dashboard_events_presenter.next_event.name %></strong>
+      in <%= pluralize(dashboard_events_presenter.next_event.days_until_start, "day") %>
     <% end %>
   </p>
 </section>

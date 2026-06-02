@@ -16,11 +16,11 @@ class DashboardEventsPresenter
   end
 
   def next_event
-    @next_event ||= wrap(@user.next_event)
+    @next_event ||= event_presenter(@user.next_event)
   end
 
   def most_recent_past_event
-    @most_recent_past_event ||= wrap(@user.most_recent_past_event)
+    @most_recent_past_event ||= event_presenter(@user.most_recent_past_event)
   end
 
   def upcoming_events
@@ -29,7 +29,7 @@ class DashboardEventsPresenter
 
   private
 
-  def wrap(event)
+  def event_presenter(event)
     EventPresenter.new(event) if event
   end
 end
