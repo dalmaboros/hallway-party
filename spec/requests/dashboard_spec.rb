@@ -56,12 +56,11 @@ RSpec.describe "Dashboard" do
         expect(response.body).to match(/in \d+ days?/)
       end
 
-      it "lists the user's upcoming events" do
+      it "lists the user's upcoming events", :aggregate_failures do
         get dashboard_path
-        aggregate_failures do
-          expect(response.body).to include("Your Events")
-          expect(response.body).to include("RubyConf AT")
-        end
+        expect(response.body).to include("Your Events")
+        expect(response.body).to include("RubyConf AT")
+        expect(response.body).not_to include("Nothing on your schedule yet")
       end
 
       it "lists the user's hobbies" do
@@ -110,22 +109,33 @@ RSpec.describe "Dashboard" do
       end
     end
 
-    context "with only past attendance" do
-      let!(:past_event) { create(:event, :past) }
+    context "with only past attendance (soft sunset)" do
+      let!(:past_event) { create(:event, :past, name: "RailsConf 2025") }
 
       before { create(:event_attendance, user: user, event: past_event) }
 
-      it "shows the empty-state callout with a re-engagement CTA" do
+      it "renders 200 rather than redirecting to onboarding" do
         get dashboard_path
-        aggregate_failures do
-          expect(response.body).to include("No events on your calendar")
-          expect(response.body).to include(events_path)
-        end
+        expect(response).to have_http_status(:ok)
       end
 
-      it "hides the Your Events section" do
+      it "shows the soft-sunset goodbye in place of the empty state", :aggregate_failures do
         get dashboard_path
-        expect(response.body).not_to include("Your Events")
+        expect(response.body).to include("Hope you had fun at")
+        expect(response.body).to include("RailsConf 2025")
+        expect(response.body).not_to include("No events on your calendar")
+      end
+
+      it "links to the past event so the user can revisit who they met" do
+        get dashboard_path
+        expect(response.body).to include(event_path(past_event))
+      end
+
+      it "still shows the Your Events section with an empty state", :aggregate_failures do
+        get dashboard_path
+        expect(response.body).to include("Your Events")
+        expect(response.body).to include("Nothing on your schedule yet")
+        expect(response.body).to include("browse upcoming events")
       end
     end
   end

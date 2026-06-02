@@ -132,4 +132,48 @@ RSpec.describe User do
       end
     end
   end
+
+  describe "event derivations" do
+    let(:user) { create(:user) }
+    let(:soon) { create(:event, starts_at: 1.week.from_now, ends_at: 1.week.from_now + 2.days) }
+    let(:later) { create(:event, starts_at: 2.months.from_now, ends_at: 2.months.from_now + 2.days) }
+    let(:older_past) { create(:event, starts_at: 6.months.ago, ends_at: 6.months.ago + 2.days) }
+    let(:recent_past) { create(:event, starts_at: 1.month.ago, ends_at: 1.month.ago + 2.days) }
+
+    describe "#upcoming_events" do
+      it "returns only the not-past events, soonest first" do
+        user.events << [later, recent_past, soon, older_past]
+        expect(user.upcoming_events).to eq([soon, later])
+      end
+
+      it "is empty when the user has only past events" do
+        user.events << [older_past, recent_past]
+        expect(user.upcoming_events).to be_empty
+      end
+    end
+
+    describe "#next_event" do
+      it "returns the soonest upcoming event" do
+        user.events << [later, soon]
+        expect(user.next_event).to eq(soon)
+      end
+
+      it "returns nil when the user has no upcoming events" do
+        user.events << recent_past
+        expect(user.next_event).to be_nil
+      end
+    end
+
+    describe "#most_recent_past_event" do
+      it "returns the most recently ended past event" do
+        user.events << [older_past, recent_past]
+        expect(user.most_recent_past_event).to eq(recent_past)
+      end
+
+      it "returns nil when the user has no past events" do
+        user.events << soon
+        expect(user.most_recent_past_event).to be_nil
+      end
+    end
+  end
 end

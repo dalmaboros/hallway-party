@@ -1,5 +1,17 @@
 # hallway-party — Claude Code guide
 
+## Conventions checklist (verify the diff before claiming done)
+
+Before declaring any task complete, check the changed code against each item and fix violations. Details live in the sections below.
+
+- [ ] **Presenter ivars are suffixed** — `@x_presenter` / `@x_presenters`, never a bare `@x`. The name must say it's a presenter, not imply a raw model/collection. (See "How presenters get to views".)
+- [ ] **No logic in views** — no `<% x = … %>` assignments and no derivation in ERB. Computed/derived values come from a presenter method. Views only branch on and print presenter output.
+- [ ] **Partials use strict locals** — every partial opens with `<%# locals: (…) %>` and receives data as locals, never by reaching for controller ivars.
+- [ ] **Display logic lives in presenters; domain derivations on the model** — not in controllers (which only wire) or views. (See "Layer responsibilities".)
+- [ ] **Single-record lookups are nil-guarded before wrapping** — `EventPresenter.new(nil)` is truthy and breaks `if`-presence checks; guard so the absent case stays `nil`.
+- [ ] **Method names read standalone** — a name must carry its meaning without leaning on its argument list (`event_presenter(x)`, not `wrap(x)`). (Personal rule; see `~/.claude/CLAUDE.md`.)
+- [ ] **Comments only for non-obvious *why*** — never restate what the code does.
+
 ## Dev server
 
 Runs in Docker (`docker compose up`). The Rails service is named `app`. Multiple Claude instances on the same project see the same container — no coordination needed.

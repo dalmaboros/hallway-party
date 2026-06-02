@@ -57,6 +57,18 @@ class User < ApplicationRecord
     event_id_set.include?(event.id)
   end
 
+  def upcoming_events
+    events.not_past
+  end
+
+  def next_event
+    upcoming_events.first
+  end
+
+  def most_recent_past_event
+    events.past.first
+  end
+
   private
 
   def downcase_email

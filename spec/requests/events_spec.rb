@@ -106,7 +106,7 @@ RSpec.describe "Events" do
 
       it "lists them under the everyone-else section" do
         get event_path(attended_event)
-        expect(response.body).to include("Everyone else here", "Casey Stranger")
+        expect(response.body).to include("Everyone else", "Casey Stranger")
       end
     end
 
