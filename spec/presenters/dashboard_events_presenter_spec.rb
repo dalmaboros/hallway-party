@@ -7,12 +7,12 @@ RSpec.describe DashboardEventsPresenter do
 
   let(:user) { create(:user) }
 
-  describe "#banner_state" do
+  describe "#attendance_status" do
     context "with a future event that is not happening today" do
       before { user.events << create(:event, :upcoming) }
 
       it "is :upcoming" do
-        expect(presenter.banner_state).to eq(:upcoming)
+        expect(presenter.attendance_status).to eq(:upcoming)
       end
     end
 
@@ -20,7 +20,7 @@ RSpec.describe DashboardEventsPresenter do
       before { user.events << create(:event, :in_progress) }
 
       it "is :happening_today" do
-        expect(presenter.banner_state).to eq(:happening_today)
+        expect(presenter.attendance_status).to eq(:happening_today)
       end
     end
 
@@ -28,13 +28,13 @@ RSpec.describe DashboardEventsPresenter do
       before { user.events << create(:event, :past) }
 
       it "is :soft_sunset" do
-        expect(presenter.banner_state).to eq(:soft_sunset)
+        expect(presenter.attendance_status).to eq(:soft_sunset)
       end
     end
 
     context "with no events at all" do
       it "is :no_events" do
-        expect(presenter.banner_state).to eq(:no_events)
+        expect(presenter.attendance_status).to eq(:no_events)
       end
     end
   end

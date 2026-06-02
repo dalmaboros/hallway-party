@@ -1,0 +1,15 @@
+<%# locals: (dashboard_events_presenter:) %>
+<section id="attendance-status" class="bg-party-lavender-soft border border-party-lavender/40 rounded-lg px-4 py-3 mb-6">
+  <p>
+    <% case dashboard_events_presenter.attendance_status %>
+    <% when :soft_sunset %>
+      <%= render "dashboard/attendance_status/soft_sunset", event_presenter: dashboard_events_presenter.most_recent_past_event %>
+    <% when :no_events %>
+      <%= render "dashboard/attendance_status/no_events" %>
+    <% when :happening_today %>
+      <%= render "dashboard/attendance_status/happening_today", event_presenter: dashboard_events_presenter.next_event %>
+    <% when :upcoming %>
+      <%= render "dashboard/attendance_status/upcoming", event_presenter: dashboard_events_presenter.next_event %>
+    <% end %>
+  </p>
+</section>

@@ -5,7 +5,7 @@ class DashboardEventsPresenter
     @user = user
   end
 
-  def banner_state
+  def attendance_status
     if next_event.nil?
       most_recent_past_event ? :soft_sunset : :no_events
     elsif next_event.happening_today?
