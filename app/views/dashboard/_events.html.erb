@@ -1,0 +1,19 @@
+<%# locals: (dashboard_events:) %>
+<% if dashboard_events.upcoming_events.any? %>
+  <section id="your-events" class="mb-6">
+    <div class="flex items-baseline justify-between mb-2">
+      <h2 class="text-xl font-semibold">Your Events</h2>
+      <%= link_to "Edit", events_path, class: "text-sm text-party-cyan hover:opacity-80" %>
+    </div>
+    <ul class="divide-y divide-gray-200">
+      <% dashboard_events.upcoming_events.each do |event_presenter| %>
+        <li class="py-2 flex items-baseline justify-between gap-4">
+          <%= link_to event_presenter.name,
+                event_path(event_presenter.event),
+                class: "hover:text-party-cyan" %>
+          <span class="text-sm text-gray-500"><%= event_presenter.short_date_range %></span>
+        </li>
+      <% end %>
+    </ul>
+  </section>
+<% end %>

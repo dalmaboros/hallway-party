@@ -1,0 +1,12 @@
+<%# locals: (hobby_presenters:) %>
+<section id="your-hobbies" class="mb-6">
+  <div class="flex items-baseline justify-between mb-2">
+    <h2 class="text-xl font-semibold">Your Hobbies</h2>
+    <%= link_to "Edit", onboarding_hobbies_path, class: "text-sm text-party-cyan hover:opacity-80" %>
+  </div>
+  <ul class="flex flex-wrap gap-2">
+    <%= render partial: "hobbies/hobby_pill",
+          collection: hobby_presenters,
+          as: :presenter %>
+  </ul>
+</section>

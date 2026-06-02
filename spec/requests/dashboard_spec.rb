@@ -122,7 +122,7 @@ RSpec.describe "Dashboard" do
 
       it "shows the soft-sunset goodbye in place of the empty state", :aggregate_failures do
         get dashboard_path
-        expect(response.body).to include("Thanks for being part of")
+        expect(response.body).to include("Thanks for being a part of")
         expect(response.body).to include("RailsConf 2025")
         expect(response.body).not_to include("No events on your calendar")
       end

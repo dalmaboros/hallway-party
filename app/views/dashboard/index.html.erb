@@ -8,64 +8,9 @@
         profile_path(@user_presenter.username),
         class: "inline-block text-sm text-party-cyan hover:opacity-80 mb-6" %>
 
-  <section class="bg-party-lavender-soft border border-party-lavender/40 rounded-lg px-4 py-3 mb-6">
-    <p>
-      <% if @next_event_presenter.nil? %>
-        <% most_recent_event = @user_presenter.past_events.first %>
-        <% if most_recent_event %>
-          Thanks for being part of <strong><%= most_recent_event.name %></strong>. <br>
-          We'll let you know when the next conference rolls around. <br>
-          <%= link_to event_path(most_recent_event),
-                class: "font-bold underline hover:text-party-cyan" do %>
-            See the people you met at <%= most_recent_event.name %> →
-          <% end %>
-        <% else %>
-          <%# require_event_attendance! normally guarantees a past event in this branch; fallback for the no-attendance edge %>
-          No events on your calendar —
-          <%= link_to "see what's coming up", events_path, class: "underline hover:text-party-cyan" %>
-        <% end %>
-      <% elsif @next_event_presenter.happening_today? %>
-        You're at <strong><%= @next_event_presenter.name %></strong> <br>
-        Day <%= @next_event_presenter.current_day %> of <%= @next_event_presenter.total_days %> <br>
-        <%= link_to event_path(@next_event_presenter.event),
-              class: "font-bold underline hover:text-party-cyan" do %>
-          See who here shares your interests! →
-        <% end %>
-      <% else %>
-        You're attending <strong><%= @next_event_presenter.name %></strong>
-        in <%= pluralize(@next_event_presenter.days_until_start, "day") %>
-      <% end %>
-    </p>
-  </section>
+  <%= render "status_banner", dashboard_events: @dashboard_events %>
 
-  <% if @upcoming_event_presenters.any? %>
-    <section class="mb-6">
-      <div class="flex items-baseline justify-between mb-2">
-        <h2 class="text-xl font-semibold">Your Events</h2>
-        <%= link_to "Edit", events_path, class: "text-sm text-party-cyan hover:opacity-80" %>
-      </div>
-      <ul class="divide-y divide-gray-200">
-        <% @upcoming_event_presenters.each do |event_presenter| %>
-          <li class="py-2 flex items-baseline justify-between gap-4">
-            <%= link_to event_presenter.name,
-                  event_path(event_presenter.event),
-                  class: "hover:text-party-cyan" %>
-            <span class="text-sm text-gray-500"><%= event_presenter.short_date_range %></span>
-          </li>
-        <% end %>
-      </ul>
-    </section>
-  <% end %>
+  <%= render "events", dashboard_events: @dashboard_events %>
 
-  <section class="mb-6">
-    <div class="flex items-baseline justify-between mb-2">
-      <h2 class="text-xl font-semibold">Your Hobbies</h2>
-      <%= link_to "Edit", onboarding_hobbies_path, class: "text-sm text-party-cyan hover:opacity-80" %>
-    </div>
-    <ul class="flex flex-wrap gap-2">
-      <%= render partial: "hobbies/hobby_pill",
-            collection: @hobby_presenters,
-            as: :presenter %>
-    </ul>
-  </section>
+  <%= render "hobbies", hobby_presenters: @hobby_presenters %>
 </div>
