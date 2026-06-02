@@ -38,7 +38,7 @@
       <% end %>
 
       <% if @other_user_presenters.any? %>
-        <h3 class="text-lg font-semibold mb-4">Everyone else here</h3>
+        <h3 class="text-lg font-semibold mb-4">Everyone else</h3>
         <ul class="divide-y divide-gray-200">
           <%= render partial: "attendees/attendee",
                 collection: @other_user_presenters,

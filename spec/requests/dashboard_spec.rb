@@ -56,12 +56,11 @@ RSpec.describe "Dashboard" do
         expect(response.body).to match(/in \d+ days?/)
       end
 
-      it "lists the user's upcoming events" do
+      it "lists the user's upcoming events", :aggregate_failures do
         get dashboard_path
-        aggregate_failures do
-          expect(response.body).to include("Your Events")
-          expect(response.body).to include("RubyConf AT")
-        end
+        expect(response.body).to include("Your Events")
+        expect(response.body).to include("RubyConf AT")
+        expect(response.body).not_to include("Nothing on your schedule yet")
       end
 
       it "lists the user's hobbies" do
@@ -122,7 +121,7 @@ RSpec.describe "Dashboard" do
 
       it "shows the soft-sunset goodbye in place of the empty state", :aggregate_failures do
         get dashboard_path
-        expect(response.body).to include("Thanks for being a part of")
+        expect(response.body).to include("Hope you had fun at")
         expect(response.body).to include("RailsConf 2025")
         expect(response.body).not_to include("No events on your calendar")
       end
@@ -132,9 +131,11 @@ RSpec.describe "Dashboard" do
         expect(response.body).to include(event_path(past_event))
       end
 
-      it "hides the Your Events section" do
+      it "still shows the Your Events section with an empty state", :aggregate_failures do
         get dashboard_path
-        expect(response.body).not_to include("Your Events")
+        expect(response.body).to include("Your Events")
+        expect(response.body).to include("Nothing on your schedule yet")
+        expect(response.body).to include("browse upcoming events")
       end
     end
   end

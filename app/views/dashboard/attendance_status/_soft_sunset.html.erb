@@ -1,7 +1,6 @@
 <%# locals: (event_presenter:) %>
-Thanks for being a part of <strong><%= event_presenter.name %></strong>! <br>
-We'll let you know when the next conference rolls around. <br><br>
+Hope you had fun at <strong><%= event_presenter.name %></strong>!<br>
 <%= link_to event_path(event_presenter.event),
       class: "font-bold underline hover:text-party-cyan" do %>
-  See the Rubyists who were at <%= event_presenter.name %> →
+  See the Rubyists who were there →
 <% end %>
