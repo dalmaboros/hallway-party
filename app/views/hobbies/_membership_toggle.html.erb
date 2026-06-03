@@ -1,0 +1,19 @@
+<%# locals: (hobby_presenter:, user_hobby:, removable:) %>
+<%= turbo_frame_tag dom_id(hobby_presenter.hobby, :membership) do %>
+  <% if user_hobby.nil? %>
+    <%= button_to "Add to my hobbies!",
+          user_hobbies_path,
+          params: { hobby_id: hobby_presenter.hobby.id },
+          class: "inline-block text-sm text-party-cyan hover:opacity-80 mb-6 cursor-pointer focus-visible:underline" %>
+  <% else %>
+    <p class="text-sm font-medium text-party-green mb-1">✓ One of your hobbies</p>
+    <% if removable %>
+      <%= button_to "Remove from my hobbies",
+            user_hobby_path(user_hobby),
+            method: :delete,
+            class: "text-sm text-party-red hover:opacity-80 cursor-pointer focus-visible:underline" %>
+    <% else %>
+      <p class="text-sm text-gray-500">This is your only hobby — add another to remove it.</p>
+    <% end %>
+  <% end %>
+<% end %>

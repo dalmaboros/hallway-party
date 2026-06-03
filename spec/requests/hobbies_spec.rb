@@ -67,4 +67,28 @@ RSpec.describe "Hobbies" do
       expect(response).to have_http_status(:not_found)
     end
   end
+
+  describe "the membership toggle" do
+    it "offers to add a hobby the user doesn't have", :aggregate_failures do
+      unowned = create(:hobby, name: "surfing")
+      get hobby_path(unowned)
+      expect(response.body).to include("Add to my hobbies")
+      expect(response.body).not_to include("One of your hobbies")
+    end
+
+    it "marks a hobby the user has and offers to remove it when they have others", :aggregate_failures do
+      create(:user_hobby, user: user, hobby: create(:hobby, name: "surfing"))
+      get hobby_path(hobby)
+      expect(response.body).to include("One of your hobbies")
+      expect(response.body).to include("Remove from my hobbies")
+      expect(response.body).not_to include("only hobby")
+    end
+
+    it "marks the user's only hobby but blocks removing it", :aggregate_failures do
+      get hobby_path(hobby)
+      expect(response.body).to include("One of your hobbies")
+      expect(response.body).to include("only hobby")
+      expect(response.body).not_to include("Remove from my hobbies")
+    end
+  end
 end

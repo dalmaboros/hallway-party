@@ -45,3 +45,6 @@
 
 # Local review artifacts (audits, PR reviews, layered-design reviews).
 /docs/reviews/
+
+# Playwright MCP browser snapshot artifacts
+.playwright-mcp/

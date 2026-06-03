@@ -86,6 +86,40 @@ RSpec.describe "UserHobbies" do
         expect(flash[:alert]).to eq("Please enter a hobby.")
       end
     end
+
+    context "with an existing hobby id" do
+      let!(:existing) { create(:hobby, name: "bouldering") }
+
+      it "attaches the hobby to the current user" do
+        expect do
+          post user_hobbies_path, params: { hobby_id: existing.id }
+        end.to change { user.user_hobbies.count }.by(1)
+      end
+
+      it "does not create a new Hobby" do
+        expect do
+          post user_hobbies_path, params: { hobby_id: existing.id }
+        end.not_to change(Hobby, :count)
+      end
+
+      it "does not enqueue the embedding job" do
+        expect do
+          post user_hobbies_path, params: { hobby_id: existing.id }
+        end.not_to have_enqueued_job(GenerateHobbyEmbeddingJob)
+      end
+
+      it "is idempotent when the user already has the hobby" do
+        user.user_hobbies.create!(hobby: existing)
+        expect do
+          post user_hobbies_path, params: { hobby_id: existing.id }
+        end.not_to change { user.user_hobbies.count }
+      end
+
+      it "redirects to the hobby page" do
+        post user_hobbies_path, params: { hobby_id: existing.id }
+        expect(response).to redirect_to(hobby_path(existing))
+      end
+    end
   end
 
   describe "DELETE /user_hobbies/:id" do
@@ -106,6 +140,11 @@ RSpec.describe "UserHobbies" do
       expect do
         delete user_hobby_path(removable)
       end.not_to change(Hobby, :count)
+    end
+
+    it "redirects back to the page the request came from" do
+      delete user_hobby_path(removable), headers: { "HTTP_REFERER" => hobby_path(removable.hobby) }
+      expect(response).to redirect_to(hobby_path(removable.hobby))
     end
 
     context "when removing the user's last hobby" do
