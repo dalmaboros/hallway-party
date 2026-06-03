@@ -26,8 +26,9 @@ class UserHobbiesController < ApplicationController
     end
 
     user_hobby.destroy!
-    redirect_back_or_to onboarding_hobbies_path,
-      notice: "Removed \"#{HobbyPresenter.new(user_hobby.hobby).name}\"."
+
+    notice = "Removed \"#{HobbyPresenter.new(user_hobby.hobby).name}\"." unless turbo_frame_request?
+    redirect_back_or_to onboarding_hobbies_path, notice: notice
   end
 
   private

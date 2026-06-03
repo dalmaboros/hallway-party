@@ -76,12 +76,18 @@ RSpec.describe "Hobbies" do
       expect(response.body).not_to include("One of your hobbies")
     end
 
-    it "marks a hobby the user has and offers to remove it when they have others", :aggregate_failures do
+    it "marks a hobby the user has when they have others", :aggregate_failures do
       create(:user_hobby, user: user, hobby: create(:hobby, name: "surfing"))
       get hobby_path(hobby)
       expect(response.body).to include("One of your hobbies")
-      expect(response.body).to include("Remove from my hobbies")
       expect(response.body).not_to include("only hobby")
+    end
+
+    it "offers an inline remove control for a hobby the user has", :aggregate_failures do
+      create(:user_hobby, user: user, hobby: create(:hobby, name: "surfing"))
+      get hobby_path(hobby)
+      expect(response.body).to include("− remove") # visible inline label
+      expect(response.body).to include("Remove from my hobbies") # accessible name (aria-label)
     end
 
     it "marks the user's only hobby but blocks removing it", :aggregate_failures do

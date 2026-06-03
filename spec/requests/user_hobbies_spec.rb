@@ -147,6 +147,16 @@ RSpec.describe "UserHobbies" do
       expect(response).to redirect_to(hobby_path(removable.hobby))
     end
 
+    it "flashes a confirmation on a full-page removal" do
+      delete user_hobby_path(removable)
+      expect(flash[:notice]).to include("Removed")
+    end
+
+    it "does not flash on an in-place frame removal" do
+      delete user_hobby_path(removable), headers: { "Turbo-Frame" => "membership_hobby_#{removable.hobby_id}" }
+      expect(flash[:notice]).not_to include("Removed")
+    end
+
     context "when removing the user's last hobby" do
       before { delete user_hobby_path(removable) } # leave just one
 
