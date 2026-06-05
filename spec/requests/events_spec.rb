@@ -57,10 +57,24 @@ RSpec.describe "Events" do
       expect(non_attending_section).not_to include("Attending")
     end
 
-    it "excludes past events" do
-      create(:event, :past, name: "Old Conf")
+    it "shows past events in a Past section, most recent first", :aggregate_failures do
+      create(:event, name: "Older Past", starts_at: 6.months.ago, ends_at: 6.months.ago + 2.days)
+      create(:event, name: "Recent Past", starts_at: 1.month.ago, ends_at: 1.month.ago + 2.days)
       get events_path
-      expect(response.body).not_to include("Old Conf")
+      expect(response.body).to include("past-events")
+      expect(response.body.index("Recent Past")).to be < response.body.index("Older Past")
+    end
+
+    it "stacks the upcoming section above the past section", :aggregate_failures do
+      create(:event, :past, name: "Bygone Conf")
+      get events_path
+      expect(response.body.index("upcoming-events")).to be < response.body.index("past-events")
+      expect(response.body.index("RubyConf 2026")).to be < response.body.index("Bygone Conf")
+    end
+
+    it "omits the Past section when there are no past events" do
+      get events_path
+      expect(response.body).not_to include("past-events")
     end
   end
 
