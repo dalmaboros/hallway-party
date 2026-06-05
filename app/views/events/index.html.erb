@@ -2,7 +2,7 @@
   <h1 class="text-3xl font-bold mb-6">Events</h1>
 
   <section id="upcoming-events" class="mb-10">
-    <h2 class="text-xl font-semibold mb-3">Upcoming</h2>
+    <h2 class="text-xl font-semibold mb-3">Upcoming Events</h2>
     <% if @upcoming_event_presenters.any? %>
       <ul class="divide-y divide-gray-200">
         <%= render partial: "events/event_row",
@@ -16,7 +16,7 @@
 
   <% if @past_event_presenters.any? %>
     <section id="past-events">
-      <h2 class="text-xl font-semibold mb-3">Past</h2>
+      <h2 class="text-xl font-semibold mb-3">Past Events</h2>
       <ul class="divide-y divide-gray-200">
         <%= render partial: "events/event_row",
               collection: @past_event_presenters,

@@ -45,16 +45,24 @@ RSpec.describe "Events" do
       expect(response.body.index("RubyConf 2026")).to be > response.body.index("RubyConfAT 2026")
     end
 
-    it "marks events the viewer is attending" do
+    it "marks events the viewer attends with a tense-neutral badge" do
       get events_path
       attending_section = response.body[%r{RubyConf 2026.*?</li>}m]
-      expect(attending_section).to include("Attending")
+      expect(attending_section).to include("Attendee")
     end
 
-    it "does not mark events the viewer is not attending" do
+    it "does not mark events the viewer does not attend" do
       get events_path
       non_attending_section = response.body[%r{RubyConfAT 2026.*?</li>}m]
-      expect(non_attending_section).not_to include("Attending")
+      expect(non_attending_section).not_to include("Attendee")
+    end
+
+    it "marks a past event the viewer attended (not 'Attending')", :aggregate_failures do
+      create(:event_attendance, user: user, event: create(:event, :past, name: "Gone Conf"))
+      get events_path
+      past_section = response.body[%r{Gone Conf.*?</li>}m]
+      expect(past_section).to include("Attendee")
+      expect(past_section).not_to include("Attending")
     end
 
     it "shows past events in a Past section, most recent first", :aggregate_failures do
