@@ -103,6 +103,25 @@ RSpec.describe "Events" do
       expect(response.body).to include("July 14–16, 2026")
     end
 
+    it "marks an upcoming event the viewer attends in the present tense" do
+      get event_path(attended_event)
+      header = CGI.unescapeHTML(response.body[%r{<header.*?</header>}m])
+      expect(header).to include("You're attending")
+    end
+
+    it "marks a past event the viewer attended in the past tense" do
+      travel_to(attended_event.ends_at + 1.day) do
+        get event_path(attended_event)
+        header = CGI.unescapeHTML(response.body[%r{<header.*?</header>}m])
+        expect(header).to include("You attended")
+      end
+    end
+
+    it "shows no attendance indicator when the viewer is not attending" do
+      get event_path(other_event)
+      expect(CGI.unescapeHTML(response.body)).not_to include("You're attending")
+    end
+
     context "with another attendee who shares an embedded hobby" do
       before do
         hiking = create(:hobby, name: "hiking", embedding: Array.new(Embedder::DIMENSIONS, 0.5))
@@ -115,7 +134,7 @@ RSpec.describe "Events" do
 
       it "renders the attendees section ranked by hobby similarity" do
         get event_path(attended_event)
-        expect(response.body).to include("People attending", "People who share your interests", "Blair Other", "hiking")
+        expect(response.body).to include("Attendees", "People who share your interests", "Blair Other", "hiking")
       end
     end
 
@@ -139,13 +158,13 @@ RSpec.describe "Events" do
 
     it "shows the empty attendees state when no other attendees exist" do
       get event_path(attended_event)
-      expect(response.body).to include("People attending", "You're early")
+      expect(response.body).to include("Attendees", "You're early")
     end
 
     it "hides the attendees section when the viewer is not attending" do
       create(:user_hobby, user: create(:user, name: "Hidden Person"), hobby: create(:hobby, name: "hiking"))
       get event_path(other_event)
-      expect(response.body).not_to include("People attending", "Hidden Person")
+      expect(response.body).not_to include("Attendees", "Hidden Person")
     end
 
     it "still renders details for events the viewer is not attending" do

@@ -69,6 +69,10 @@ class Event < ApplicationRecord
     days_until_start.positive?
   end
 
+  def past?
+    current_date > end_date
+  end
+
   def total_days
     (end_date - start_date).to_i + 1
   end

@@ -12,6 +12,7 @@ class EventPresenter
     :current_day,
     :days_until_start,
     :upcoming?,
+    :past?,
     :total_days,
     to: :event
 
@@ -45,5 +46,9 @@ class EventPresenter
 
   def attended_by?(user)
     user.attendee_of?(event)
+  end
+
+  def attendance_statement
+    past? ? "You attended" : "You're attending"
   end
 end

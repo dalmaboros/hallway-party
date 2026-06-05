@@ -2,6 +2,11 @@
   <header class="mb-8">
     <h1 class="text-3xl font-bold mb-2"><%= @event_presenter.name %></h1>
     <p class="text-gray-600 mb-1"><%= @event_presenter.date_range %></p>
+    <% if @event_presenter.attended_by?(current_user) %>
+      <p class="inline-block text-sm font-semibold text-party-green border border-party-green/40 rounded-full px-3 py-1 mb-2">
+        ✓ <%= @event_presenter.attendance_statement %>
+      </p>
+    <% end %>
     <% if @event_presenter.happening_today? %>
       <p class="inline-block text-sm font-semibold text-party-green border border-party-green/40 rounded-full px-3 py-1 mb-2">
         Day <%= @event_presenter.current_day %> of <%= @event_presenter.total_days %>
@@ -24,7 +29,7 @@
   <% if @event_presenter.attended_by?(current_user) %>
     <section>
       <h2 class="text-xl font-semibold mb-4">
-        <%= @event_presenter.happening_today? ? "People here" : "People attending" %>
+        <%= @event_presenter.happening_today? ? "People here" : "Attendees" %>
       </h2>
 
       <% if @matched_user_presenters.any? %>
