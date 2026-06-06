@@ -6,13 +6,13 @@
         <%= event_presenter.name %>
       </h3>
       <% if event_presenter.attended_by?(current_user) %>
-        <span class="inline-block whitespace-nowrap text-sm font-semibold text-party-green border border-party-green/40 rounded-full px-3 py-1">
-          ✓ <%= event_presenter.attendance_statement %>
-        </span>
+        <%= render partial: "events/attendance_badge",
+              locals: { presenter: event_presenter } %>
       <% end %>
     </div>
     <p class="text-sm text-gray-600">
-      <%= event_presenter.date_range %> · <%= event_presenter.location %>
+      <%= event_presenter.date_range %><br>
+      <%= event_presenter.location %>
     </p>
   <% end %>
 </li>

@@ -1,11 +1,11 @@
 <div class="max-w-3xl mx-auto">
   <header class="mb-8">
     <h1 class="text-3xl font-bold mb-2"><%= @event_presenter.name %></h1>
-    <p class="text-gray-600 mb-1"><%= @event_presenter.date_range %></p>
     <% if @event_presenter.attended_by?(current_user) %>
-      <p class="inline-block text-sm font-semibold text-party-green border border-party-green/40 rounded-full px-3 py-1 mb-2">
-        ✓ <%= @event_presenter.attendance_statement %>
-      </p>
+      <span class="inline-block mb-2">
+        <%= render partial: "events/attendance_badge",
+              locals: { presenter: @event_presenter } %>
+      </span>
     <% end %>
     <% if @event_presenter.happening_today? %>
       <p class="inline-block text-sm font-semibold text-party-green border border-party-green/40 rounded-full px-3 py-1 mb-2">
@@ -16,13 +16,18 @@
         Starts in <%= pluralize(@event_presenter.days_until_start, "day") %>
       </p>
     <% end %>
+
+    <p class="text-gray-600 mb-1"><%= @event_presenter.date_range %></p>
     <p class="text-gray-600 mb-2"><%= @event_presenter.location %></p>
+
     <% if @event_presenter.website %>
-      <%= link_to @event_presenter.website,
-            @event_presenter.website,
-            target: "_blank",
-            rel: "noopener noreferrer",
-            class: "inline-block text-party-cyan hover:opacity-80" %>
+      <p>
+        <%= link_to @event_presenter.website,
+              @event_presenter.website,
+              target: "_blank",
+              rel: "noopener noreferrer",
+              class: "inline-block text-party-cyan hover:opacity-80" %>
+      </p>
     <% end %>
   </header>
 
@@ -34,6 +39,7 @@
 
       <% if @matched_user_presenters.any? %>
         <h3 class="text-lg font-semibold mb-1">People who share your interests</h3>
+        <hr>
         <p class="text-gray-600 mb-4">Ranked by shared interests.</p>
         <ul class="divide-y divide-gray-200 mb-8">
           <%= render partial: "attendees/attendee",
@@ -44,6 +50,7 @@
 
       <% if @other_user_presenters.any? %>
         <h3 class="text-lg font-semibold mb-4">Everyone else</h3>
+        <hr>
         <ul class="divide-y divide-gray-200">
           <%= render partial: "attendees/attendee",
                 collection: @other_user_presenters,

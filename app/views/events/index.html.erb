@@ -3,6 +3,7 @@
 
   <section id="upcoming-events" class="mb-10">
     <h2 class="text-xl font-semibold mb-3">Upcoming Events</h2>
+    <hr>
     <% if @upcoming_event_presenters.any? %>
       <ul class="divide-y divide-gray-200">
         <%= render partial: "events/event_row",
@@ -17,6 +18,7 @@
   <% if @past_event_presenters.any? %>
     <section id="past-events">
       <h2 class="text-xl font-semibold mb-3">Past Events</h2>
+      <hr>
       <ul class="divide-y divide-gray-200">
         <%= render partial: "events/event_row",
               collection: @past_event_presenters,
