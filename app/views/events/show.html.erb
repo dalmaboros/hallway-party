@@ -38,9 +38,9 @@
       </h2>
 
       <% if @matched_user_presenters.any? %>
-        <h3 class="text-lg font-semibold mb-1">People who share your interests</h3>
+        <h3 class="text-lg font-semibold mb-2">People who share your interests</h3>
         <hr>
-        <p class="text-gray-600 mb-4">Ranked by shared interests.</p>
+        <p class="text-gray-600 mt-1">Ranked by shared interests</p>
         <ul class="divide-y divide-gray-200 mb-8">
           <%= render partial: "attendees/attendee",
                 collection: @matched_user_presenters,
@@ -49,7 +49,7 @@
       <% end %>
 
       <% if @other_user_presenters.any? %>
-        <h3 class="text-lg font-semibold mb-4">Everyone else</h3>
+        <h3 class="text-lg font-semibold mb-2">Everyone else</h3>
         <hr>
         <ul class="divide-y divide-gray-200">
           <%= render partial: "attendees/attendee",
