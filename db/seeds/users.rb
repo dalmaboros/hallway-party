@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# Demo users are dev/test fixtures only — never create fake accounts in production.
+return if Rails.env.production?
+
 SEED_USER_COUNT = 8
 
 RANDOM = Random.new(42)
