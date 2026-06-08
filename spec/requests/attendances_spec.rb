@@ -28,6 +28,11 @@ RSpec.describe "Attendances" do
       expect(response).to redirect_to(events_path)
     end
 
+    it "redirects back to the page the request came from" do
+      post event_attendance_path(event), headers: { "HTTP_REFERER" => event_path(event) }
+      expect(response).to redirect_to(event_path(event))
+    end
+
     context "when the event overlaps one the user already attends" do
       let!(:overlapping_event) do
         create(:event, starts_at: attended_event.starts_at, ends_at: attended_event.ends_at)

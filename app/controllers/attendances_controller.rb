@@ -5,9 +5,9 @@ class AttendancesController < ApplicationController
     attendance = current_user.event_attendances.build(event:)
 
     if attendance.save
-      redirect_to events_path, notice: "You're attending #{event.name}."
+      redirect_back_or_to events_path, notice: "You're attending #{event.name}."
     else
-      redirect_to events_path, alert: attendance.errors.full_messages.to_sentence
+      redirect_back_or_to events_path, alert: attendance.errors.full_messages.to_sentence
     end
   end
 
@@ -15,7 +15,7 @@ class AttendancesController < ApplicationController
     attendance = current_user.event_attendances.find_by(event:)
     attendance&.destroy
 
-    redirect_to events_path, notice: ("You're no longer attending #{event.name}." if attendance)
+    redirect_back_or_to events_path, notice: ("You're no longer attending #{event.name}." if attendance)
   end
 
   private

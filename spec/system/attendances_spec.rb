@@ -45,4 +45,16 @@ RSpec.describe "Attending events from the index" do
       expect(page).to have_content("overlaps")
     end
   end
+
+  context "when on an event show page" do
+    let(:event) { create(:event, :upcoming, name: "Showpage Conf") }
+
+    it "lets a non-attendee attend and then reveals the attendees section", :aggregate_failures do
+      visit event_path(event)
+      expect(page).to have_content("only if you are attending")
+      click_button "I am attending!"
+      expect(page).to have_content("You're attending Showpage Conf")
+      expect(page).to have_no_content("only if you are attending")
+    end
+  end
 end
