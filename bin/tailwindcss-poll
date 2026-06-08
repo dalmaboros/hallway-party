@@ -1,0 +1,32 @@
+#!/usr/bin/env sh
+# Rebuild Tailwind by polling instead of file-change events.
+#
+# Docker's macOS bind mount does not deliver inotify events into the container,
+# so `tailwindcss --watch` never sees host edits and never rebuilds. File mtimes
+# *do* cross the mount, so we poll them and run a one-shot build whenever a
+# source is newer than the compiled output.
+
+set -e
+cd "$(dirname "$0")/.."
+
+input="app/assets/tailwind/application.css"
+output="app/assets/builds/tailwind.css"
+interval="${TAILWINDCSS_POLL_INTERVAL:-1}"
+
+# Resolve the binary the way tailwindcss-rails does, rather than hardcoding a
+# platform/version path or trusting it to be on PATH.
+tailwindcss="$(ruby -e 'require "tailwindcss/ruby"; print Tailwindcss::Ruby.executable')"
+
+build() {
+  "$tailwindcss" -i "$input" -o "$output" --minify
+}
+
+build
+echo "tailwindcss-poll: rebuilding on change every ${interval}s (Docker bind-mount safe)"
+
+while true; do
+  if [ -n "$(find app -type f \( -name '*.erb' -o -name '*.rb' -o -name '*.css' -o -name '*.js' \) -newer "$output" 2>/dev/null)" ]; then
+    build
+  fi
+  sleep "$interval"
+done
