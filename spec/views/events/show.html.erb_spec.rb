@@ -13,28 +13,37 @@ RSpec.describe "events/show" do
     stub_template "events/_attendance_badge.html.erb" => "BADGE"
   end
 
-  def assign_event(event)
+  def assign_event_presenter(event)
     assign(:event_presenter, EventPresenter.new(event))
   end
 
-  def assign_attendees(matched: [], others: [])
+  def assign_user_presenters(matched: [], others: [])
     assign(:matched_user_presenters, matched)
     assign(:other_user_presenters, others)
   end
 
   describe "status pill" do
-    it "shows the countdown pill for an upcoming event", :aggregate_failures do
-      assign_event(create(:event, :upcoming))
+    before do
+      assign_event_presenter(event)
       render
-      expect(rendered).to match(/Starts in \d+ days?/)
-      expect(rendered).not_to match(/Day \d+ of \d+/)
     end
 
-    it "shows the day-of pill for an in-progress event", :aggregate_failures do
-      assign_event(create(:event, :in_progress))
-      render
-      expect(rendered).to match(/Day \d+ of \d+/)
-      expect(rendered).not_to match(/Starts in \d+ days?/)
+    context "when the event is upcoming" do
+      let(:event) { create(:event, :upcoming) }
+
+      it "shows only the countdown pill", :aggregate_failures do
+        expect(rendered).to match(/Starts in \d+ days?/)
+        expect(rendered).not_to match(/Day \d+ of \d+/)
+      end
+    end
+
+    context "when the event is in progress" do
+      let(:event) { create(:event, :in_progress) }
+
+      it "shows only the day-of pill", :aggregate_failures do
+        expect(rendered).to match(/Day \d+ of \d+/)
+        expect(rendered).not_to match(/Starts in \d+ days?/)
+      end
     end
   end
 
@@ -44,35 +53,35 @@ RSpec.describe "events/show" do
 
       before do
         create(:event_attendance, user:, event:)
-        assign_event(event)
+        assign_event_presenter(event)
       end
 
       it "uses the Attendees heading" do
-        assign_attendees
+        assign_user_presenters
         render
         expect(rendered).to include("Attendees")
       end
 
       it "renders the shared-interests heading when there are matched attendees" do
-        assign_attendees(matched: [UserPresenter.new(build_stubbed(:user))])
+        assign_user_presenters(matched: [UserPresenter.new(build_stubbed(:user))])
         render
         expect(rendered).to include("People who share your interests")
       end
 
       it "renders the everyone-else heading when there are other attendees" do
-        assign_attendees(others: [UserPresenter.new(build_stubbed(:user))])
+        assign_user_presenters(others: [UserPresenter.new(build_stubbed(:user))])
         render
         expect(rendered).to include("Everyone else")
       end
 
       it "shows the empty state when no other attendees exist" do
-        assign_attendees
+        assign_user_presenters
         render
         expect(rendered).to include("You're early")
       end
 
       it "renders the attendance badge" do
-        assign_attendees
+        assign_user_presenters
         render
         expect(rendered).to include("BADGE")
       end
@@ -83,8 +92,8 @@ RSpec.describe "events/show" do
 
       before do
         create(:event_attendance, user:, event:)
-        assign_event(event)
-        assign_attendees
+        assign_event_presenter(event)
+        assign_user_presenters
       end
 
       it "uses the present-tense People here heading" do
@@ -94,14 +103,13 @@ RSpec.describe "events/show" do
     end
 
     context "when the viewer does not attend the event" do
-      before do
-        assign_event(create(:event, :upcoming))
-        assign_attendees
-      end
+      before { assign_event_presenter(create(:event, :upcoming)) }
 
-      it "hides the attendees section", :aggregate_failures do
+      it "shows the attendees heading and the gate message, but no attendees", :aggregate_failures do
         render
-        expect(rendered).not_to include("Attendees")
+        expect(rendered).to include("Attendees")
+        expect(rendered).to include("You can see the conference attendees only if you are attending as well!")
+        expect(rendered).not_to include("ATTENDEE")
         expect(rendered).not_to include("You're early")
       end
 

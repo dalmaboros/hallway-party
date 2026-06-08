@@ -61,12 +61,13 @@ RSpec.describe "Events" do
   describe "viewing an event the user does not attend" do
     let(:event) { create(:event, :upcoming, name: "RubyConfAT 2026", location: "Vienna, Austria") }
 
-    it "shows details but hides the attendees section", :aggregate_failures do
+    it "shows details and the gated attendees message", :aggregate_failures do
       visit event_path(event)
 
       expect(page).to have_content("RubyConfAT 2026")
       expect(page).to have_content("Vienna, Austria")
-      expect(page).to have_no_content("Attendees")
+      expect(page).to have_content("Attendees")
+      expect(page).to have_content("You can see the conference attendees only if you are attending as well!")
     end
   end
 end

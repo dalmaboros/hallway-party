@@ -1,61 +1,71 @@
 <div class="max-w-3xl mx-auto">
   <header class="mb-8">
     <h1 class="text-3xl font-bold mb-2"><%= @event_presenter.name %></h1>
-    <% if @event_presenter.attended_by?(current_user) %>
-      <span class="inline-block mb-2">
-        <%= render partial: "events/attendance_badge",
-              locals: { presenter: @event_presenter } %>
-      </span>
-    <% end %>
-    <% if @event_presenter.happening_today? %>
-      <p class="inline-block text-sm font-semibold text-party-green border border-party-green/40 rounded-full px-3 py-1 mb-2">
-        Day <%= @event_presenter.current_day %> of <%= @event_presenter.total_days %>
-      </p>
-    <% elsif @event_presenter.upcoming? %>
-      <p class="inline-block text-sm font-semibold text-party-lavender border border-party-lavender/40 rounded-full px-3 py-1 mb-2">
-        Starts in <%= pluralize(@event_presenter.days_until_start, "day") %>
-      </p>
-    <% end %>
 
-    <p class="text-gray-600 mb-1"><%= @event_presenter.date_range %></p>
-    <p class="text-gray-600 mb-2"><%= @event_presenter.location %></p>
+    <div class="event-badges">
+      <% if @event_presenter.attended_by?(current_user) %>
+        <span class="inline-block mb-2">
+          <%= render partial: "events/attendance_badge",
+                locals: { presenter: @event_presenter } %>
+        </span>
+      <% end %>
 
-    <% if @event_presenter.website %>
-      <p>
-        <%= link_to @event_presenter.website,
-              @event_presenter.website,
-              target: "_blank",
-              rel: "noopener noreferrer",
-              class: "inline-block text-party-cyan hover:opacity-80" %>
-      </p>
-    <% end %>
+      <% if @event_presenter.happening_today? %>
+        <p class="inline-block text-sm font-semibold text-party-green border border-party-green/40 rounded-full px-3 py-1 mb-2">
+          Day <%= @event_presenter.current_day %> of <%= @event_presenter.total_days %>
+        </p>
+      <% elsif @event_presenter.upcoming? %>
+        <p class="inline-block text-sm font-semibold text-party-lavender border border-party-lavender/40 rounded-full px-3 py-1 mb-2">
+          Starts in <%= pluralize(@event_presenter.days_until_start, "day") %>
+        </p>
+      <% end %>
+    </div>
+
+    <div class="event-details">
+      <p class="text-gray-600 mb-1"><%= @event_presenter.date_range %></p>
+      <p class="text-gray-600 mb-2"><%= @event_presenter.location %></p>
+
+      <% if @event_presenter.website %>
+        <p>
+          <%= link_to @event_presenter.website,
+                @event_presenter.website,
+                target: "_blank",
+                rel: "noopener noreferrer",
+                class: "inline-block text-party-cyan hover:opacity-80" %>
+        </p>
+      <% end %>
+    </div>
   </header>
 
-  <% if @event_presenter.attended_by?(current_user) %>
-    <section>
-      <h2 class="text-xl font-semibold mb-4">
-        <%= @event_presenter.happening_today? ? "People here" : "Attendees" %>
-      </h2>
+  <section class="event-attendees">
+    <h2 class="text-xl font-semibold mb-4">
+      <%= @event_presenter.happening_today? ? "People here" : "Attendees" %>
+    </h2>
 
+    <% if @event_presenter.attended_by?(current_user) %>
       <% if @matched_user_presenters.any? %>
-        <h3 class="text-lg font-semibold mb-2">People who share your interests</h3>
-        <hr>
-        <p class="text-gray-600 mt-1">Ranked by shared interests</p>
-        <ul class="divide-y divide-gray-200 mb-8">
-          <%= render partial: "attendees/attendee",
-                collection: @matched_user_presenters,
-                as: :presenter %>
-        </ul>
+        <section class="matched-attendees">
+          <h3 class="text-lg font-semibold mb-2">People who share your interests</h3>
+          <hr>
+          <p class="text-gray-600 mt-1">Ranked by shared interests</p>
+          <ul class="divide-y divide-gray-200 mb-8">
+            <%= render partial: "attendees/attendee",
+                  collection: @matched_user_presenters,
+                  as: :presenter %>
+          </ul>
+        </section>
       <% end %>
 
       <% if @other_user_presenters.any? %>
-        <h3 class="text-lg font-semibold mb-2">Everyone else</h3>
-        <hr>
-        <ul class="divide-y divide-gray-200">
-          <%= render partial: "attendees/attendee",
-                collection: @other_user_presenters,
-                as: :presenter %>
-        </ul>
+        <section class="unmatched-attendees">
+          <h3 class="text-lg font-semibold mb-2">Everyone else</h3>
+          <hr>
+          <ul class="divide-y divide-gray-200">
+            <%= render partial: "attendees/attendee",
+                  collection: @other_user_presenters,
+                  as: :presenter %>
+          </ul>
+        </section>
       <% end %>
 
       <% if @matched_user_presenters.none? && @other_user_presenters.none? %>
@@ -63,6 +73,10 @@
           You're early — check back when more folks have signed up. :)
         </div>
       <% end %>
-    </section>
-  <% end %>
+    <% else %>
+      <div class="text-center py-16 text-gray-600">
+        You can see the conference attendees only if you are attending as well!
+      </div>
+    <% end %>
+  </section> <!-- end attendees section -->
 </div>
