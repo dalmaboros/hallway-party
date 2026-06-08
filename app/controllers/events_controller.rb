@@ -2,7 +2,8 @@
 
 class EventsController < ApplicationController
   def index
-    @event_presenters = not_past_events.map { |event| EventPresenter.new(event) }
+    @upcoming_event_presenters = Event.not_past.map { |event| EventPresenter.new(event) }
+    @past_event_presenters = Event.past.map { |event| EventPresenter.new(event) }
   end
 
   def show
@@ -17,10 +18,6 @@ class EventsController < ApplicationController
 
   def event
     @event ||= Event.find(params[:id])
-  end
-
-  def not_past_events
-    @not_past_events ||= Event.not_past
   end
 
   def matched_attendees

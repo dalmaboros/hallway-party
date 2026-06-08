@@ -16,6 +16,7 @@ RSpec.describe EventPresenter do
         :current_day,
         :days_until_start,
         :upcoming?,
+        :past?,
         :total_days,
       ]
     end
@@ -179,6 +180,26 @@ RSpec.describe EventPresenter do
     context "when the user does not attend the event" do
       it "returns false" do
         expect(presenter.attended_by?(user)).to be(false)
+      end
+    end
+  end
+
+  describe "#attendance_statement" do
+    let(:presenter) { described_class.new(event) }
+
+    context "when the event is in the past" do
+      let(:event) { build(:event, :past) }
+
+      it "uses the past tense" do
+        expect(presenter.attendance_statement).to eq("You attended")
+      end
+    end
+
+    context "when the event is not in the past" do
+      let(:event) { build(:event, :upcoming) }
+
+      it "uses the present tense" do
+        expect(presenter.attendance_statement).to eq("You're attending")
       end
     end
   end

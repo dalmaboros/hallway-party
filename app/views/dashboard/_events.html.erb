@@ -2,8 +2,10 @@
 <section id="your-events" class="mb-6">
   <div class="flex items-baseline justify-between mb-2">
     <h2 class="text-xl font-semibold">Your Events</h2>
-    <%= link_to "Edit", events_path, class: "text-sm text-party-cyan hover:opacity-80" %>
+    <%= link_to "View", events_path, class: "text-sm text-party-cyan hover:opacity-80" %>
   </div>
+
+  <hr class="mb-2">
   <% if dashboard_events_presenter.upcoming_events.any? %>
     <ul class="divide-y divide-gray-200">
       <% dashboard_events_presenter.upcoming_events.each do |event_presenter| %>
