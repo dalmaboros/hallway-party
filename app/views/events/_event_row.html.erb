@@ -10,7 +10,7 @@
     </p>
   <% end %>
 
-  <div class="shrink-0 flex items-center gap-2">
+  <div class="shrink-0 flex flex-col items-end gap-1">
     <% if event_presenter.attended_by?(current_user) %>
       <%= render partial: "events/attendance_badge",
             locals: { presenter: event_presenter } %>
