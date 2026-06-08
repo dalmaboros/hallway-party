@@ -531,14 +531,14 @@ RSpec.describe Event do
   end
 
   describe "#past?" do
-    let(:zone) { "Australia/Sydney" }
-    let(:starts_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 14, 9) }
-    let(:ends_at) { ActiveSupport::TimeZone[zone].local(2026, 7, 16, 17) }
-    let(:event) { build(:event, time_zone: zone, starts_at: starts_at, ends_at: ends_at) }
+    let(:time_zone) { "Australia/Sydney" }
+    let(:starts_at) { ActiveSupport::TimeZone[time_zone].local(2026, 7, 14, 9) }
+    let(:ends_at) { ActiveSupport::TimeZone[time_zone].local(2026, 7, 16, 17) }
+    let(:event) { build(:event, time_zone:, starts_at:, ends_at:) }
 
     context "when the event is in the future" do
       it "returns false" do
-        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 1, 12)) do
+        travel_to(ActiveSupport::TimeZone[time_zone].local(2026, 7, 1, 12)) do
           expect(event.past?).to be(false)
         end
       end
@@ -546,7 +546,7 @@ RSpec.describe Event do
 
     context "when the event is in progress (mid-conference)" do
       it "returns false" do
-        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 15, 12)) do
+        travel_to(ActiveSupport::TimeZone[time_zone].local(2026, 7, 15, 12)) do
           expect(event.past?).to be(false)
         end
       end
@@ -554,7 +554,7 @@ RSpec.describe Event do
 
     context "when the event ends today" do
       it "returns false" do
-        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 16, 12)) do
+        travel_to(ActiveSupport::TimeZone[time_zone].local(2026, 7, 16, 12)) do
           expect(event.past?).to be(false)
         end
       end
@@ -562,7 +562,7 @@ RSpec.describe Event do
 
     context "when the event is in the past" do
       it "returns true" do
-        travel_to(ActiveSupport::TimeZone[zone].local(2026, 7, 20, 12)) do
+        travel_to(ActiveSupport::TimeZone[time_zone].local(2026, 7, 20, 12)) do
           expect(event.past?).to be(true)
         end
       end
