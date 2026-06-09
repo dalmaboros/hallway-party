@@ -8,8 +8,7 @@
       <ul class="divide-y divide-gray-200">
         <%= render partial: "events/event_row",
               collection: @upcoming_event_presenters,
-              as: :event_presenter,
-              locals: { attendable: true } %>
+              as: :event_presenter %>
       </ul>
     <% else %>
       <p class="text-gray-600">No upcoming events yet.</p>
