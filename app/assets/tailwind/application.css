@@ -5,6 +5,7 @@
   --color-party-green: #3b8f76;
   --color-party-red: #d9472a;
   --color-party-cyan: #67bed9;
+  --color-party-orchid: #aa75c0;
 
   /* Tinted-white versions, used as fills for "matching" hobby pills.
      Mix percentages tuned per hue so all four land at roughly the same
@@ -13,4 +14,5 @@
   --color-party-green-soft: color-mix(in srgb, var(--color-party-green) 10%, white);
   --color-party-red-soft: color-mix(in srgb, var(--color-party-red) 12%, white);
   --color-party-cyan-soft: color-mix(in srgb, var(--color-party-cyan) 15%, white);
+  --color-party-orchid-soft: color-mix(in srgb, var(--color-party-orchid) 12%, white);
 }

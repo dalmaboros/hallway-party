@@ -119,4 +119,45 @@ RSpec.describe "events/show" do
       end
     end
   end
+
+  describe "attendance toggle" do
+    context "when the event is upcoming and the viewer attends" do
+      let(:event) { create(:event, :upcoming) }
+
+      before do
+        create(:event_attendance, user:, event:)
+        assign_event_presenter(event)
+        assign_user_presenters
+      end
+
+      it "offers to cancel attendance", :aggregate_failures do
+        render
+        expect(rendered).to include(event_attendance_path(event))
+        expect(rendered).to include('value="delete"')
+      end
+    end
+
+    context "when the event is upcoming and the viewer does not attend" do
+      let(:event) { create(:event, :upcoming) }
+
+      before { assign_event_presenter(event) }
+
+      it "offers to attend", :aggregate_failures do
+        render
+        expect(rendered).to include(event_attendance_path(event))
+        expect(rendered).not_to include('value="delete"')
+      end
+    end
+
+    context "when the event is past" do
+      let(:event) { create(:event, :past) }
+
+      before { assign_event_presenter(event) }
+
+      it "offers no attendance control" do
+        render
+        expect(rendered).not_to include(event_attendance_path(event))
+      end
+    end
+  end
 end

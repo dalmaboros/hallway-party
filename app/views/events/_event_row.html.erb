@@ -1,18 +1,19 @@
 <%# locals: (event_presenter:) %>
-<li class="py-4">
-  <%= link_to event_path(event_presenter.event), class: "block group" do %>
-    <div class="flex items-center justify-between gap-4">
-      <h3 class="text-lg font-semibold group-hover:text-party-cyan">
-        <%= event_presenter.name %>
-      </h3>
-      <% if event_presenter.attended_by?(current_user) %>
-        <%= render partial: "events/attendance_badge",
-              locals: { presenter: event_presenter } %>
-      <% end %>
-    </div>
+<li class="py-4 flex items-start justify-between gap-4">
+  <%= link_to event_path(event_presenter.event), class: "group flex-1 min-w-0" do %>
+    <h3 class="text-lg font-semibold group-hover:text-party-cyan">
+      <%= event_presenter.name %>
+    </h3>
     <p class="text-sm text-gray-600">
       <%= event_presenter.date_range %><br>
       <%= event_presenter.location %>
     </p>
+  <% end %>
+
+  <% if event_presenter.attended_by?(current_user) %>
+    <div class="shrink-0">
+      <%= render partial: "events/attendance_badge",
+            locals: { presenter: event_presenter } %>
+    </div>
   <% end %>
 </li>

@@ -4,10 +4,16 @@
 
     <div class="event-badges">
       <% if @event_presenter.attended_by?(current_user) %>
-        <span class="inline-block mb-2">
+        <div class="flex items-center gap-3 mb-2">
           <%= render partial: "events/attendance_badge",
                 locals: { presenter: @event_presenter } %>
-        </span>
+          <% if @event_presenter.attendable? %>
+            <%= button_to "Cancel attendance",
+                  event_attendance_path(@event_presenter.event),
+                  method: :delete,
+                  class: "text-sm text-gray-500 hover:text-party-red" %>
+          <% end %>
+        </div>
       <% end %>
 
       <% if @event_presenter.happening_today? %>
@@ -15,15 +21,14 @@
           Day <%= @event_presenter.current_day %> of <%= @event_presenter.total_days %>
         </p>
       <% elsif @event_presenter.upcoming? %>
-        <p class="inline-block text-sm font-semibold text-party-lavender border border-party-lavender/40 rounded-full px-3 py-1 mb-2">
+        <p class="inline-block text-sm font-semibold text-party-orchid bg-party-orchid-soft border border-party-orchid/40 rounded-full px-3 py-1 mb-2">
           Starts in <%= pluralize(@event_presenter.days_until_start, "day") %>
         </p>
       <% end %>
     </div>
 
     <div class="event-details">
-      <p class="text-gray-600 mb-1"><%= @event_presenter.date_range %></p>
-      <p class="text-gray-600 mb-2"><%= @event_presenter.location %></p>
+      <p class="text-gray-600 mb-1"><%= @event_presenter.date_range %> • <%= @event_presenter.location %></p>
 
       <% if @event_presenter.website %>
         <p>
@@ -69,13 +74,21 @@
       <% end %>
 
       <% if @matched_user_presenters.none? && @other_user_presenters.none? %>
-        <div class="text-center py-16 text-gray-600">
+        <div class="text-center py-1 text-gray-600">
           You're early — check back when more folks have signed up. :)
         </div>
       <% end %>
     <% else %>
-      <div class="text-center py-16 text-gray-600">
+      <div class="text-center py-1 text-gray-600">
         You can see the conference attendees only if you are attending as well!
+        <% if @event_presenter.attendable? %>
+          <div class="mt-6">
+            <%= button_to "I am attending!",
+                  event_attendance_path(@event_presenter.event),
+                  form_class: "inline-block",
+                  class: "bg-party-lavender text-gray-900 text-sm font-semibold px-4 py-2 rounded hover:brightness-95" %>
+          </div>
+        <% end %>
       </div>
     <% end %>
   </section> <!-- end attendees section -->

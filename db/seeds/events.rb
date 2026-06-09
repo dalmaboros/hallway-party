@@ -42,4 +42,20 @@ Event.find_or_create_by!(name: "RailsConf 2025") do |event|
   event.ends_at = Time.zone.parse("2025-07-10 18:00")
 end
 
+Event.find_or_create_by!(name: "Blastoff Rails 2026") do |event|
+  event.website = "https://blastoffrails.com"
+  event.location = "Albuquerque, NM"
+  event.time_zone = "America/Denver"
+  event.starts_at = Time.zone.parse("2026-06-11 09:00")
+  event.ends_at = Time.zone.parse("2026-06-12 18:00")
+end
+
+Event.find_or_create_by!(name: "Brighton Ruby 2026") do |event|
+  event.website = "https://brightonruby.com"
+  event.location = "Brighton, United Kingdom"
+  event.time_zone = "Europe/London"
+  event.starts_at = Time.zone.parse("2026-06-25 09:00")
+  event.ends_at = Time.zone.parse("2026-06-25 18:00")
+end
+
 puts "✓ Seeded #{Event.count} event(s)"
