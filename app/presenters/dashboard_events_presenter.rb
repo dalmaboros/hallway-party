@@ -9,14 +9,16 @@ class DashboardEventsPresenter
     if next_event.nil?
       most_recent_past_event ? :soft_sunset : :no_events
     elsif next_event.happening_today?
-      :happening_today
+      next_event.attended_by?(@user) ? :happening_today : :happening_today_not_attending
+    elsif next_event.attended_by?(@user)
+      :upcoming_attending
     else
-      :upcoming
+      :upcoming_not_attending
     end
   end
 
   def next_event
-    @next_event ||= event_presenter(@user.next_event)
+    @next_event ||= event_presenter(Event.not_past.first)
   end
 
   def most_recent_past_event
