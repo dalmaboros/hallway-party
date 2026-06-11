@@ -5,7 +5,8 @@ class AttendancesController < ApplicationController
     attendance = current_user.event_attendances.build(event:)
 
     if attendance.save
-      redirect_back_or_to events_path, notice: "You're attending #{event.name}."
+      flash[:undo_attendance_path] = event_attendance_path(event)
+      redirect_back_or_to events_path, notice: "You're attending #{event.name}!"
     else
       redirect_back_or_to events_path, alert: attendance.errors.full_messages.to_sentence
     end
