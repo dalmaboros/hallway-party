@@ -41,7 +41,7 @@
         <div class="bg-party-green/10 border border-party-green/30 text-party-green px-4 py-3 rounded mb-4">
           <%= flash[:notice] %>
           <% if flash[:undo_attendance_path] %>
-            (<%= link_to "oops, no I'm not", flash[:undo_attendance_path], data: { turbo_method: :delete }, class: "underline hover:opacity-80" %>)
+            <span class="text-sm">(<%= link_to "oops, no I'm not 😇", flash[:undo_attendance_path], data: { turbo_method: :delete }, class: "underline hover:opacity-80" %>)</span>
           <% end %>
         </div>
       <% end %>
