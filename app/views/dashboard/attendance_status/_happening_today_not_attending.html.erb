@@ -1,0 +1,9 @@
+<%# locals: (event_presenter:) %>
+<strong><%= event_presenter.name %></strong> is happening right now!
+Are you attending?
+<%= button_to "I am attending!",
+      event_attendance_path(event_presenter.event),
+      form_class: "inline",
+      class: "font-semibold underline hover:text-party-cyan" %>
+or
+<%= link_to "browse events", events_path, class: "underline hover:text-party-cyan" %>

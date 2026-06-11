@@ -8,8 +8,12 @@
       <%= render "dashboard/attendance_status/no_events" %>
     <% when :happening_today %>
       <%= render "dashboard/attendance_status/happening_today", event_presenter: dashboard_events_presenter.next_event %>
-    <% when :upcoming %>
-      <%= render "dashboard/attendance_status/upcoming", event_presenter: dashboard_events_presenter.next_event %>
+    <% when :happening_today_not_attending %>
+      <%= render "dashboard/attendance_status/happening_today_not_attending", event_presenter: dashboard_events_presenter.next_event %>
+    <% when :upcoming_attending %>
+      <%= render "dashboard/attendance_status/upcoming_attending", event_presenter: dashboard_events_presenter.next_event %>
+    <% when :upcoming_not_attending %>
+      <%= render "dashboard/attendance_status/upcoming_not_attending", event_presenter: dashboard_events_presenter.next_event %>
     <% end %>
   </p>
 </section>
