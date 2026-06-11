@@ -17,7 +17,7 @@
       <% end %>
 
       <% if @event_presenter.happening_today? %>
-        <p class="inline-block text-sm font-semibold text-party-green border border-party-green/40 rounded-full px-3 py-1 mb-2">
+        <p class="inline-block text-sm font-semibold text-party-orchid bg-party-orchid-soft border border-party-orchid/40 rounded-full px-3 py-1 mb-2">
           Day <%= @event_presenter.current_day %> of <%= @event_presenter.total_days %>
         </p>
       <% elsif @event_presenter.upcoming? %>
