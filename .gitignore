@@ -43,8 +43,9 @@
 .DS_Store
 **/.DS_Store
 
-# Local review artifacts (audits, PR reviews, layered-design reviews).
+# Local working artifacts (audits, PR reviews, design docs).
 /docs/reviews/
+/docs/designs/
 
 # Playwright MCP browser snapshot artifacts
 .playwright-mcp/
