@@ -223,4 +223,24 @@ RSpec.describe EventPresenter do
       end
     end
   end
+
+  describe "#remove_attendance_label" do
+    let(:presenter) { described_class.new(event) }
+
+    context "when the event is past" do
+      let(:event) { build(:event, :past) }
+
+      it "returns the retroactive removal label" do
+        expect(presenter.remove_attendance_label).to eq("(Actually, I didn't go)")
+      end
+    end
+
+    context "when the event is not past" do
+      let(:event) { build(:event, :upcoming) }
+
+      it "returns the cancellation label" do
+        expect(presenter.remove_attendance_label).to eq("Cancel attendance")
+      end
+    end
+  end
 end

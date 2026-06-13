@@ -56,4 +56,8 @@ class EventPresenter
   def attend_label
     past? ? "I attended" : "I am attending!"
   end
+
+  def remove_attendance_label
+    past? ? "(Actually, I didn't go)" : "Cancel attendance"
+  end
 end
