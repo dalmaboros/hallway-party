@@ -73,10 +73,6 @@ class Event < ApplicationRecord
     current_date > end_date
   end
 
-  def attendable?
-    !past?
-  end
-
   def total_days
     (end_date - start_date).to_i + 1
   end

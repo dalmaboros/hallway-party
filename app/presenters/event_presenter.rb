@@ -13,7 +13,6 @@ class EventPresenter
     :days_until_start,
     :upcoming?,
     :past?,
-    :attendable?,
     :total_days,
     to: :event
 
