@@ -52,4 +52,8 @@ class EventPresenter
   def attendance_statement
     past? ? "You attended" : "You're attending"
   end
+
+  def attend_label
+    past? ? "I attended" : "I am attending!"
+  end
 end

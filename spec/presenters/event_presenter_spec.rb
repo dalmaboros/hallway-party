@@ -203,4 +203,24 @@ RSpec.describe EventPresenter do
       end
     end
   end
+
+  describe "#attend_label" do
+    let(:presenter) { described_class.new(event) }
+
+    context "when the event is past" do
+      let(:event) { build(:event, :past) }
+
+      it "returns past tense CTA" do
+        expect(presenter.attend_label).to eq("I attended")
+      end
+    end
+
+    context "when the event is not past" do
+      let(:event) { build(:event, :upcoming) }
+
+      it "returns present tense CTA" do
+        expect(presenter.attend_label).to eq("I am attending!")
+      end
+    end
+  end
 end
