@@ -82,6 +82,8 @@ group :development do
 
   # Code quality metrics (Reek + Flay + Flog) [https://github.com/whitesmith/rubycritic]
   gem "rubycritic", require: false
+
+  gem "rails-erd", require: false
 end
 
 group :test do
