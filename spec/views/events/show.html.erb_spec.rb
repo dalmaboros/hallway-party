@@ -149,14 +149,15 @@ RSpec.describe "events/show" do
       end
     end
 
-    context "when the event is past" do
+    context "when the event is past and the viewer does not attend" do
       let(:event) { create(:event, :past) }
 
       before { assign_event_presenter(event) }
 
-      it "offers no attendance control" do
+      it "offers to attend retroactively", :aggregate_failures do
         render
-        expect(rendered).not_to include(event_attendance_path(event))
+        expect(rendered).to include(event_attendance_path(event))
+        expect(rendered).not_to include('value="delete"')
       end
     end
   end

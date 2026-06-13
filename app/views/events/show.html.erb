@@ -7,12 +7,10 @@
         <div class="flex items-center gap-3 mb-2">
           <%= render partial: "events/attendance_badge",
                 locals: { presenter: @event_presenter } %>
-          <% if @event_presenter.attendable? %>
-            <%= button_to "Cancel attendance",
-                  event_attendance_path(@event_presenter.event),
-                  method: :delete,
-                  class: "text-sm text-gray-500 hover:text-party-red" %>
-          <% end %>
+          <%= button_to @event_presenter.remove_attendance_label,
+                event_attendance_path(@event_presenter.event),
+                method: :delete,
+                class: "text-sm text-gray-500 hover:text-party-red" %>
         </div>
       <% end %>
 
@@ -81,14 +79,12 @@
     <% else %>
       <div class="text-center py-1 text-gray-600">
         You can see the conference attendees only if you are attending as well!
-        <% if @event_presenter.attendable? %>
-          <div class="mt-6">
-            <%= button_to "I am attending!",
-                  event_attendance_path(@event_presenter.event),
-                  form_class: "inline-block",
-                  class: "bg-party-lavender text-gray-900 text-sm font-semibold px-4 py-2 rounded hover:brightness-95" %>
-          </div>
-        <% end %>
+        <div class="mt-6">
+          <%= button_to @event_presenter.attend_label,
+                event_attendance_path(@event_presenter.event),
+                form_class: "inline-block",
+                class: "bg-party-lavender text-gray-900 text-sm font-semibold px-4 py-2 rounded hover:brightness-95" %>
+        </div>
       </div>
     <% end %>
   </section> <!-- end attendees section -->
