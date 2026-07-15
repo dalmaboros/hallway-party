@@ -1,14 +1,19 @@
 <div class="flex items-center justify-center min-h-[70vh]">
   <div class="text-center max-w-lg">
-    <h1 class="text-5xl font-bold mb-4">hallway-party</h1>
-    <p class="text-lg text-gray-600 mb-8">
-      Meet Rubyists at conferences based on shared hobbies and interests.
+    <p class="text-5xl mb-2">🥳</p>
+    <h1 class="text-5xl font-bold mb-6">hallway-party</h1>
+    <p class="text-3xl mb-8">
+      Meet Rubyists at conferences based on shared
+      <span class="text-purple-500 font-bold">hobbies and interests</span>!
     </p>
 
     <% if user_signed_in? %>
       <p class="mb-4">Welcome back, <%= current_user.name %>!</p>
-      <%= link_to "Go to dashboard", "/dashboard", class: "inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700" %>
+      <%= link_to "Go to dashboard",
+            "/dashboard",
+            class: "inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700" %>
     <% else %>
+      <div data-controller="confetti" class="fixed inset-0 pointer-events-none -z-10" aria-hidden="true"></div>
       <%= button_to "Sign in with GitHub",
             "/auth/github",
             method: :post,
