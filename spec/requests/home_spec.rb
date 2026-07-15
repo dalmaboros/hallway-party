@@ -14,6 +14,10 @@ RSpec.describe "Home" do
       it "renders the GitHub sign-in button" do
         expect(response.body).to include("Sign in with GitHub")
       end
+
+      it "renders the confetti controller" do
+        expect(response.body).to include('data-controller="confetti"')
+      end
     end
 
     context "when signed in" do
@@ -36,6 +40,10 @@ RSpec.describe "Home" do
 
       it "greets the user by name" do
         expect(response.body).to include("Welcome back, #{user.name}")
+      end
+
+      it "does not render the confetti controller" do
+        expect(response.body).not_to include('data-controller="confetti"')
       end
     end
   end

@@ -16,3 +16,44 @@
   --color-party-cyan-soft: color-mix(in srgb, var(--color-party-cyan) 15%, white);
   --color-party-orchid-soft: color-mix(in srgb, var(--color-party-orchid) 12%, white);
 }
+
+@keyframes fall {
+  from {
+    transform: translateY(-10vh) rotate(0deg);
+  }
+  to {
+    transform: translateY(110vh) rotate(360deg);
+  }
+}
+
+.confetti-piece {
+  position: absolute;
+  top: 0;
+  width: 8px;
+  height: 14px;
+  animation-name: fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes gradient-shift {
+  to {
+    background-position: 200% center;
+  }
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #3b82f6, #a855f7, #3b82f6);
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: gradient-shift 3s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gradient-text {
+    animation: none;
+    background-position: 50% center;
+  }
+}
