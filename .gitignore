@@ -49,3 +49,6 @@
 
 # Playwright MCP browser snapshot artifacts
 .playwright-mcp/
+
+# Subagent-driven-development scratch (progress ledger, task briefs/reports)
+.superpowers/
