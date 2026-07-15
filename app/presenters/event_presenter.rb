@@ -13,7 +13,6 @@ class EventPresenter
     :days_until_start,
     :upcoming?,
     :past?,
-    :attendable?,
     :total_days,
     to: :event
 
@@ -51,5 +50,13 @@ class EventPresenter
 
   def attendance_statement
     past? ? "You attended" : "You're attending"
+  end
+
+  def attend_label
+    past? ? "I attended" : "I am attending!"
+  end
+
+  def remove_attendance_label
+    past? ? "(Actually, I didn't go)" : "Cancel attendance"
   end
 end

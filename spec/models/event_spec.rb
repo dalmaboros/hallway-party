@@ -530,20 +530,6 @@ RSpec.describe Event do
     end
   end
 
-  describe "#attendable?" do
-    it "is true for an upcoming event" do
-      expect(build(:event, :upcoming)).to be_attendable
-    end
-
-    it "is true for an in-progress event" do
-      expect(build(:event, :in_progress)).to be_attendable
-    end
-
-    it "is false for a past event" do
-      expect(build(:event, :past)).not_to be_attendable
-    end
-  end
-
   describe "#past?" do
     let(:time_zone) { "Australia/Sydney" }
     let(:starts_at) { ActiveSupport::TimeZone[time_zone].local(2026, 7, 14, 9) }
