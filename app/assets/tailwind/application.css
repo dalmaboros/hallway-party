@@ -16,3 +16,22 @@
   --color-party-cyan-soft: color-mix(in srgb, var(--color-party-cyan) 15%, white);
   --color-party-orchid-soft: color-mix(in srgb, var(--color-party-orchid) 12%, white);
 }
+
+@keyframes fall {
+  from {
+    transform: translateY(-10vh) rotate(0deg);
+  }
+  to {
+    transform: translateY(110vh) rotate(360deg);
+  }
+}
+
+.confetti-piece {
+  position: absolute;
+  top: 0;
+  width: 8px;
+  height: 14px;
+  animation-name: fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
