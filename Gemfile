@@ -65,7 +65,7 @@ group :development, :test do
   gem "rubocop-factory_bot", "~> 2.28", require: false
   gem "rubocop-rspec", "~> 3.9", require: false
   gem "rubocop-rspec_rails", "~> 2.32", require: false
-  gem "rubocop-shopify", "~> 2.18", require: false
+  gem "rubocop-shopify", "~> 3.0", require: false
 
   gem "erb_lint", "~> 0.9", require: false
 
