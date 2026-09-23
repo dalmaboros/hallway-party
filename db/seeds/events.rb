@@ -58,4 +58,12 @@ Event.find_or_create_by!(name: "Brighton Ruby 2026") do |event|
   event.ends_at = Time.zone.parse("2026-06-25 18:00")
 end
 
+Event.find_or_create_by!(name: "Rails World 2026") do |event|
+  event.website = "https://rubyonrails.org/world/"
+  event.location = "Austin, TX"
+  event.time_zone = "America/Chicago"
+  event.starts_at = Time.zone.parse("2026-09-23 09:00")
+  event.ends_at = Time.zone.parse("2026-09-24 18:00")
+end
+
 puts "✓ Seeded #{Event.count} event(s)"
