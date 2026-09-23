@@ -31,7 +31,7 @@ jobs:
       pull-requests: write
       id-token: write   # required by anthropics/claude-code-action for OIDC auth
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
