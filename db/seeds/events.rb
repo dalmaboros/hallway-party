@@ -74,7 +74,7 @@ Event.find_or_create_by!(name: "Rocky Mountain Ruby 2026") do |event|
   event.ends_at = Time.zone.parse("2026-09-29 18:00")
 end
 
-Event.find_or_create_by!(name: 'tiny ruby #{conf} 2026') do |event|
+Event.find_or_create_by!(name: "Tiny Ruby 2026") do |event|
   event.website = "https://helsinkiruby.fi/tinyruby/"
   event.location = "Helsinki, Finland"
   event.time_zone = "Europe/Helsinki"
