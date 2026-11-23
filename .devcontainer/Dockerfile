@@ -1,4 +1,4 @@
-ARG RUBY_VERSION=4.0.3
+ARG RUBY_VERSION=4.0.10
 FROM ghcr.io/rails/devcontainer/images/ruby:$RUBY_VERSION
 
 # Ensure binding is always 0.0.0.0 so Puma is reachable from outside the container.
