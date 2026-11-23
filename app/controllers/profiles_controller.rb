@@ -8,6 +8,6 @@ class ProfilesController < ApplicationController
   private
 
   def user
-    @user ||= User.includes(:hobbies, :events).find_by!(username: params[:username])
+    @user ||= User.includes(:hobbies, :events).find_by!(username: params.expect(:username))
   end
 end

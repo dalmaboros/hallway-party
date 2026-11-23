@@ -11,7 +11,7 @@ class HobbiesController < ApplicationController
   private
 
   def hobby
-    @hobby ||= Hobby.find(params[:id])
+    @hobby ||= Hobby.find(params.expect(:id))
   end
 
   def hobbyists
