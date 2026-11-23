@@ -12,7 +12,7 @@ A Rails app that helps Ruby conference attendees meet each other based on their 
 
 ## Stack
 
-- Ruby 4.0.3, Rails 8.1
+- Ruby 4.0.10, Rails 8.1
 - PostgreSQL 18 with the `pgvector` extension (via the `neighbor` gem)
 - Hotwire (Turbo + Stimulus), Tailwind CSS, Propshaft, importmaps
 - Solid Queue / Solid Cache / Solid Cable
@@ -58,7 +58,7 @@ The dev container shares volumes with `docker compose up`, so gems and the datab
 
 ### Native (non-Docker) development
 
-If you'd rather run Rails on your host: install Ruby 4.0.3, install Postgres 18 with the `pgvector` extension, then run `bin/setup` followed by `bin/dev`. The container flows above are recommended for new contributors.
+If you'd rather run Rails on your host: install Ruby 4.0.10, install Postgres 18 with the `pgvector` extension, then run `bin/setup` followed by `bin/dev`. The container flows above are recommended for new contributors.
 
 ## Tests
 
