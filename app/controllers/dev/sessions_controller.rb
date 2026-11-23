@@ -12,7 +12,7 @@ module Dev
     end
 
     def create
-      user = User.find_by!(provider: "seed", username: params[:username])
+      user = User.find_by!(provider: "seed", username: params.expect(:username))
       session[:user_id] = user.id
       redirect_to dashboard_path, notice: "Signed in as @#{user.username}"
     end

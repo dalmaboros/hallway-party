@@ -22,6 +22,6 @@ class AttendancesController < ApplicationController
   private
 
   def event
-    @event ||= Event.find(params[:event_id])
+    @event ||= Event.find(params.expect(:event_id))
   end
 end
