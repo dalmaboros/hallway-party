@@ -19,7 +19,7 @@ class UserHobbiesController < ApplicationController
   end
 
   def destroy
-    user_hobby = current_user.user_hobbies.find(params[:id])
+    user_hobby = current_user.user_hobbies.find(params.expect(:id))
 
     if current_user.user_hobbies.one?
       return redirect_back_or_to onboarding_hobbies_path, alert: "You must have at least one hobby"
@@ -34,7 +34,7 @@ class UserHobbiesController < ApplicationController
   private
 
   def add_existing_hobby
-    hobby = Hobby.find(params[:hobby_id])
+    hobby = Hobby.find(params.expect(:hobby_id))
     current_user.user_hobbies.find_or_create_by!(hobby: hobby)
     redirect_to hobby_path(hobby)
   end
