@@ -16,6 +16,9 @@ concurrency:
   group: claude-review-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
+env:
+  CLAUDE_MODEL: claude-sonnet-4-6
+
 jobs:
   review:
     # Opt-in: apply the `claude-review` label to trigger an automated review.
@@ -35,7 +38,6 @@ jobs:
       - uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          show_full_output: true   # debug; remove once review is reliably posting
           prompt: |
             REPO: ${{ github.repository }}
             PR NUMBER: ${{ github.event.pull_request.number }}
@@ -48,9 +50,19 @@ jobs:
             `gh pr comment`, formatted per the agent file's output format.
             Only post GitHub comments — do not submit review text as messages.
 
+            Begin the comment with EXACTLY this metadata block (verbatim,
+            including the `>` quote markers and the trailing `---`), then
+            an empty line, then the findings:
+
+            > 🤖 **Automated review by Claude** · [view run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) · [checklist](${{ github.server_url }}/${{ github.repository }}/blob/main/.claude/agents/code-reviewer.md) · model: `${{ env.CLAUDE_MODEL }}`
+            >
+            > Apply or remove the `claude-review` label to control auto-reviews on this PR.
+
+            ---
+
             Do not invoke the built-in `/review` slash command or skill. Use
             only the instructions from .claude/agents/code-reviewer.md.
           claude_args: >-
-            --model claude-sonnet-4-6
+            --model ${{ env.CLAUDE_MODEL }}
             --max-turns 15
             --allowedTools "Read,Glob,Grep,Bash(git:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
